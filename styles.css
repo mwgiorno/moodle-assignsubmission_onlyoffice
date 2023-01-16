@@ -1,0 +1,9 @@
+/* @copyright  2022 Ascensio System SIA <integration@onlyoffice.com>
+ *
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+#app > iframe {
+    height: 95vh;
+    max-height: 60rem;
+}
