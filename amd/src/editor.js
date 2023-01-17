@@ -21,12 +21,6 @@
 define(['jquery'], function($) {
     return {
         init: function(contextid, itemid, groupmode) {
-            // eslint-disable-next-line no-console
-            console.log(contextid);
-            // eslint-disable-next-line no-console
-            console.log(itemid);
-            // eslint-disable-next-line no-console
-            console.log(groupmode);
             if (typeof DocsAPI === 'undefined') {
                 return;
             }
@@ -39,12 +33,9 @@ define(['jquery'], function($) {
                 groupmode: groupmode
             }).done(function(config) {
                 var docEditor = null;
-                // eslint-disable-next-line no-console
-                console.log(config);
+
                 // eslint-disable-next-line no-undef
-                docEditor = new DocsAPI.DocEditor("onlyoffice-editor", config);
-                // eslint-disable-next-line no-console
-                console.log(docEditor);
+                docEditor = new DocsAPI.DocEditor('onlyoffice-editor', config);
             });
         }
     };

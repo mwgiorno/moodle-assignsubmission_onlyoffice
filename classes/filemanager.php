@@ -54,7 +54,7 @@ class filemanager {
 
         $pathlocale = \mod_onlyofficeeditor\util::PATH_LOCALE[$USER->lang];
         if ($pathlocale === null) {
-            $pathlocale = "en-US";
+            $pathlocale = 'en-US';
         }
 
         $pathname = $CFG->dirroot . '/mod/onlyofficeeditor/newdocs/' . $pathlocale . '/new.' . $ext;

@@ -27,11 +27,6 @@ require_once(__DIR__.'/../../../../config.php');
 use mod_onlyofficeeditor\util;
 use assignsubmission_onlyoffice\filemanager;
 
-/*const TrackerStatus_Editing = 1;
-const TrackerStatus_MustSave = 2;
-const TrackerStatus_Corrupted = 3;
-const TrackerStatus_Closed = 4;*/
-
 $doc = required_param('doc', PARAM_RAW);
 
 $crypt = new \mod_onlyofficeeditor\hasher();
