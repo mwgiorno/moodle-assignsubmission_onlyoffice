@@ -52,7 +52,6 @@ $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
 $crypt = new \mod_onlyofficeeditor\hasher();
 $downloadhash = $crypt->get_hash(['action' => 'download', 'contextid' => $contextid, 'itemid' => $itemid, 'groupmode' => $groupmode]);
-$callbackhash = $crypt->get_hash(['action' => 'track', 'contextid' => $contextid, 'itemid' => $itemid, 'groupmode' => $groupmode]);
 
 $config = [
     'document' => [
@@ -81,12 +80,17 @@ if (!$groupmode) {
 
 $config['document']['permissions']['edit'] = $editable;
 if ($editable && $canedit) {
+    $callbackhash = $crypt->get_hash(['action' => 'track', 'contextid' => $contextid, 'itemid' => $itemid, 'groupmode' => $groupmode]);
     $config['editorConfig']['callbackUrl'] = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/callback.php?doc=' . $callbackhash;
-} elseif ($assing->can_grade()) {
-    $params['editorConfig']['mode'] = 'view';
 } else {
-    http_response_code(403);
-    die();
+    $viewable = $assing->can_grade();
+
+    if (!$viewable) {
+        http_response_code(403);
+        die();
+    }
+
+    $config['editorConfig']['mode'] = 'view';
 }
 
 if (!empty($modconfig->documentserversecret)) {
