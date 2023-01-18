@@ -22,30 +22,33 @@
  */
 
 require_once(__DIR__.'/../../../../../config.php');
+require_once(__DIR__.'/../../../locallib.php');
 
 use mod_onlyofficeeditor\onlyoffice_file_utility;
 use assignsubmission_onlyoffice\filemanager;
 
 use Firebase\JWT\JWT;
 
+global $USER;
+
 $action = required_param('action', PARAM_STRINGID);
 $contextid = required_param('contextid', PARAM_INT);
 $itemid = required_param('itemid', PARAM_ALPHANUMEXT);
-$groupmode = required_param('groupmode', PARAM_BOOL);
+$groupmode = !!required_param('groupmode', PARAM_BOOL);
 
 $modconfig = get_config('onlyofficeeditor');
 
 $submissionfile = filemanager::get($contextid, $itemid, $groupmode);
 if ($submissionfile === null) {
     http_response_code(404);
+    die();
 }
+
+list($context, $course, $cm) = get_context_info_array($contextid);
+$assing = new assign($context, $cm, $course);
 
 $filename = $submissionfile->get_filename();
 $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-
-global $USER;
-
-$user = $USER;
 
 $crypt = new \mod_onlyofficeeditor\hasher();
 $downloadhash = $crypt->get_hash(['action' => 'download', 'contextid' => $contextid, 'itemid' => $itemid, 'groupmode' => $groupmode]);
@@ -67,7 +70,24 @@ $config = [
     ]
 ];
 
-$config['editorConfig']['callbackUrl'] = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/callback.php?doc=' . $callbackhash;
+$canedit = in_array('.' . $ext, onlyoffice_file_utility::get_editable_extensions());
+
+$editable = false;
+if (!$groupmode) {
+    $editable = $assing->can_edit_submission($itemid);
+} else {
+    $editable = $assing->can_edit_group_submission($itemid);
+}
+
+$config['document']['permissions']['edit'] = $editable;
+if ($editable && $canedit) {
+    $config['editorConfig']['callbackUrl'] = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/callback.php?doc=' . $callbackhash;
+} elseif ($assing->can_grade()) {
+    $params['editorConfig']['mode'] = 'view';
+} else {
+    http_response_code(403);
+    die();
+}
 
 if (!empty($modconfig->documentserversecret)) {
     $token = JWT::encode($config, $modconfig->documentserversecret);
