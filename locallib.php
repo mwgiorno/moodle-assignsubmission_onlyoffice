@@ -123,6 +123,51 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
     }
 
     /**
+     * View submission - the submission file will always be read only.
+     *
+     * @param stdClass $submission
+     * @return string - html frame of the submitted file.
+     */
+    public function view(stdClass $submission) {
+        global $USER;
+        global $OUTPUT;
+
+        $userid = $submission->userid;
+
+        $groupmode = !!$submission->groupid;
+
+        $itemid = $userid;
+        if ($groupmode) {
+            $itemid = $submission->groupid;
+        }
+
+        $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
+        $contextid = $this->assignment->get_context()->id;
+
+        $submissionfile = filemanager::get($contextid, $itemid, $groupmode);
+        if ($submissionfile === null) {
+            return 'Submission file not found';
+        }
+
+        $html = $OUTPUT->render(new content($documentserverurl, $contextid, $itemid, $groupmode));
+
+        return $html;
+    }
+
+    /**
+     * View the submission summary and sets whether a view link be provided.
+     *
+     * @param stdClass $submission
+     * @param bool $showviewlink - whether or not to have a link to view the submission file.
+     * @return string view text.
+     */
+    public function view_summary(stdClass $submission, & $showviewlink) {
+        $showviewlink = true;
+
+        return 'Expand';
+    }
+
+    /**
      * Is this assignment plugin empty?(ie no submission)
      *
      * @param stdClass $submission assign_submission.
