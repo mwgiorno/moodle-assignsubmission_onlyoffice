@@ -131,4 +131,24 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
     public function is_empty(stdClass $submission) {
         return false;
     }
+
+    /**
+     * Remove any saved data from this submission.
+     *
+     * @since Moodle 3.6
+     * @param stdClass $submission - assign_submission data
+     * @return void
+     */
+    public function remove(stdClass $submission) {
+        $itemid = $submission->userid;
+
+        $groupmode = !!$submission->groupid;
+        if ($groupmode) {
+            $itemid = $submission->groupid;
+        }
+
+        $contextid = $this->assignment->get_context()->id;
+
+        filemanager::delete($contextid, $itemid, $groupmode);
+    }
 }

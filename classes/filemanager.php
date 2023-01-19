@@ -91,4 +91,13 @@ class filemanager {
         $file->set_timemodified(time());
         $tmpfile->delete();
     }
+
+    public static function delete(int $contextid, string $itemid, bool $isgroupmode = false) {
+        $file = self::get($contextid, $itemid, $isgroupmode);
+        if ($file === null) {
+            return;
+        }
+
+        $file->delete();
+    }
 }
