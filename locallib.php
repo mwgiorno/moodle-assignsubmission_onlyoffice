@@ -90,24 +90,13 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
      * @return boolean - true if we added anything to the form
      */
     public function get_form_elements($submission, MoodleQuickForm $mform, stdClass $data, $userid = null) {
-        global $USER;
         global $OUTPUT;
 
         $cfg = $this->get_config();
 
-        if (is_null($userid)) {
-            $userid = !empty($data->userid) ? $data->userid : $USER->id;
-        }
-
-        $groupmode = !!$submission->groupid;
-
-        $itemid = $userid;
-        if ($groupmode) {
-            $itemid = $submission->groupid;
-        }
+        list ($itemid, $groupmode) = $this->get_item_param($submission);
 
         $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
-        $submissionid = $submission->id;
         $contextid = $this->assignment->get_context()->id;
 
         $submissionfile = filemanager::get($contextid, $itemid, $groupmode);
@@ -129,24 +118,16 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
      * @return string - html frame of the submitted file.
      */
     public function view(stdClass $submission) {
-        global $USER;
         global $OUTPUT;
 
-        $userid = $submission->userid;
-
-        $groupmode = !!$submission->groupid;
-
-        $itemid = $userid;
-        if ($groupmode) {
-            $itemid = $submission->groupid;
-        }
+        list ($itemid, $groupmode) = $this->get_item_param($submission);
 
         $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
         $contextid = $this->assignment->get_context()->id;
 
         $submissionfile = filemanager::get($contextid, $itemid, $groupmode);
         if ($submissionfile === null) {
-            return 'Submission file not found';
+            return get_string('filenotfound', 'assignsubmission_onlyoffice');
         }
 
         $html = $OUTPUT->render(new content($documentserverurl, $contextid, $itemid, $groupmode));
@@ -164,7 +145,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
     public function view_summary(stdClass $submission, & $showviewlink) {
         $showviewlink = true;
 
-        return 'Expand';
+        return get_string('expanddocument', 'assignsubmission_onlyoffice');
     }
 
     /**
@@ -180,20 +161,25 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
     /**
      * Remove any saved data from this submission.
      *
-     * @since Moodle 3.6
      * @param stdClass $submission - assign_submission data
      * @return void
      */
     public function remove(stdClass $submission) {
-        $itemid = $submission->userid;
-
-        $groupmode = !!$submission->groupid;
-        if ($groupmode) {
-            $itemid = $submission->groupid;
-        }
+        list ($itemid, $groupmode) = $this->get_item_param($submission);
 
         $contextid = $this->assignment->get_context()->id;
 
         filemanager::delete($contextid, $itemid, $groupmode);
+    }
+
+    private function get_item_param(stdClass $submission) {
+        $groupmode = !!$submission->groupid;
+
+        $itemid = $submission->userid;
+        if ($groupmode) {
+            $itemid = $submission->groupid;
+        }
+
+        return [$itemid, $groupmode];
     }
 }
