@@ -155,6 +155,15 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
      * @return bool
      */
     public function is_empty(stdClass $submission) {
+        list ($itemid, $groupmode) = $this->get_item_param($submission);
+
+        $contextid = $this->assignment->get_context()->id;
+
+        $submissionfile = filemanager::get($contextid, $itemid, $groupmode);
+        if ($submissionfile === null) {
+            return true;
+        }
+
         return false;
     }
 
