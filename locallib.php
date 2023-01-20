@@ -62,6 +62,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             if (isset($assignconfig->format)
                 && array_key_exists($assignconfig->format, $assignformat)) {
                 $mform->getElement('assignsubmission_onlyoffice_format')->setSelected($assignconfig->format);
+                $mform->freeze('assignsubmission_onlyoffice_format');
             }
         }
 
