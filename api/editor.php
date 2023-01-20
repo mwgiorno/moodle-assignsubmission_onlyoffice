@@ -34,7 +34,8 @@ global $USER;
 $action = required_param('action', PARAM_STRINGID);
 $contextid = required_param('contextid', PARAM_INT);
 $itemid = required_param('itemid', PARAM_ALPHANUMEXT);
-$groupmode = !!required_param('groupmode', PARAM_BOOL);
+$groupmode = !!optional_param('groupmode', 0, PARAM_BOOL);
+$readonly = !!optional_param('readonly', 0, PARAM_BOOL);
 
 $modconfig = get_config('onlyofficeeditor');
 
@@ -79,11 +80,11 @@ if (!$groupmode) {
 }
 
 $config['document']['permissions']['edit'] = $editable;
-if ($editable && $canedit) {
+if ($editable && $canedit && !$readonly) {
     $callbackhash = $crypt->get_hash(['action' => 'track', 'contextid' => $contextid, 'itemid' => $itemid, 'groupmode' => $groupmode]);
     $config['editorConfig']['callbackUrl'] = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/callback.php?doc=' . $callbackhash;
 } else {
-    $viewable = $assing->can_grade();
+    $viewable = $assing->can_grade() || $editable;
 
     if (!$viewable) {
         http_response_code(403);

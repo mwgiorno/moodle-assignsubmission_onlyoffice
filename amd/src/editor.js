@@ -20,18 +20,26 @@
  **/
 define(['jquery'], function($) {
     return {
-        init: function(contextid, itemid, groupmode) {
+        init: function(contextid, itemid, groupmode, readonly) {
             if (typeof DocsAPI === 'undefined') {
                 return;
             }
 
-            var ajaxUrl = M.cfg.wwwroot + '/mod/assign/submission/onlyoffice/api/editor.php';
-            $.getJSON(ajaxUrl, {
+            var params = {
                 action: 'config',
                 contextid: contextid,
-                itemid: itemid,
-                groupmode: groupmode
-            }).done(function(config) {
+                itemid: itemid
+            };
+
+            if (groupmode) {
+                params.groupmode = groupmode;
+            }
+            if (readonly) {
+                params.readonly = readonly;
+            }
+
+            var ajaxUrl = M.cfg.wwwroot + '/mod/assign/submission/onlyoffice/api/editor.php';
+            $.getJSON(ajaxUrl, params).done(function(config) {
                 var docEditor = null;
 
                 // eslint-disable-next-line no-undef

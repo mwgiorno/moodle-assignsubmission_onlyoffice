@@ -30,7 +30,8 @@ class content implements \renderable, \templatable {
     public function __construct(string $documentserverurl,
                                 int $contextid,
                                 string $itemid,
-                                bool $groupmode) {
+                                bool $groupmode,
+                                bool $readonly = false) {
 
         $this->data = new \stdClass();
 
@@ -38,16 +39,23 @@ class content implements \renderable, \templatable {
         $this->data->contextid = $contextid;
         $this->data->itemid = $itemid;
         $this->data->groupmode = $groupmode;
+        $this->data->readonly = $readonly;
     }
 
     public function export_for_template(\renderer_base $output) {
         global $PAGE;
 
-        $PAGE->requires->js_call_amd('assignsubmission_onlyoffice/editor', 'init', [
+        $js_params = [
             $this->data->contextid,
             $this->data->itemid,
             $this->data->groupmode
-        ]);
+        ];
+
+        if ($this->data->readonly) {
+            array_push($js_params, $this->data->readonly);
+        }
+
+        $PAGE->requires->js_call_amd('assignsubmission_onlyoffice/editor', 'init', $js_params);
 
         return $this->data;
     }

@@ -130,7 +130,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             return get_string('filenotfound', 'assignsubmission_onlyoffice');
         }
 
-        $html = $OUTPUT->render(new content($documentserverurl, $contextid, $itemid, $groupmode));
+        $html = $OUTPUT->render(new content($documentserverurl, $contextid, $itemid, $groupmode, true));
 
         return $html;
     }
