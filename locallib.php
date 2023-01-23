@@ -169,6 +169,18 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
     }
 
     /**
+     * Get file areas returns a list of areas this plugin stores files
+     *
+     * @return array - An array of fileareas(keys) and descriptions(values)
+     */
+    public function get_file_areas() {
+        return array(
+            filemanager::FILEAREA_USER => $this->get_name(),
+            filemanager::FILEAREA_GROUP => $this->get_name()
+        );
+    }
+
+    /**
      * Produce a list of files suitable for export that represent this submission.
      *
      * @param stdClass $submission
