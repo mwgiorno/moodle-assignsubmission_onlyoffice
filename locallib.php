@@ -176,16 +176,19 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
      * @return array - return an array of files indexed by filename
      */
     public function get_files(stdClass $submission, stdClass $user) {
+        $result = [];
+
         list ($itemid, $groupmode) = $this->get_item_param($submission);
 
         $contextid = $this->assignment->get_context()->id;
 
         $submissionfile = filemanager::get($contextid, $itemid, $groupmode);
-        if ($submissionfile === null) {
-            return [];
+        if ($submissionfile !== null) {
+            $filename = $submissionfile->get_filename();
+            $result[$filename] = $submissionfile;
         }
 
-        return [$submissionfile];
+        return $result;
     }
 
     /**
