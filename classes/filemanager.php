@@ -93,11 +93,9 @@ class filemanager {
     }
 
     public static function delete(int $contextid, string $itemid, bool $isgroupmode = false) {
-        $file = self::get($contextid, $itemid, $isgroupmode);
-        if ($file === null) {
-            return;
-        }
+        $fs = get_file_storage();
 
-        $file->delete();
+        $filearea = $isgroupmode ? self::FILEAREA_GROUP : self::FILEAREA_USER;
+        $fs->delete_area_files($contextid, self::COMPONENT_NAME, $filearea, $itemid);
     }
 }
