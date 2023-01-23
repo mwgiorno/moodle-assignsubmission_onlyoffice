@@ -169,6 +169,26 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
     }
 
     /**
+     * Produce a list of files suitable for export that represent this submission.
+     *
+     * @param stdClass $submission
+     * @param stdClass $user
+     * @return array - return an array of files indexed by filename
+     */
+    public function get_files(stdClass $submission, stdClass $user) {
+        list ($itemid, $groupmode) = $this->get_item_param($submission);
+
+        $contextid = $this->assignment->get_context()->id;
+
+        $submissionfile = filemanager::get($contextid, $itemid, $groupmode);
+        if ($submissionfile === null) {
+            return [];
+        }
+
+        return [$submissionfile];
+    }
+
+    /**
      * Remove any saved data from this submission.
      *
      * @param stdClass $submission - assign_submission data
