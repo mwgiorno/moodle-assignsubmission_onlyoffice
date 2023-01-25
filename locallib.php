@@ -95,18 +95,16 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
 
         $cfg = $this->get_config();
 
-        list ($itemid, $groupmode) = $this->get_item_param($submission);
-
         $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
         $contextid = $this->assignment->get_context()->id;
 
-        $submissionfile = filemanager::get($contextid, $itemid, $groupmode);
+        $submissionfile = filemanager::get($contextid, $submission->id);
         if ($submissionfile === null) {
-            $submissionfile = filemanager::create($contextid, $itemid, $cfg->format, $groupmode);
+            $submissionfile = filemanager::create($contextid, $submission->id, $cfg->format, $submission->userid);
         }
 
         $mform->addElement('html', $OUTPUT->render(
-            new content($documentserverurl, $contextid, $itemid, $groupmode)
+            new content($documentserverurl, $contextid, $submission->id)
         ));
 
         return true;
@@ -121,17 +119,15 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
     public function view(stdClass $submission) {
         global $OUTPUT;
 
-        list ($itemid, $groupmode) = $this->get_item_param($submission);
-
         $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
         $contextid = $this->assignment->get_context()->id;
 
-        $submissionfile = filemanager::get($contextid, $itemid, $groupmode);
+        $submissionfile = filemanager::get($contextid, $submission->id);
         if ($submissionfile === null) {
             return get_string('filenotfound', 'assignsubmission_onlyoffice');
         }
 
-        $html = $OUTPUT->render(new content($documentserverurl, $contextid, $itemid, $groupmode, true));
+        $html = $OUTPUT->render(new content($documentserverurl, $contextid, $submission->id, true));
 
         return $html;
     }
@@ -156,11 +152,9 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
      * @return bool
      */
     public function is_empty(stdClass $submission) {
-        list ($itemid, $groupmode) = $this->get_item_param($submission);
-
         $contextid = $this->assignment->get_context()->id;
 
-        $submissionfile = filemanager::get($contextid, $itemid, $groupmode);
+        $submissionfile = filemanager::get($contextid, $submission->id);
         if ($submissionfile === null) {
             return true;
         }
@@ -175,8 +169,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
      */
     public function get_file_areas() {
         return array(
-            filemanager::FILEAREA_USER => $this->get_name(),
-            filemanager::FILEAREA_GROUP => $this->get_name()
+            filemanager::FILEAREA_ONLYOFFICE_SUBMISSION_FILE => $this->get_name()
         );
     }
 
@@ -190,11 +183,9 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
     public function get_files(stdClass $submission, stdClass $user) {
         $result = [];
 
-        list ($itemid, $groupmode) = $this->get_item_param($submission);
-
         $contextid = $this->assignment->get_context()->id;
 
-        $submissionfile = filemanager::get($contextid, $itemid, $groupmode);
+        $submissionfile = filemanager::get($contextid, $submission->id);
         if ($submissionfile !== null) {
             $filename = $submissionfile->get_filename();
             $result[$filename] = $submissionfile;
@@ -210,21 +201,8 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
      * @return void
      */
     public function remove(stdClass $submission) {
-        list ($itemid, $groupmode) = $this->get_item_param($submission);
-
         $contextid = $this->assignment->get_context()->id;
 
-        filemanager::delete($contextid, $itemid, $groupmode);
-    }
-
-    private function get_item_param(stdClass $submission) {
-        $groupmode = !!$submission->groupid;
-
-        $itemid = $submission->userid;
-        if ($groupmode) {
-            $itemid = $submission->groupid;
-        }
-
-        return [$itemid, $groupmode];
+        filemanager::delete($contextid, $submission->id);
     }
 }

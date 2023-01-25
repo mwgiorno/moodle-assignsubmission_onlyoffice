@@ -30,7 +30,6 @@ class content implements \renderable, \templatable {
     public function __construct(string $documentserverurl,
                                 int $contextid,
                                 string $itemid,
-                                bool $groupmode,
                                 bool $readonly = false) {
 
         $this->data = new \stdClass();
@@ -38,7 +37,6 @@ class content implements \renderable, \templatable {
         $this->data->documentserverurl = $documentserverurl;
         $this->data->contextid = $contextid;
         $this->data->itemid = $itemid;
-        $this->data->groupmode = $groupmode;
         $this->data->readonly = $readonly;
     }
 
@@ -48,7 +46,6 @@ class content implements \renderable, \templatable {
         $js_params = [
             $this->data->contextid,
             $this->data->itemid,
-            $this->data->groupmode
         ];
 
         if ($this->data->readonly) {

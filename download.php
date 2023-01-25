@@ -57,7 +57,7 @@ $contextid = $hash->contextid;
 $itemid = $hash->itemid;
 $groupmode = $hash->groupmode;
 
-$submissionfile = filemanager::get($contextid, $itemid, $groupmode);
+$submissionfile = filemanager::get($contextid, $itemid);
 if ($submissionfile === null) {
     http_response_code(404);
 }

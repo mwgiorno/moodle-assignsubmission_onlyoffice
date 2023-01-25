@@ -30,16 +30,16 @@ use assignsubmission_onlyoffice\filemanager;
 use Firebase\JWT\JWT;
 
 global $USER;
+global $DB;
 
 $action = required_param('action', PARAM_STRINGID);
 $contextid = required_param('contextid', PARAM_INT);
 $itemid = required_param('itemid', PARAM_ALPHANUMEXT);
-$groupmode = !!optional_param('groupmode', 0, PARAM_BOOL);
 $readonly = !!optional_param('readonly', 0, PARAM_BOOL);
 
 $modconfig = get_config('onlyofficeeditor');
 
-$submissionfile = filemanager::get($contextid, $itemid, $groupmode);
+$submissionfile = filemanager::get($contextid, $itemid);
 if ($submissionfile === null) {
     http_response_code(404);
     die();
@@ -47,6 +47,14 @@ if ($submissionfile === null) {
 
 list($context, $course, $cm) = get_context_info_array($contextid);
 $assing = new assign($context, $cm, $course);
+
+$submission = $DB->get_record('assign_submission', array('id' => $itemid));
+if (!$submission) {
+    http_response_code(400);
+    die();
+}
+
+$groupmode = !!$submission->groupid;
 
 $filename = $submissionfile->get_filename();
 $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));

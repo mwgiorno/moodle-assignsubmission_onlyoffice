@@ -20,7 +20,7 @@
  **/
 define(['jquery'], function($) {
     return {
-        init: function(contextid, itemid, groupmode, readonly) {
+        init: function(contextid, itemid, readonly) {
             if (typeof DocsAPI === 'undefined') {
                 return;
             }
@@ -31,9 +31,6 @@ define(['jquery'], function($) {
                 itemid: itemid
             };
 
-            if (groupmode) {
-                params.groupmode = groupmode;
-            }
             if (readonly) {
                 params.readonly = readonly;
             }

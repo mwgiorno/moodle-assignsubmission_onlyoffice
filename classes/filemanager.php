@@ -27,17 +27,16 @@ use stored_file;
 
 class filemanager {
 
-    const FILEAREA_USER = 'user';
-    const FILEAREA_GROUP = 'group';
-    const FILEAREA_DRAFT = 'draft';
+    const FILEAREA_ONLYOFFICE_SUBMISSION_FILE = 'assignsubmission_onlyoffice_file';
+    const FILEAREA_ONLYOFFICE_SUBMISSION_DRAFT = 'assignsubmission_onlyoffice_draft';
 
     const COMPONENT_NAME = 'assignsubmission_onlyoffice';
 
-    public static function get(int $contextid, string $itemid, bool $isgroupmode = false) {
+    public static function get(int $contextid, string $itemid) {
         $fs = get_file_storage();
 
         $files = $fs->get_area_files($contextid, self::COMPONENT_NAME,
-            $isgroupmode ? self::FILEAREA_GROUP : self::FILEAREA_USER,
+            self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
             $itemid, '', false, 0, 0, 1);
 
         $file = reset($files);
@@ -48,7 +47,7 @@ class filemanager {
         return $file;
     }
 
-    public static function create(int $contextid, string $itemid, string $ext, bool $isgroupmode = false) {
+    public static function create(int $contextid, string $itemid, string $ext, string $userid) {
         global $USER;
         global $CFG;
 
@@ -63,8 +62,9 @@ class filemanager {
         $newfile = $fs->create_file_from_pathname((object)[
             'contextid' => $contextid,
             'component' => self::COMPONENT_NAME,
-            'filearea' => $isgroupmode ? self::FILEAREA_GROUP : self::FILEAREA_USER,
+            'filearea' => self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
             'itemid' => $itemid,
+            'userid' => $userid,
             'filepath' => '/',
             'filename' => $itemid . '.' . $ext
         ], $pathname);
@@ -78,7 +78,7 @@ class filemanager {
         $fr = array(
             'contextid' => $file->get_contextid(),
             'component' => $file->get_component(),
-            'filearea' => self::FILEAREA_DRAFT,
+            'filearea' => self::FILEAREA_ONLYOFFICE_SUBMISSION_DRAFT,
             'itemid' => $file->get_itemid(),
             'filename' => $file->get_filename() . '_temp',
             'filepath' => '/',
@@ -92,10 +92,9 @@ class filemanager {
         $tmpfile->delete();
     }
 
-    public static function delete(int $contextid, string $itemid, bool $isgroupmode = false) {
+    public static function delete(int $contextid, string $itemid) {
         $fs = get_file_storage();
 
-        $filearea = $isgroupmode ? self::FILEAREA_GROUP : self::FILEAREA_USER;
-        $fs->delete_area_files($contextid, self::COMPONENT_NAME, $filearea, $itemid);
+        $fs->delete_area_files($contextid, self::COMPONENT_NAME, self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE, $itemid);
     }
 }
