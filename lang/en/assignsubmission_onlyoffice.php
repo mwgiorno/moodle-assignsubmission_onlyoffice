@@ -29,3 +29,5 @@ $string['assignformat'] = 'Format (ONLYOFFICE)';
 $string['docxformname'] = 'Document';
 $string['pptxformname'] = 'Presentation';
 $string['xlsxformname'] = 'Spreadsheet';
+$string['filenotfound'] = 'File not found';
+$string['expanddocument'] = 'Expand ONLYOFFICE document';
