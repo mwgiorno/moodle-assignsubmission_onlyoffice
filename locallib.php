@@ -48,6 +48,10 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
     public function get_settings(MoodleQuickForm $mform) {
         global $OUTPUT;
 
+        $contextid = 0;
+        $initeditor = true;
+        $emptytmplkey = null;
+
         $assignconfig = new stdClass();
         $assignformat = [
             'docx' => get_string('docxformname', 'assignsubmission_onlyoffice'),
@@ -66,17 +70,22 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                 && array_key_exists($assignconfig->format, $assignformat)) {
                 $mform->getElement('assignsubmission_onlyoffice_format')->setSelected($assignconfig->format);
                 $mform->freeze('assignsubmission_onlyoffice_format');
+
+                $initeditor = isset($assignconfig->format) && $assignconfig->format === 'docxf';
             }
+
+            $contextid = $this->assignment->get_context()->id;
         }
 
-        $emptytmplkey = uniqid();
+        if ($initeditor) {
+            $emptytmplkey = isset($assignconfig->emptytmplkey) ? $assignconfig->emptytmplkey : uniqid();
+            $mform->addElement('hidden', 'emptytmplkey', $emptytmplkey);
 
-        $mform->addElement('hidden', 'emptytmplkey', $emptytmplkey);
-
-        $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
-        $mform->addElement('html', $OUTPUT->render(
-            new content($documentserverurl, $contextid, 0, false, $emptytmplkey)
-        ));
+            $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
+            $mform->addElement('html', $OUTPUT->render(
+                new content($documentserverurl, $contextid, 0, false, $emptytmplkey)
+            ));
+        }
 
         $mform->hideif('assignsubmission_onlyoffice_format', 'assignsubmission_onlyoffice_enabled', 'notchecked');
     }
