@@ -56,10 +56,28 @@ if ($hash->action !== 'download') {
 $contextid = $hash->contextid;
 $itemid = $hash->itemid;
 $groupmode = $hash->groupmode;
+$emptytmplkey = $hash->emptytmplkey;
 
-$submissionfile = filemanager::get($contextid, $itemid);
-if ($submissionfile === null) {
-    http_response_code(404);
+if (empty($emptytmplkey)) {
+    $submissionfile = filemanager::get($contextid, $itemid);
+    if ($submissionfile === null) {
+        http_response_code(404);
+    }
+    
+    send_stored_file($submissionfile);
+
+    return;
 }
 
-send_stored_file($submissionfile);
+global $USER;
+global $CFG;
+
+$pathlocale = \mod_onlyofficeeditor\util::PATH_LOCALE[$USER->lang];
+if ($pathlocale === null) {
+    $pathlocale = 'en-US';
+}
+
+$ext = 'docxf';
+$pathname = $CFG->dirroot . '/mod/onlyofficeeditor/newdocs/' . $pathlocale . '/new.' . $ext;
+
+send_file($pathname, 'new.' . $ext, 0, 0, false, false, '', false, []);

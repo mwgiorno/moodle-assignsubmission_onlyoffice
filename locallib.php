@@ -46,11 +46,14 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
      * @return void
      */
     public function get_settings(MoodleQuickForm $mform) {
+        global $OUTPUT;
+
         $assignconfig = new stdClass();
         $assignformat = [
             'docx' => get_string('docxformname', 'assignsubmission_onlyoffice'),
             'xlsx' => get_string('xlsxformname', 'assignsubmission_onlyoffice'),
             'pptx' => get_string('pptxformname', 'assignsubmission_onlyoffice'),
+            'docxf' => get_string('docxfformname', 'assignsubmission_onlyoffice'),
         ];
 
         $mform->addElement('select', 'assignsubmission_onlyoffice_format',
@@ -65,6 +68,15 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                 $mform->freeze('assignsubmission_onlyoffice_format');
             }
         }
+
+        $emptytmplkey = uniqid();
+
+        $mform->addElement('hidden', 'emptytmplkey', $emptytmplkey);
+
+        $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
+        $mform->addElement('html', $OUTPUT->render(
+            new content($documentserverurl, $contextid, 0, false, $emptytmplkey)
+        ));
 
         $mform->hideif('assignsubmission_onlyoffice_format', 'assignsubmission_onlyoffice_enabled', 'notchecked');
     }

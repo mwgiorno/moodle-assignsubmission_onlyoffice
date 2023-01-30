@@ -30,7 +30,8 @@ class content implements \renderable, \templatable {
     public function __construct(string $documentserverurl,
                                 int $contextid,
                                 string $itemid,
-                                bool $readonly = false) {
+                                bool $readonly = false,
+                                string $emptytmplkey = '') {
 
         $this->data = new \stdClass();
 
@@ -38,6 +39,7 @@ class content implements \renderable, \templatable {
         $this->data->contextid = $contextid;
         $this->data->itemid = $itemid;
         $this->data->readonly = $readonly;
+        $this->data->emptytmplkey = $emptytmplkey;
     }
 
     public function export_for_template(\renderer_base $output) {
@@ -46,11 +48,9 @@ class content implements \renderable, \templatable {
         $js_params = [
             $this->data->contextid,
             $this->data->itemid,
+            $this->data->readonly,
+            $this->data->emptytmplkey
         ];
-
-        if ($this->data->readonly) {
-            array_push($js_params, $this->data->readonly);
-        }
 
         $PAGE->requires->js_call_amd('assignsubmission_onlyoffice/editor', 'init', $js_params);
 

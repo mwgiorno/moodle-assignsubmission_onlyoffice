@@ -19,29 +19,54 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 define(['jquery'], function($) {
+    var docEditor = null;
+
+    var openEditor = function(contextid, itemid, readonly, emptytmplkey = null) {
+        if (typeof DocsAPI === 'undefined') {
+            return;
+        }
+
+        var params = {
+            action: 'config',
+            contextid: contextid,
+            itemid: itemid
+        };
+
+        if (readonly) {
+            params.readonly = readonly;
+        }
+        if (emptytmplkey) {
+            params.emptytmplkey = emptytmplkey;
+        }
+
+        var ajaxUrl = M.cfg.wwwroot + '/mod/assign/submission/onlyoffice/api/editor.php';
+        $.getJSON(ajaxUrl, params).done(function(config) {
+
+            // eslint-disable-next-line no-undef
+            docEditor = new DocsAPI.DocEditor('onlyoffice-editor', config);
+        });
+    };
+
     return {
-        init: function(contextid, itemid, readonly) {
-            if (typeof DocsAPI === 'undefined') {
-                return;
+        init: function(contextid, itemid, readonly, emptytmplkey) {
+            if (!emptytmplkey) {
+                openEditor(contextid, itemid, readonly);
+            } else {
+                $('#id_assignsubmission_onlyoffice_format').change(function(e){
+                    if (e.target.value != 'docxf') {
+                        if ($("#app").is(":visible")) {
+                            $("#app").hide();
+                        }
+                        return;
+                    }
+
+                    if (docEditor === null) {
+                        openEditor(contextid, itemid, readonly, emptytmplkey);
+                    }
+
+                    $("#app").show();
+                });
             }
-
-            var params = {
-                action: 'config',
-                contextid: contextid,
-                itemid: itemid
-            };
-
-            if (readonly) {
-                params.readonly = readonly;
-            }
-
-            var ajaxUrl = M.cfg.wwwroot + '/mod/assign/submission/onlyoffice/api/editor.php';
-            $.getJSON(ajaxUrl, params).done(function(config) {
-                var docEditor = null;
-
-                // eslint-disable-next-line no-undef
-                docEditor = new DocsAPI.DocEditor('onlyoffice-editor', config);
-            });
         }
     };
 });

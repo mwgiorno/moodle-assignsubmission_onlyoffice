@@ -36,36 +36,57 @@ $action = required_param('action', PARAM_STRINGID);
 $contextid = required_param('contextid', PARAM_INT);
 $itemid = required_param('itemid', PARAM_ALPHANUMEXT);
 $readonly = !!optional_param('readonly', 0, PARAM_BOOL);
+$emptytmplkey = optional_param('emptytmplkey', null, PARAM_ALPHANUMEXT);
 
 $modconfig = get_config('onlyofficeeditor');
 
-$submissionfile = filemanager::get($contextid, $itemid);
-if ($submissionfile === null) {
-    http_response_code(404);
-    die();
+$key = '';
+$filename = '';
+$assing = null;
+$groupmode = false;
+$submissionfile = null;
+if ($emptytmplkey === null) {
+    $submissionfile = filemanager::get($contextid, $itemid);
+    if ($submissionfile === null) {
+        http_response_code(404);
+        die();
+    }
+
+    list($context, $course, $cm) = get_context_info_array($contextid);
+    $assing = new assign($context, $cm, $course);
+
+    $submission = $DB->get_record('assign_submission', array('id' => $itemid));
+    if (!$submission) {
+        http_response_code(400);
+        die();
+    }
+
+    $groupmode = !!$submission->groupid;
+
+    $filename = $submissionfile->get_filename();
+
+    $key = $contextid . $itemid . $submissionfile->get_timemodified();
+} else {
+    $filename = 'form_template.docxf';
+
+    $key = $emptytmplkey;
 }
 
-list($context, $course, $cm) = get_context_info_array($contextid);
-$assing = new assign($context, $cm, $course);
-
-$submission = $DB->get_record('assign_submission', array('id' => $itemid));
-if (!$submission) {
-    http_response_code(400);
-    die();
-}
-
-$groupmode = !!$submission->groupid;
-
-$filename = $submissionfile->get_filename();
 $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
 $crypt = new \mod_onlyofficeeditor\hasher();
-$downloadhash = $crypt->get_hash(['action' => 'download', 'contextid' => $contextid, 'itemid' => $itemid, 'groupmode' => $groupmode]);
+$downloadhash = $crypt->get_hash([
+    'action' => 'download',
+    'contextid' => $contextid,
+    'itemid' => $itemid,
+    'groupmode' => $groupmode,
+    'emptytmplkey' => $emptytmplkey
+]);
 
 $config = [
     'document' => [
         'fileType' => $ext,
-        'key' => $contextid . $itemid . $submissionfile->get_timemodified(),
+        'key' => $key,
         'title' => $filename,
         'url' => $CFG->wwwroot . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash
     ],
@@ -81,15 +102,24 @@ $config = [
 $canedit = in_array('.' . $ext, onlyoffice_file_utility::get_editable_extensions());
 
 $editable = false;
-if (!$groupmode) {
+if (!$groupmode && empty($emptytmplkey)) {
     $editable = $assing->can_edit_submission($itemid);
-} else {
+} else if (empty($emptytmplkey)) {
     $editable = $assing->can_edit_group_submission($itemid);
+} else {
+    //To do checking permission for creating assign
+    $editable = true;
 }
 
 $config['document']['permissions']['edit'] = $editable;
 if ($editable && $canedit && !$readonly) {
-    $callbackhash = $crypt->get_hash(['action' => 'track', 'contextid' => $contextid, 'itemid' => $itemid, 'groupmode' => $groupmode]);
+    $callbackhash = $crypt->get_hash([
+        'action' => 'track',
+        'contextid' => $contextid,
+        'itemid' => $itemid,
+        'groupmode' => $groupmode,
+        'emptytmplkey' => $emptytmplkey
+    ]);
     $config['editorConfig']['callbackUrl'] = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/callback.php?doc=' . $callbackhash;
 } else {
     $viewable = $assing->can_grade() || $editable;

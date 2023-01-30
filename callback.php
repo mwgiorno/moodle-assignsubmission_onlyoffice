@@ -45,12 +45,7 @@ if ($hash->action !== 'track') {
 $contextid = $hash->contextid;
 $itemid = $hash->itemid;
 $groupmode = $hash->groupmode;
-
-$submissionfile = filemanager::get($contextid, $itemid);
-if ($submissionfile === null) {
-    http_response_code(404);
-    die();
-}
+$emptytmplkey = $hash->emptytmplkey;
 
 $bodyStream = file_get_contents('php://input');
 $data = json_decode($bodyStream);
