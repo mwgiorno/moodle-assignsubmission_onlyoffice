@@ -34,7 +34,7 @@ global $DB;
 
 $action = required_param('action', PARAM_STRINGID);
 $contextid = required_param('contextid', PARAM_INT);
-$itemid = required_param('itemid', PARAM_ALPHANUMEXT);
+$itemid = required_param('itemid', PARAM_INT);
 $readonly = !!optional_param('readonly', 0, PARAM_BOOL);
 $emptytmplkey = optional_param('emptytmplkey', null, PARAM_ALPHANUMEXT);
 
@@ -67,9 +67,14 @@ if ($emptytmplkey === null) {
 
     $key = $contextid . $itemid . $submissionfile->get_timemodified();
 } else {
-    $filename = 'form_template.docxf';
-
-    $key = $emptytmplkey;
+    $templatefile = filemanager::get_template($contextid);
+    if ($templatefile !== null) {
+        $filename = $templatefile->get_filename();
+        $key = $contextid . $submissionfile->get_timemodified();
+    } else {
+        $filename = 'form_template.docxf';
+        $key = $emptytmplkey;
+    }
 }
 
 $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));

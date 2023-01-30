@@ -28,6 +28,7 @@ use stored_file;
 class filemanager {
 
     const FILEAREA_ONLYOFFICE_SUBMISSION_FILE = 'assignsubmission_onlyoffice_file';
+    const FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE = 'assignsubmission_onlyoffice_template';
     const FILEAREA_ONLYOFFICE_SUBMISSION_DRAFT = 'assignsubmission_onlyoffice_draft';
 
     const COMPONENT_NAME = 'assignsubmission_onlyoffice';
@@ -45,6 +46,46 @@ class filemanager {
         }
 
         return $file;
+    }
+
+    public static function get_template(int $contextid) {
+        $fs = get_file_storage();
+
+        $files = $fs->get_area_files($contextid, self::COMPONENT_NAME,
+            self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
+            0, '', false, 0, 0, 1);
+
+        $file = reset($files);
+        if (!$file) {
+            return null;
+        }
+
+        return $file;
+    }
+
+    public static function create_template(int $contextid, string $ext, string $userid) {
+        global $USER;
+        global $CFG;
+
+        $pathlocale = \mod_onlyofficeeditor\util::PATH_LOCALE[$USER->lang];
+        if ($pathlocale === null) {
+            $pathlocale = 'en-US';
+        }
+
+        $pathname = $CFG->dirroot . '/mod/onlyofficeeditor/newdocs/' . $pathlocale . '/new.' . $ext;
+
+        $fs = get_file_storage();
+        $newfile = $fs->create_file_from_pathname((object)[
+            'contextid' => $contextid,
+            'component' => self::COMPONENT_NAME,
+            'filearea' => self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
+            'itemid' => 0,
+            'userid' => $userid,
+            'filepath' => '/',
+            'filename' => 'file_template.' . $ext
+        ], $pathname);
+
+        return $newfile;
     }
 
     public static function create(int $contextid, string $itemid, string $ext, string $userid) {

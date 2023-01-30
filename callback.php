@@ -27,6 +27,8 @@ require_once(__DIR__.'/../../../../config.php');
 use mod_onlyofficeeditor\util;
 use assignsubmission_onlyoffice\filemanager;
 
+global $DB;
+
 $doc = required_param('doc', PARAM_RAW);
 
 $crypt = new \mod_onlyofficeeditor\hasher();
@@ -84,13 +86,34 @@ $result = 1;
 switch ($status) {
     case util::STATUS_MUSTSAVE:
     case util::STATUS_ERRORSAVING:
-        $submissionfile = filemanager::get($contextid, $itemid, $groupmode);
-        if ($submissionfile === null) {
-            http_response_code(404);
-            die();
+        $file = null;
+
+        if (empty($emptytmplkey)) {
+            $file = filemanager::get($contextid, $itemid, $groupmode);
+            if ($file === null) {
+                http_response_code(404);
+                die();
+            }
+        } else {
+            if($contextid === 0) {
+                $sql = "SELECT *
+                        FROM {assign_plugin_config}
+                        WHERE plugin = 'onlyoffice'
+                        AND name = 'emptytmplkey'
+                        AND value LIKE :emptytmplkey";
+  
+                $record = $DB->get_record_sql($sql, ['emptytmplkey' => $emptytmplkey . '%']);
+
+                $valuetmplkey = explode('_', $record->value);
+                $contextid = $valuetmplkey[1];
+
+                $file = filemanager::create_template($contextid, 'docxf', 0);
+            } else {
+                $file = filemanager::get_template($contextid);
+            }
         }
 
-        filemanager::write($submissionfile, $url);
+        filemanager::write($file, $url);
 
         $result = 0;
         break;
