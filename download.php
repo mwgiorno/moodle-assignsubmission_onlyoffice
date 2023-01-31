@@ -63,18 +63,12 @@ if (empty($tmplkey)) {
 } else {
     $file = filemanager::get_template($contextid);
     if ($file === null) {
-        global $USER;
-        global $CFG;
-
-        $pathlocale = \mod_onlyofficeeditor\util::PATH_LOCALE[$USER->lang];
-        if ($pathlocale === null) {
-            $pathlocale = 'en-US';
-        }
-
         $ext = 'docxf';
-        $templatepath = $CFG->dirroot . '/mod/onlyofficeeditor/newdocs/' . $pathlocale . '/new.' . $ext;
+        $templatepath = filemanager::get_template_path($ext);
+        $templatename = pathinfo($templatepath, PATHINFO_BASENAME);
 
-        send_file($templatepath, 'new.' . $ext, 0, 0, false, false, '', false, []);
+        send_file($templatepath, $templatename, 0, 0, false, false, '', false, []);
+
         return;
     }
 }

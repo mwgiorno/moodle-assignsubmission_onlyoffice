@@ -34,83 +34,19 @@ class filemanager {
     const COMPONENT_NAME = 'assignsubmission_onlyoffice';
 
     public static function get(int $contextid, string $itemid) {
-        $fs = get_file_storage();
-
-        $files = $fs->get_area_files($contextid, self::COMPONENT_NAME,
-            self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
-            $itemid, '', false, 0, 0, 1);
-
-        $file = reset($files);
-        if (!$file) {
-            return null;
-        }
-
-        return $file;
+        return self::get_base($contextid, self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE, $itemid);
     }
 
     public static function get_template(int $contextid) {
-        $fs = get_file_storage();
-
-        $files = $fs->get_area_files($contextid, self::COMPONENT_NAME,
-            self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
-            0, '', false, 0, 0, 1);
-
-        $file = reset($files);
-        if (!$file) {
-            return null;
-        }
-
-        return $file;
+        return self::get_base($contextid, self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE, 0);
     }
 
     public static function create_template(int $contextid, string $ext, string $userid) {
-        global $USER;
-        global $CFG;
-
-        $pathlocale = \mod_onlyofficeeditor\util::PATH_LOCALE[$USER->lang];
-        if ($pathlocale === null) {
-            $pathlocale = 'en-US';
-        }
-
-        $pathname = $CFG->dirroot . '/mod/onlyofficeeditor/newdocs/' . $pathlocale . '/new.' . $ext;
-
-        $fs = get_file_storage();
-        $newfile = $fs->create_file_from_pathname((object)[
-            'contextid' => $contextid,
-            'component' => self::COMPONENT_NAME,
-            'filearea' => self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
-            'itemid' => 0,
-            'userid' => $userid,
-            'filepath' => '/',
-            'filename' => 'file_template.' . $ext
-        ], $pathname);
-
-        return $newfile;
+        return self::create_base($contextid, 0, $ext, self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE, $userid);
     }
 
     public static function create(int $contextid, string $itemid, string $ext, string $userid) {
-        global $USER;
-        global $CFG;
-
-        $pathlocale = \mod_onlyofficeeditor\util::PATH_LOCALE[$USER->lang];
-        if ($pathlocale === null) {
-            $pathlocale = 'en-US';
-        }
-
-        $pathname = $CFG->dirroot . '/mod/onlyofficeeditor/newdocs/' . $pathlocale . '/new.' . $ext;
-
-        $fs = get_file_storage();
-        $newfile = $fs->create_file_from_pathname((object)[
-            'contextid' => $contextid,
-            'component' => self::COMPONENT_NAME,
-            'filearea' => self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
-            'itemid' => $itemid,
-            'userid' => $userid,
-            'filepath' => '/',
-            'filename' => $itemid . '.' . $ext
-        ], $pathname);
-
-        return $newfile;
+        return self::create_base($contextid, $itemid, $ext, self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE, $userid);
     }
 
     public static function write(stored_file $file, string $url) {
@@ -137,5 +73,54 @@ class filemanager {
         $fs = get_file_storage();
 
         $fs->delete_area_files($contextid, self::COMPONENT_NAME, self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE, $itemid);
+    }
+
+    public static function get_template_path($ext) {
+        global $USER;
+        global $CFG;
+
+        $pathlocale = \mod_onlyofficeeditor\util::PATH_LOCALE[$USER->lang];
+        if ($pathlocale === null) {
+            $pathlocale = 'en-US';
+        }
+
+        $pathname = $CFG->dirroot . '/mod/onlyofficeeditor/newdocs/' . $pathlocale . '/new.' . $ext;
+
+        return $pathname;
+    }
+
+    private static function get_base(int $contextid, string $filearea, string $itemid) {
+        $fs = get_file_storage();
+
+        $files = $fs->get_area_files(
+            $contextid,
+            self::COMPONENT_NAME,
+            $filearea,
+            $itemid, '', false, 0, 0, 1);
+
+        $file = reset($files);
+        if (!$file) {
+            return null;
+        }
+
+        return $file;
+    }
+
+    private static function create_base(int $contextid, string $itemid, string $ext, string $filearea, string $userid) {
+        $pathname = self::get_template_path($ext);
+
+        $fs = get_file_storage();
+
+        $newfile = $fs->create_file_from_pathname((object)[
+            'contextid' => $contextid,
+            'component' => self::COMPONENT_NAME,
+            'filearea' => $filearea,
+            'itemid' => $itemid,
+            'userid' => $userid,
+            'filepath' => '/',
+            'filename' => $itemid . '.' . $ext
+        ], $pathname);
+
+        return $newfile;
     }
 }
