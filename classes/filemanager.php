@@ -29,12 +29,17 @@ class filemanager {
 
     const FILEAREA_ONLYOFFICE_SUBMISSION_FILE = 'assignsubmission_onlyoffice_file';
     const FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE = 'assignsubmission_onlyoffice_template';
+    const FILEAREA_ONLYOFFICE_ASSIGN_INITIAL = 'assignsubmission_onlyoffice_initial';
     const FILEAREA_ONLYOFFICE_SUBMISSION_DRAFT = 'assignsubmission_onlyoffice_draft';
 
     const COMPONENT_NAME = 'assignsubmission_onlyoffice';
 
     public static function get(int $contextid, string $itemid) {
         return self::get_base($contextid, self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE, $itemid);
+    }
+
+    public static function create(int $contextid, string $itemid, string $ext, string $userid) {
+        return self::create_base($contextid, $itemid, $ext, self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE, $userid);
     }
 
     public static function get_template(int $contextid) {
@@ -45,8 +50,12 @@ class filemanager {
         return self::create_base($contextid, 0, $ext, self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE, $userid);
     }
 
-    public static function create(int $contextid, string $itemid, string $ext, string $userid) {
-        return self::create_base($contextid, $itemid, $ext, self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE, $userid);
+    public static function get_initial(int $contextid) {
+        return self::get_base($contextid, self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL, 0);
+    }
+
+    public static function create_initial(int $contextid, string $ext, string $userid, string $url) {
+        return self::create_by_url_base($contextid, 0, $ext, self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL, $userid, $url);
     }
 
     public static function write(stored_file $file, string $url) {
@@ -122,5 +131,26 @@ class filemanager {
         ], $pathname);
 
         return $newfile;
+    }
+
+    private static function create_by_url_base(int $contextid, string $itemid, string $ext, string $filearea, string $userid, string $url) {
+        $fs = get_file_storage();
+
+        $file = null;
+        try {
+            $file = $fs->create_file_from_url((object)[
+                'contextid' => $contextid,
+                'component' => self::COMPONENT_NAME,
+                'filearea' => $filearea,
+                'itemid' => $itemid,
+                'userid' => $userid,
+                'filepath' => '/',
+                'filename' => $itemid . '.' . $ext
+            ], $url);
+        } catch (\file_exception $e) {
+            return null;
+        }
+
+        return $file;
     }
 }

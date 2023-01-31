@@ -24,6 +24,8 @@
 
 require_once(__DIR__.'/../../../../config.php');
 
+use curl;
+
 use mod_onlyofficeeditor\util;
 use assignsubmission_onlyoffice\filemanager;
 use assignsubmission_onlyoffice\templatekey;
@@ -109,6 +111,51 @@ switch ($status) {
         }
 
         filemanager::write($file, $url);
+
+        $filename = $file->get_filename();
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        if ($ext === 'docxf') {
+            $curl = new curl();
+            $curl->setHeader(['Accept: application/json']);
+
+            $crypt = new \mod_onlyofficeeditor\hasher();
+            $downloadhash = $crypt->get_hash([
+                'action' => 'download',
+                'contextid' => $contextid,
+                'itemid' => 0,
+                'tmplkey' => $tmplkey
+            ]);
+
+            $documenturi = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
+
+            $conversionbody = (object)[
+                "async" => false,
+                "url" => $documenturi,
+                "outputtype" => 'oform',
+                "filetype" => 'docxf',
+                "title" => $filename,
+                "key" => $contextid . $itemid . $file->get_timemodified()
+            ];
+
+            $conversionbody = json_encode($conversionbody);
+
+            $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
+            $conversionurl = $documentserverurl . '/ConvertService.ashx';
+
+            $response = $curl->post($conversionurl, $conversionbody);
+
+            $conversionjson = json_decode($response);
+            if ($conversionjson->error) {
+                break;
+            }
+
+            $initialfile = filemanager::get_initial($contextid);
+            if ($initialfile === null) {
+                filemanager::create_initial($contextid, 'oform', 0, $conversionjson->fileUrl);
+            } else {
+                filemanager::write($initialfile, $conversionjson->fileUrl);
+            }
+        }
 
         $result = 0;
         break;
