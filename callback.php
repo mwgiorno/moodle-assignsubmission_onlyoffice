@@ -26,8 +26,7 @@ require_once(__DIR__.'/../../../../config.php');
 
 use mod_onlyofficeeditor\util;
 use assignsubmission_onlyoffice\filemanager;
-
-global $DB;
+use assignsubmission_onlyoffice\templatekey;
 
 $doc = required_param('doc', PARAM_RAW);
 
@@ -96,16 +95,7 @@ switch ($status) {
             }
         } else {
             if($contextid === 0) {
-                $sql = "SELECT *
-                        FROM {assign_plugin_config}
-                        WHERE plugin = 'onlyoffice'
-                        AND name = 'tmplkey'
-                        AND value LIKE :tmplkey";
-  
-                $record = $DB->get_record_sql($sql, ['tmplkey' => $tmplkey . '%']);
-
-                $valuetmplkey = explode('_', $record->value);
-                $contextid = $valuetmplkey[1];
+                $contextid = templatekey::get_contextid($tmplkey);
 
                 $file = filemanager::create_template($contextid, 'docxf', 0);
             } else {
