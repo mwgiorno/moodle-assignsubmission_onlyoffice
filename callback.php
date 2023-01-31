@@ -94,12 +94,17 @@ switch ($status) {
                 die();
             }
         } else {
-            if($contextid === 0) {
+            if ($contextid === 0) {
                 $contextid = templatekey::get_contextid($tmplkey);
+            }
+            if ($contextid === null) {
+                http_response_code(400);
+                die();
+            }
 
+            $file = filemanager::get_template($contextid);
+            if ($file === null) {
                 $file = filemanager::create_template($contextid, 'docxf', 0);
-            } else {
-                $file = filemanager::get_template($contextid);
             }
         }
 
