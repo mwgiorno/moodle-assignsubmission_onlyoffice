@@ -47,7 +47,7 @@ if ($hash->action !== 'track') {
 $contextid = $hash->contextid;
 $itemid = $hash->itemid;
 $groupmode = $hash->groupmode;
-$emptytmplkey = $hash->emptytmplkey;
+$tmplkey = $hash->tmplkey;
 
 $bodyStream = file_get_contents('php://input');
 $data = json_decode($bodyStream);
@@ -88,7 +88,7 @@ switch ($status) {
     case util::STATUS_ERRORSAVING:
         $file = null;
 
-        if (empty($emptytmplkey)) {
+        if (empty($tmplkey)) {
             $file = filemanager::get($contextid, $itemid, $groupmode);
             if ($file === null) {
                 http_response_code(404);
@@ -99,10 +99,10 @@ switch ($status) {
                 $sql = "SELECT *
                         FROM {assign_plugin_config}
                         WHERE plugin = 'onlyoffice'
-                        AND name = 'emptytmplkey'
-                        AND value LIKE :emptytmplkey";
+                        AND name = 'tmplkey'
+                        AND value LIKE :tmplkey";
   
-                $record = $DB->get_record_sql($sql, ['emptytmplkey' => $emptytmplkey . '%']);
+                $record = $DB->get_record_sql($sql, ['tmplkey' => $tmplkey . '%']);
 
                 $valuetmplkey = explode('_', $record->value);
                 $contextid = $valuetmplkey[1];

@@ -21,7 +21,7 @@
 define(['jquery'], function($) {
     var docEditor = null;
 
-    var openEditor = function(contextid, itemid, readonly, emptytmplkey = null) {
+    var openEditor = function(contextid, itemid, readonly, tmplkey = null) {
         if (typeof DocsAPI === 'undefined') {
             return;
         }
@@ -35,8 +35,8 @@ define(['jquery'], function($) {
         if (readonly) {
             params.readonly = readonly;
         }
-        if (emptytmplkey) {
-            params.emptytmplkey = emptytmplkey;
+        if (tmplkey) {
+            params.tmplkey = tmplkey;
         }
 
         var ajaxUrl = M.cfg.wwwroot + '/mod/assign/submission/onlyoffice/api/editor.php';
@@ -48,10 +48,16 @@ define(['jquery'], function($) {
     };
 
     return {
-        init: function(contextid, itemid, readonly, emptytmplkey) {
-            if (!emptytmplkey) {
+        init: function(contextid, itemid, readonly, tmplkey) {
+            if (!tmplkey) {
                 openEditor(contextid, itemid, readonly);
             } else {
+                let formatelement = $('input#id_assignsubmission_onlyoffice_format');
+                if (formatelement.length > 0 && formatelement[0].value == 'docxf') {
+                    openEditor(contextid, itemid, readonly, tmplkey);
+                    return;
+                }
+
                 $('#id_assignsubmission_onlyoffice_format').change(function(e){
                     if (e.target.value != 'docxf') {
                         if ($("#app").is(":visible")) {
@@ -61,7 +67,7 @@ define(['jquery'], function($) {
                     }
 
                     if (docEditor === null) {
-                        openEditor(contextid, itemid, readonly, emptytmplkey);
+                        openEditor(contextid, itemid, readonly, tmplkey);
                     }
 
                     $("#app").show();

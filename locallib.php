@@ -78,12 +78,12 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         }
 
         if ($initeditor) {
-            $emptytmplkey = isset($assignconfig->emptytmplkey) ? $assignconfig->emptytmplkey : uniqid();
-            $mform->addElement('hidden', 'assignsubmission_onlyoffice_emptytmplkey', $emptytmplkey);
+            $tmplkey = uniqid();
+            $mform->addElement('hidden', 'assignsubmission_onlyoffice_tmplkey', $tmplkey);
 
             $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
             $mform->addElement('html', $OUTPUT->render(
-                new content($documentserverurl, $contextid, 0, false, $emptytmplkey)
+                new content($documentserverurl, $contextid, 0, false, $tmplkey)
             ));
         }
 
@@ -99,9 +99,9 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
     public function save_settings(stdClass $data) {
         $this->set_config('format', $data->assignsubmission_onlyoffice_format);
 
-        if (isset($data->assignsubmission_onlyoffice_emptytmplkey)
+        if (isset($data->assignsubmission_onlyoffice_tmplkey)
             && $data->assignsubmission_onlyoffice_format === 'docxf') {
-            $this->set_config('emptytmplkey', $data->assignsubmission_onlyoffice_emptytmplkey . '_' . $this->assignment->get_context()->id);
+            $this->set_config('tmplkey', $data->assignsubmission_onlyoffice_tmplkey . '_' . $this->assignment->get_context()->id);
         }
 
         return true;

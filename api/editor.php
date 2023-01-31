@@ -36,7 +36,7 @@ $action = required_param('action', PARAM_STRINGID);
 $contextid = required_param('contextid', PARAM_INT);
 $itemid = required_param('itemid', PARAM_INT);
 $readonly = !!optional_param('readonly', 0, PARAM_BOOL);
-$emptytmplkey = optional_param('emptytmplkey', null, PARAM_ALPHANUMEXT);
+$tmplkey = optional_param('tmplkey', null, PARAM_ALPHANUMEXT);
 
 $modconfig = get_config('onlyofficeeditor');
 
@@ -44,13 +44,9 @@ $key = '';
 $filename = '';
 $assing = null;
 $groupmode = false;
-$submissionfile = null;
-if ($emptytmplkey === null) {
-    $submissionfile = filemanager::get($contextid, $itemid);
-    if ($submissionfile === null) {
-        http_response_code(404);
-        die();
-    }
+$file = null;
+if (!isset($tmplkey)) {
+    $file = filemanager::get($contextid, $itemid);
 
     list($context, $course, $cm) = get_context_info_array($contextid);
     $assing = new assign($context, $cm, $course);
@@ -62,19 +58,19 @@ if ($emptytmplkey === null) {
     }
 
     $groupmode = !!$submission->groupid;
-
-    $filename = $submissionfile->get_filename();
-
-    $key = $contextid . $itemid . $submissionfile->get_timemodified();
 } else {
-    $templatefile = filemanager::get_template($contextid);
-    if ($templatefile !== null) {
-        $filename = $templatefile->get_filename();
-        $key = $contextid . $submissionfile->get_timemodified();
-    } else {
-        $filename = 'form_template.docxf';
-        $key = $emptytmplkey;
-    }
+    $file = filemanager::get_template($contextid);
+}
+
+if (!empty($file)) {
+    $filename = $file->get_filename();
+    $key = $contextid . $itemid . $file->get_timemodified();
+} elseif (isset($tmplkey)) {
+    $filename = 'form_template.docxf';
+    $key = $tmplkey;
+} else {
+    http_response_code(404);
+    die();
 }
 
 $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
@@ -85,7 +81,7 @@ $downloadhash = $crypt->get_hash([
     'contextid' => $contextid,
     'itemid' => $itemid,
     'groupmode' => $groupmode,
-    'emptytmplkey' => $emptytmplkey
+    'tmplkey' => $tmplkey
 ]);
 
 $config = [
@@ -107,10 +103,8 @@ $config = [
 $canedit = in_array('.' . $ext, onlyoffice_file_utility::get_editable_extensions());
 
 $editable = false;
-if (!$groupmode && empty($emptytmplkey)) {
-    $editable = $assing->can_edit_submission($itemid);
-} else if (empty($emptytmplkey)) {
-    $editable = $assing->can_edit_group_submission($itemid);
+if (!isset($tmplkey)) {
+    $editable = !$groupmode ? $assing->can_edit_submission($itemid) : $assing->can_edit_group_submission($itemid);
 } else {
     //To do checking permission for creating assign
     $editable = true;
@@ -123,7 +117,7 @@ if ($editable && $canedit && !$readonly) {
         'contextid' => $contextid,
         'itemid' => $itemid,
         'groupmode' => $groupmode,
-        'emptytmplkey' => $emptytmplkey
+        'tmplkey' => $tmplkey
     ]);
     $config['editorConfig']['callbackUrl'] = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/callback.php?doc=' . $callbackhash;
 } else {
