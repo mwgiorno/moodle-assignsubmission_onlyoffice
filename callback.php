@@ -99,7 +99,7 @@ switch ($status) {
             if ($contextid === 0) {
                 $contextid = templatekey::get_contextid($tmplkey);
             }
-            if ($contextid === null) {
+            if ($contextid === 0) {
                 http_response_code(400);
                 die();
             }

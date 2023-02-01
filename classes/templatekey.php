@@ -24,7 +24,35 @@
 namespace assignsubmission_onlyoffice;
 
 class templatekey {
+
     public static function get_contextid($tmplkey) {
+        $record = self::get_record($tmplkey);
+        if (!$record) {
+            return 0;
+        }
+
+        $contextid = 0;
+        list($origintmplkey, $contextid) = self::parse_contextid($record->value);
+        if ($origintmplkey !== $tmplkey) {
+            return 0;
+        }
+
+        return $contextid;
+    }
+
+    public static function parse_contextid($fulltmplkey) {
+        $valuestmplkey = explode('_', $fulltmplkey);
+        if (count($valuestmplkey) !== 2) {
+            return [null, -1];
+        }
+
+        $origintmplkey = $valuestmplkey[0];
+        $contextid = intval($valuestmplkey[1]);
+
+        return [$origintmplkey, $contextid];
+    }
+
+    private static function get_record($tmplkey) {
         global $DB;
 
         $sql = "SELECT *
@@ -33,18 +61,6 @@ class templatekey {
                 AND name = 'tmplkey'
                 AND value LIKE :tmplkey";
 
-        $record = $DB->get_record_sql($sql, ['tmplkey' => $tmplkey . '%']);
-        if (!$record) {
-            return null;
-        }
-
-        $valuestmplkey = explode('_', $record->value);
-        if ($valuestmplkey[0] !== $tmplkey) {
-            return null;
-        }
-
-        $contextid = $valuestmplkey[1];
-
-        return $contextid;
+        return $DB->get_record_sql($sql, ['tmplkey' => $tmplkey . '%']);
     }
 }

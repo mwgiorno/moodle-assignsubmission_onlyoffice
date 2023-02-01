@@ -23,6 +23,7 @@
  */
 
 use assignsubmission_onlyoffice\filemanager;
+use assignsubmission_onlyoffice\templatekey;
 use assignsubmission_onlyoffice\output\content;
 
 /**
@@ -50,7 +51,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
 
         $contextid = 0;
         $initeditor = true;
-        $emptytmplkey = null;
+        $tmplkey = null;
 
         $assignconfig = new stdClass();
         $assignformat = [
@@ -71,14 +72,23 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                 $mform->getElement('assignsubmission_onlyoffice_format')->setSelected($assignconfig->format);
                 $mform->freeze('assignsubmission_onlyoffice_format');
 
-                $initeditor = isset($assignconfig->format) && $assignconfig->format === 'docxf';
+                if (isset($assignconfig->format)
+                    && $assignconfig->format === 'docxf') {
+                    $fulltmplkey = $assignconfig->tmplkey;
+                    list($origintmplkey, $contextid) = templatekey::parse_contextid($fulltmplkey);
+                    if ($this->assignment->get_context()->id === $contextid) {
+                        $tmplkey = $origintmplkey;
+                    }
+                } else {
+                    $initeditor = false;
+                }
             }
 
             $contextid = $this->assignment->get_context()->id;
         }
 
         if ($initeditor) {
-            $tmplkey = uniqid();
+            $tmplkey = isset($tmplkey) ? $tmplkey : uniqid();
             $mform->addElement('hidden', 'assignsubmission_onlyoffice_tmplkey', $tmplkey);
 
             $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
