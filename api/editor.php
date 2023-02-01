@@ -104,7 +104,7 @@ $canedit = in_array('.' . $ext, onlyoffice_file_utility::get_editable_extensions
 
 $editable = false;
 if (!isset($tmplkey)) {
-    $editable = !$groupmode ? $assing->can_edit_submission($itemid) : $assing->can_edit_group_submission($itemid);
+    $editable = !$groupmode ? $assing->can_edit_submission($submission->userid) : $assing->can_edit_group_submission($submission->groupid);
 } else {
     //To do checking permission for creating assign
     $editable = true;
