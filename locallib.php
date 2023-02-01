@@ -78,6 +78,9 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                     list($origintmplkey, $contextid) = templatekey::parse_contextid($fulltmplkey);
                     if ($this->assignment->get_context()->id === $contextid) {
                         $tmplkey = $origintmplkey;
+                    } else {
+                        $tmplkey = uniqid();
+                        $this->set_config('tmplkey', $tmplkey . '_' . $this->assignment->get_context()->id);
                     }
                 } else {
                     $initeditor = false;
