@@ -126,7 +126,14 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
 
         $submissionfile = filemanager::get($contextid, $submission->id);
         if ($submissionfile === null) {
-            $submissionfile = filemanager::create($contextid, $submission->id, $cfg->format, $submission->userid);
+            if ($cfg->format === 'docxf') {
+                $initialfile = filemanager::get_initial($contextid);
+                if ($initialfile !== null) {
+                    $submissionfile = filemanager::create_by_initial($initialfile, $submission->id, 'oform', $submission->userid);
+                }
+            } else {
+                $submissionfile = filemanager::create($contextid, $submission->id, $cfg->format, $submission->userid);
+            }
         }
 
         $mform->addElement('html', $OUTPUT->render(

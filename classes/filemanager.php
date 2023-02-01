@@ -42,6 +42,20 @@ class filemanager {
         return self::create_base($contextid, $itemid, $ext, self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE, $userid);
     }
 
+    public static function create_by_initial(stored_file $initial, string $itemid, string $ext, string $userid) {
+        $fs = get_file_storage();
+
+        $fr = (object)[
+            'filearea' => self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
+            'itemid' => $itemid,
+            'filename' => $itemid . '.' . $ext,
+            'userid' => $userid,
+            'timecreated' => time()
+        ];
+
+        $newfile = $fs->create_file_from_storedfile($fr, $initial);
+    }
+
     public static function get_template(int $contextid) {
         return self::get_base($contextid, self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE, 0);
     }
