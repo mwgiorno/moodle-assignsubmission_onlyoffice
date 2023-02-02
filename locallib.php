@@ -216,7 +216,8 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
     public function get_file_areas() {
         return array(
             filemanager::FILEAREA_ONLYOFFICE_SUBMISSION_FILE => $this->get_name(),
-            filemanager::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE => $this->get_name()
+            filemanager::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE => $this->get_name(),
+            filemanager::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL => $this->get_name()
         );
     }
 
