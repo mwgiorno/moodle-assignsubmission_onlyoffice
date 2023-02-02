@@ -71,5 +71,13 @@ class restore_assignsubmission_onlyoffice_subplugin extends restore_subplugin {
                                  'submission',
                                  null,
                                  $oldsubmissionid);
+
+        $this->add_related_files('assignsubmission_onlyoffice',
+                                 filemanager::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
+                                 null);
+
+        $this->add_related_files('assignsubmission_onlyoffice',
+                                 filemanager::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL,
+                                 null);
     }
 }
