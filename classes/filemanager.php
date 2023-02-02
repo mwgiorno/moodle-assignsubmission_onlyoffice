@@ -112,6 +112,14 @@ class filemanager {
         return $pathname;
     }
 
+    public static function generate_key(stored_file $file) {
+        $contextid = $file->get_contextid();
+        $itemid = $file->get_itemid();
+        $timemodified = $file->get_timemodified();
+
+        return $contextid . $itemid . $timemodified;
+    }
+
     private static function get_base(int $contextid, string $filearea, string $itemid) {
         $fs = get_file_storage();
 

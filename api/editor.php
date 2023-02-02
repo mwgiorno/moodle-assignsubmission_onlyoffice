@@ -40,17 +40,20 @@ $tmplkey = optional_param('tmplkey', null, PARAM_ALPHANUMEXT);
 
 $modconfig = get_config('onlyofficeeditor');
 
-$key = '';
-$filename = '';
+$context = null;
 $assing = null;
-$groupmode = false;
+$submission = null;
 $file = null;
-if (!isset($tmplkey)) {
-    $file = filemanager::get($contextid, $itemid);
+$groupmode = false;
 
+$tmpleditmode = isset($tmplkey);
+
+if ($contextid !== 0) {
     list($context, $course, $cm) = get_context_info_array($contextid);
     $assing = new assign($context, $cm, $course);
+}
 
+if (!$tmpleditmode) {
     $submission = $DB->get_record('assign_submission', array('id' => $itemid));
     if (!$submission) {
         http_response_code(400);
@@ -58,20 +61,21 @@ if (!isset($tmplkey)) {
     }
 
     $groupmode = !!$submission->groupid;
+
+    $file = filemanager::get($contextid, $itemid);
 } else {
     $file = filemanager::get_template($contextid);
 }
 
-if (!empty($file)) {
-    $filename = $file->get_filename();
-    $key = $contextid . $itemid . $file->get_timemodified();
-} elseif (isset($tmplkey)) {
-    $filename = 'form_template.docxf';
-    $key = $tmplkey;
-} else {
+if ($file === null
+    && !$tmpleditmode
+    && $contextid !== 0) {
     http_response_code(404);
     die();
 }
+
+$filename = $file !== null ? $file->get_filename() : 'form_template.docxf';
+$key = $file !== null ? filemanager::generate_key($file) : $tmplkey;
 
 $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
@@ -103,9 +107,9 @@ $config = [
 $canedit = in_array('.' . $ext, onlyoffice_file_utility::get_editable_extensions());
 
 $editable = false;
-if (!isset($tmplkey)) {
+if (!empty($assing) && !empty($submission)) {
     $editable = !$groupmode ? $assing->can_edit_submission($submission->userid) : $assing->can_edit_group_submission($submission->groupid);
-} else {
+} elseif ($tmpleditmode) {
     //To do checking permission for creating assign
     $editable = true;
 }
