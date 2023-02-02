@@ -69,13 +69,13 @@ if (!$tmpleditmode) {
 
 if ($file === null
     && !$tmpleditmode
-    && $contextid !== 0) {
+    && !empty($context)) {
     http_response_code(404);
     die();
 }
 
-$filename = $file !== null ? $file->get_filename() : 'form_template.docxf';
-$key = $file !== null ? filemanager::generate_key($file) : $tmplkey;
+$filename = !empty($file) ? $file->get_filename() : 'form_template.docxf';
+$key = !empty($file) ? filemanager::generate_key($file) : $tmplkey;
 
 $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
@@ -110,8 +110,7 @@ $editable = false;
 if (!empty($assing) && !empty($submission)) {
     $editable = !$groupmode ? $assing->can_edit_submission($submission->userid) : $assing->can_edit_group_submission($submission->groupid);
 } elseif ($tmpleditmode) {
-    //To do checking permission for creating assign
-    $editable = true;
+    $editable = !empty($context) ? has_capability('moodle/course:manageactivities', $context) : true;
 }
 
 $config['document']['permissions']['edit'] = $editable;
