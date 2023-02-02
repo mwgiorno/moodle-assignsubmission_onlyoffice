@@ -23,12 +23,16 @@
  */
 
 require_once(__DIR__.'/../../../../config.php');
+require_once(__DIR__.'/../../locallib.php');
 
 use curl;
 
 use mod_onlyofficeeditor\util;
 use assignsubmission_onlyoffice\filemanager;
 use assignsubmission_onlyoffice\templatekey;
+
+global $USER;
+global $DB;
 
 $doc = required_param('doc', PARAM_RAW);
 
@@ -53,6 +57,10 @@ $tmplkey = $hash->tmplkey;
 $bodyStream = file_get_contents('php://input');
 $data = json_decode($bodyStream);
 
+$status = $data->status;
+$url = isset($data->url) ? $data->url : null;
+$users = isset($data->users) ? $data->users : null;
+
 $modconfig = get_config('onlyofficeeditor');
 if (!empty($modconfig->documentserversecret)) {
     if (!empty($data->token)) {
@@ -76,38 +84,60 @@ if (!empty($modconfig->documentserversecret)) {
         }
     }
 
-    $data->url = isset($payload->url) ? $payload->url : null;
-    $data->status = $payload->status;
+    $status = $payload->status;
+    $url = isset($payload->url) ? $payload->url : null;
+    $users = isset($payload->users) ? $payload->users : null;
 }
 
 $status = $data->status;
 $url = isset($data->url) ? $data->url : null;
+$users = isset($data->users) ? $data->users : null;
 
 $result = 1;
 switch ($status) {
     case util::STATUS_MUSTSAVE:
     case util::STATUS_ERRORSAVING:
         $file = null;
+        $canwrite = false;
 
-        if (empty($tmplkey)) {
-            $file = filemanager::get($contextid, $itemid, $groupmode);
-            if ($file === null) {
-                http_response_code(404);
-                die();
-            }
+        $userid = $users[0];
+        $user = \core_user::get_user($userid);
+        if ($user) {
+            $USER = $user;
+        }
+
+        if ($contextid === 0) {
+            $contextid = templatekey::get_contextid($tmplkey);
+        }
+        if ($contextid === 0) {
+            http_response_code(400);
+            die();
+        }
+
+        list($context, $course, $cm) = get_context_info_array($contextid);
+        if (isset($tmplkey)) {
+            $canwrite = has_capability('moodle/course:manageactivities', $context);
         } else {
-            if ($contextid === 0) {
-                $contextid = templatekey::get_contextid($tmplkey);
+            $assing = new assign($context, $cm, $course);
+            $submission = $DB->get_record('assign_submission', array('id' => $itemid));
+            if ($submission) {
+                $canwrite = !$groupmode ? $assing->can_edit_submission($submission->userid) : $assing->can_edit_group_submission($submission->groupid);
             }
-            if ($contextid === 0) {
-                http_response_code(400);
-                die();
-            }
+        }
 
-            $file = filemanager::get_template($contextid);
-            if ($file === null) {
-                $file = filemanager::create_template($contextid, 'docxf', 0);
-            }
+        if (!$canwrite) {
+            http_response_code(403);
+            die();
+        }
+
+        $file = !isset($tmplkey) ? filemanager::get($contextid, $itemid, $groupmode) : filemanager::get_template($contextid);
+        if (empty($file) && isset($tmplkey)) {
+            $file = filemanager::create_template($contextid, 'docxf', $itemid);
+        }
+
+        if (empty($file)) {
+            http_response_code(404);
+            die();
         }
 
         filemanager::write($file, $url);
