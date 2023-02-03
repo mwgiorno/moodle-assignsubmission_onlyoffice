@@ -163,9 +163,9 @@ switch ($status) {
                 "async" => false,
                 "url" => $documenturi,
                 "outputtype" => 'oform',
-                "filetype" => 'docxf',
+                "filetype" => $ext,
                 "title" => $filename,
-                "key" => $contextid . $itemid . $file->get_timemodified()
+                "key" => filemanager::generate_key($file)
             ];
 
             if (!empty($modconfig->documentserversecret)) {
@@ -180,9 +180,7 @@ switch ($status) {
             }
 
             $conversionbody = json_encode($conversionbody);
-
-            $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
-            $conversionurl = $documentserverurl . '/ConvertService.ashx';
+            $conversionurl = $modconfig->documentserverurl . '/ConvertService.ashx';
 
             $response = $curl->post($conversionurl, $conversionbody);
 
@@ -193,7 +191,7 @@ switch ($status) {
 
             $initialfile = filemanager::get_initial($contextid);
             if ($initialfile === null) {
-                filemanager::create_initial($contextid, 'oform', 0, $conversionjson->fileUrl);
+                filemanager::create_initial($contextid, 'oform', $itemid, $conversionjson->fileUrl);
             } else {
                 filemanager::write($initialfile, $conversionjson->fileUrl);
             }
