@@ -53,25 +53,51 @@ define(['jquery'], function($) {
                 openEditor(contextid, itemid, readonly);
             } else {
                 let formatelement = $('input#id_assignsubmission_onlyoffice_format');
-                if (formatelement.length > 0 && formatelement[0].value == 'docxf') {
-                    openEditor(contextid, itemid, readonly, tmplkey);
+                let selectformat = $('select#id_assignsubmission_onlyoffice_format');
+                let enableapptoggle = $('input#id_assignsubmission_onlyoffice_enabled');
+
+                if (enableapptoggle.length == 0) {
                     return;
                 }
 
-                $('#id_assignsubmission_onlyoffice_format').change(function(e){
-                    if (e.target.value != 'docxf') {
-                        if ($("#app").is(":visible")) {
-                            $("#app").hide();
+                if (enableapptoggle[0].checked
+                    && formatelement.length > 0 && formatelement[0].value == 'docxf') {
+                    openEditor(contextid, itemid, readonly, tmplkey);
+                }
+
+                enableapptoggle.change(function(e) {
+                    if (e.currentTarget.checked
+                        && (formatelement.length > 0 && formatelement[0].value == 'docxf'
+                        || selectformat.length > 0 && selectformat[0].value == 'docxf')) {
+
+                        if (docEditor === null) {
+                            openEditor(contextid, itemid, readonly, tmplkey);
                         }
+
+                        $("#app").show();
+
                         return;
                     }
 
-                    if (docEditor === null) {
-                        openEditor(contextid, itemid, readonly, tmplkey);
-                    }
-
-                    $("#app").show();
+                    $("#app").hide();
                 });
+
+                if (selectformat.length > 0) {
+                    selectformat.change(function(e) {
+                        if (e.target.value != 'docxf') {
+                            if ($("#app").is(":visible")) {
+                                $("#app").hide();
+                            }
+                            return;
+                        }
+
+                        if (docEditor === null) {
+                            openEditor(contextid, itemid, readonly, tmplkey);
+                        }
+
+                        $("#app").show();
+                    });
+                }
             }
         }
     };
