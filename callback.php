@@ -146,6 +146,7 @@ switch ($status) {
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
         if ($ext === 'docxf') {
             $curl = new curl();
+            $curl->setHeader(['Content-type: application/json']);
             $curl->setHeader(['Accept: application/json']);
 
             $crypt = new \mod_onlyofficeeditor\hasher();
@@ -158,7 +159,7 @@ switch ($status) {
 
             $documenturi = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
 
-            $conversionbody = (object)[
+            $conversionbody = [
                 "async" => false,
                 "url" => $documenturi,
                 "outputtype" => 'oform',
@@ -166,6 +167,17 @@ switch ($status) {
                 "title" => $filename,
                 "key" => $contextid . $itemid . $file->get_timemodified()
             ];
+
+            if (!empty($modconfig->documentserversecret)) {
+                $params = [
+                    'payload' => $conversionbody
+                ];
+                $token = \Firebase\JWT\JWT::encode($params, $modconfig->documentserversecret);
+                $curl->setHeader(['Authorization: Bearer ' . $token]);
+
+                $token = \Firebase\JWT\JWT::encode($conversionbody, $modconfig->documentserversecret);
+                $conversionbody['token'] = $token;
+            }
 
             $conversionbody = json_encode($conversionbody);
 
