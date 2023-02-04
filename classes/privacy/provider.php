@@ -35,6 +35,8 @@ use \core_privacy\local\request\writer;
 use \core_privacy\local\request\contextlist;
 use \mod_assign\privacy\assign_plugin_request_data;
 
+use assignsubmission_onlyoffice\filemanager;
+
 class provider implements
         \core_privacy\local\metadata\provider,
         \mod_assign\privacy\assignsubmission_provider,
@@ -88,6 +90,32 @@ class provider implements
      */
     public static function export_submission_user_data(assign_plugin_request_data $exportdata) {
         // We currently don't show submissions to teachers when exporting their data.
+        $context = $exportdata->get_context();
+        if ($exportdata->get_user() != null) {
+            return null;
+        }
+        $user = new \stdClass();
+        $assign = $exportdata->get_assign();
+        $plugin = $assign->get_plugin_by_type('assignsubmission', 'onlyoffice');
+        $submission = $exportdata->get_pluginobject();
+        if (!$submission->userid) {
+            $files = array();
+        } else {
+            $files = $plugin->get_files($submission, $user);
+        }
+        foreach ($files as $file) {
+            $userid = $exportdata->get_pluginobject()->userid;
+            writer::with_context($exportdata->get_context())->export_file($exportdata->get_subcontext(), $file);
+
+            // Plagiarism data.
+            $coursecontext = $context->get_course_context();
+            \core_plagiarism\privacy\provider::export_plagiarism_user_data($userid, $context, $exportdata->get_subcontext(), [
+                'cmid' => $context->instanceid,
+                'course' => $coursecontext->instanceid,
+                'userid' => $userid,
+                'file' => $file
+            ]);
+        }
     }
 
     /**
@@ -97,6 +125,18 @@ class provider implements
      */
     public static function delete_submission_for_context(assign_plugin_request_data $requestdata) {
 
+        \core_plagiarism\privacy\provider::delete_plagiarism_for_context($requestdata->get_context());
+
+        $fs = get_file_storage();
+        $fs->delete_area_files($requestdata->get_context()->id,
+                                filemanager::COMPONENT_NAME,
+                                filemanager::FILEAREA_ONLYOFFICE_SUBMISSION_FILE);
+        $fs->delete_area_files($requestdata->get_context()->id,
+                                filemanager::COMPONENT_NAME,
+                                filemanager::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE);
+        $fs->delete_area_files($requestdata->get_context()->id,
+                                filemanager::COMPONENT_NAME,
+                                filemanager::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL);
     }
 
     /**
@@ -106,6 +146,15 @@ class provider implements
      */
     public static function delete_submission_for_userid(assign_plugin_request_data $deletedata) {
 
+        \core_plagiarism\privacy\provider::delete_plagiarism_for_user($deletedata->get_user()->id, $deletedata->get_context());
+
+        $submissionid = $deletedata->get_pluginobject()->id;
+
+        $fs = get_file_storage();
+        $fs->delete_area_files($deletedata->get_context()->id,
+                                filemanager::COMPONENT_NAME,
+                                filemanager::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
+                                $submissionid);
     }
 
     /**
@@ -114,6 +163,18 @@ class provider implements
      * @param  assign_plugin_request_data $deletedata A class that contains the relevant information required for deletion.
      */
     public static function delete_submissions(assign_plugin_request_data $deletedata) {
+        global $DB;
 
+        \core_plagiarism\privacy\provider::delete_plagiarism_for_users($deletedata->get_userids(), $deletedata->get_context());
+
+        if (empty($deletedata->get_submissionids())) {
+            return;
+        }
+        $fs = get_file_storage();
+        list($sql, $params) = $DB->get_in_or_equal($deletedata->get_submissionids(), SQL_PARAMS_NAMED);
+        $fs->delete_area_files_select($deletedata->get_context()->id,
+                                        filemanager::COMPONENT_NAME,
+                                        filemanager::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
+                                        $sql, $params);
     }
 }
