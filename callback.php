@@ -25,9 +25,8 @@
 require_once(__DIR__.'/../../../../config.php');
 require_once(__DIR__.'/../../locallib.php');
 
-use curl;
-
 use mod_onlyofficeeditor\util;
+use mod_onlyofficeeditor\document_service;
 use assignsubmission_onlyoffice\filemanager;
 use assignsubmission_onlyoffice\templatekey;
 
@@ -145,10 +144,6 @@ switch ($status) {
         $filename = $file->get_filename();
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
         if ($ext === 'docxf') {
-            $curl = new curl();
-            $curl->setHeader(['Content-type: application/json']);
-            $curl->setHeader(['Accept: application/json']);
-
             $crypt = new \mod_onlyofficeeditor\hasher();
             $downloadhash = $crypt->get_hash([
                 'action' => 'download',
@@ -158,42 +153,19 @@ switch ($status) {
             ]);
 
             $documenturi = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
+            $conversionkey = filemanager::generate_key($file);
 
-            $conversionbody = [
-                "async" => false,
-                "url" => $documenturi,
-                "outputtype" => 'oform',
-                "filetype" => $ext,
-                "title" => $filename,
-                "key" => filemanager::generate_key($file)
-            ];
+            $conversionurl = document_service::get_conversion_url($documenturi, $ext, 'oform', $conversionkey);
 
-            if (!empty($modconfig->documentserversecret)) {
-                $params = [
-                    'payload' => $conversionbody
-                ];
-                $token = \Firebase\JWT\JWT::encode($params, $modconfig->documentserversecret);
-                $curl->setHeader(['Authorization: Bearer ' . $token]);
-
-                $token = \Firebase\JWT\JWT::encode($conversionbody, $modconfig->documentserversecret);
-                $conversionbody['token'] = $token;
-            }
-
-            $conversionbody = json_encode($conversionbody);
-            $conversionurl = $modconfig->documentserverurl . '/ConvertService.ashx';
-
-            $response = $curl->post($conversionurl, $conversionbody);
-
-            $conversionjson = json_decode($response);
-            if ($conversionjson->error) {
+            if (empty($conversionurl)) {
                 break;
             }
 
             $initialfile = filemanager::get_initial($contextid);
             if ($initialfile === null) {
-                filemanager::create_initial($contextid, 'oform', $itemid, $conversionjson->fileUrl);
+                filemanager::create_initial($contextid, 'oform', $itemid, $conversionurl);
             } else {
-                filemanager::write($initialfile, $conversionjson->fileUrl);
+                filemanager::write($initialfile, $conversionurl);
             }
         }
 
