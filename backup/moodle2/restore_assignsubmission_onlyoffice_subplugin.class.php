@@ -18,18 +18,7 @@
  * This file contains the class for restore of this submission plugin
  *
  * @package assignsubmission_onlyoffice
- * @copyright 2022 Ascensio System SIA <integration@onlyoffice.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-/**
- * Restore subplugin class.
- *
- * Provides the necessary information
- * needed to restore one assign_submission subplugin.
- *
- * @package assignsubmission_onlyoffice
- * @copyright 2022 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright 2023 Ascensio System SIA <integration@onlyoffice.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
