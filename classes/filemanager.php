@@ -120,7 +120,9 @@ class filemanager {
         return $contextid . $itemid . $timemodified;
     }
 
-    private static function get_base(int $contextid, string $filearea, string $itemid) {
+    private static function get_base(int $contextid,
+                                     string $filearea,
+                                     string $itemid) {
         $fs = get_file_storage();
 
         $files = $fs->get_area_files(
@@ -137,7 +139,11 @@ class filemanager {
         return $file;
     }
 
-    private static function create_base(int $contextid, string $itemid, string $ext, string $filearea, string $userid) {
+    private static function create_base(int $contextid,
+                                        string $itemid,
+                                        string $ext,
+                                        string $filearea,
+                                        string $userid) {
         $pathname = self::get_template_path($ext);
 
         $fs = get_file_storage();
@@ -155,7 +161,12 @@ class filemanager {
         return $newfile;
     }
 
-    private static function create_by_url_base(int $contextid, string $itemid, string $ext, string $filearea, string $userid, string $url) {
+    private static function create_by_url_base(int $contextid,
+                                                string $itemid,
+                                                string $ext,
+                                                string $filearea,
+                                                string $userid,
+                                                string $url) {
         $fs = get_file_storage();
 
         $file = null;

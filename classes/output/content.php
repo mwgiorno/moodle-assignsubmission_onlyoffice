@@ -45,14 +45,14 @@ class content implements \renderable, \templatable {
     public function export_for_template(\renderer_base $output) {
         global $PAGE;
 
-        $js_params = [
+        $jsparams = [
             $this->data->contextid,
             $this->data->itemid,
             $this->data->readonly,
             $this->data->tmplkey
         ];
 
-        $PAGE->requires->js_call_amd('assignsubmission_onlyoffice/editor', 'init', $js_params);
+        $PAGE->requires->js_call_amd('assignsubmission_onlyoffice/editor', 'init', $jsparams);
 
         return $this->data;
     }

@@ -55,11 +55,7 @@ class templatekey {
     private static function get_record($tmplkey) {
         global $DB;
 
-        $sql = "SELECT *
-                FROM {assign_plugin_config}
-                WHERE plugin = 'onlyoffice'
-                AND name = 'tmplkey'
-                AND value LIKE :tmplkey";
+        $sql = "SELECT * FROM {assign_plugin_config} WHERE plugin = 'onlyoffice' AND name = 'tmplkey' AND value LIKE :tmplkey";
 
         return $DB->get_record_sql($sql, ['tmplkey' => $tmplkey . '%']);
     }

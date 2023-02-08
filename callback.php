@@ -52,8 +52,8 @@ $contextid = $hash->contextid;
 $itemid = $hash->itemid;
 $tmplkey = $hash->tmplkey;
 
-$bodyStream = file_get_contents('php://input');
-$data = json_decode($bodyStream);
+$bodystream = file_get_contents('php://input');
+$data = json_decode($bodystream);
 
 $status = $data->status;
 $url = isset($data->url) ? $data->url : null;
@@ -119,7 +119,8 @@ switch ($status) {
             $assing = new assign($context, $cm, $course);
             $submission = $DB->get_record('assign_submission', array('id' => $itemid));
             if ($submission) {
-                $canwrite = !!$submission->groupid ? $assing->can_edit_submission($submission->userid) : $assing->can_edit_group_submission($submission->groupid);
+                $canwrite = !!$submission->groupid ? $assing->can_edit_submission($submission->userid)
+                                                   : $assing->can_edit_group_submission($submission->groupid);
             }
         }
 

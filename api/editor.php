@@ -108,8 +108,9 @@ $canedit = in_array('.' . $ext, onlyoffice_file_utility::get_editable_extensions
 
 $editable = false;
 if (!empty($assing) && !empty($submission)) {
-    $editable = !$groupmode ? $assing->can_edit_submission($submission->userid) : $assing->can_edit_group_submission($submission->groupid);
-} elseif ($tmpleditmode) {
+    $editable = !$groupmode ? $assing->can_edit_submission($submission->userid)
+                            : $assing->can_edit_group_submission($submission->groupid);
+} else if ($tmpleditmode) {
     $editable = !empty($context) ? has_capability('moodle/course:manageactivities', $context) : true;
 }
 
