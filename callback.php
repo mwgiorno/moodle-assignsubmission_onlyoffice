@@ -148,7 +148,8 @@ switch ($status) {
                 'action' => 'download',
                 'contextid' => $contextid,
                 'itemid' => 0,
-                'tmplkey' => $tmplkey
+                'tmplkey' => $tmplkey,
+                'userid' => $USER->id
             ]);
 
             $documenturi = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;

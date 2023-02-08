@@ -84,7 +84,8 @@ $downloadhash = $crypt->get_hash([
     'action' => 'download',
     'contextid' => $contextid,
     'itemid' => $itemid,
-    'tmplkey' => $tmplkey
+    'tmplkey' => $tmplkey,
+    'userid' => $USER->id
 ]);
 
 $config = [

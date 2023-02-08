@@ -23,9 +23,13 @@
  */
 
 require_once(__DIR__.'/../../../../config.php');
+require_once(__DIR__.'/../../locallib.php');
 
 use mod_onlyofficeeditor\onlyoffice_file_utility;
 use assignsubmission_onlyoffice\filemanager;
+
+global $USER;
+global $DB;
 
 $modconfig = get_config('onlyofficeeditor');
 if (!empty($modconfig->documentserversecret)) {
@@ -56,25 +60,63 @@ if ($hash->action !== 'download') {
 $contextid = $hash->contextid;
 $itemid = $hash->itemid;
 $tmplkey = $hash->tmplkey;
+$userid = $hash->userid;
 
-if (empty($tmplkey)) {
+$user = null;
+$canread = false;
+$context = null;
+$assing = null;
+$submission = null;
+$file = null;
+
+$user = \core_user::get_user($userid);
+if (empty($user)) {
+    http_response_code(400);
+    die();
+}
+
+$USER = $user;
+
+if ($contextid !== 0) {
+    list($context, $course, $cm) = get_context_info_array($contextid);
+    $assing = new assign($context, $cm, $course);
+}
+
+if (!isset($tmplkey)) {
+    $submission = $DB->get_record('assign_submission', array('id' => $itemid));
+    if (!$submission) {
+        http_response_code(400);
+        die();
+    }
+
+    if (!empty($assing)) {
+        $canread = !!$submission->groupid ? $assing->can_view_submission($submission->userid) : $assing->can_view_group_submission($submission->groupid);
+    }
+
     $file = filemanager::get($contextid, $itemid);
 } else {
+    $canread = !empty($context) ? has_capability('moodle/course:manageactivities', $context) : true;
+
     $file = filemanager::get_template($contextid);
-    if ($file === null) {
-        $ext = 'docxf';
-        $templatepath = filemanager::get_template_path($ext);
+}
+
+if (!$canread) {
+    http_response_code(403);
+    die();
+}
+
+if ($file === null) {
+    if (isset($tmplkey)) {
+        $templatepath = filemanager::get_template_path('docxf');
         $templatename = pathinfo($templatepath, PATHINFO_BASENAME);
 
         send_file($templatepath, $templatename, 0, 0, false, false, '', false, []);
 
         return;
+    } else {
+        http_response_code(404);
+        die();
     }
-}
-
-if ($file === null) {
-    http_response_code(404);
-    die();
 }
 
 send_stored_file($file);
