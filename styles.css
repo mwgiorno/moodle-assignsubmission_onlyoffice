@@ -7,3 +7,7 @@
     height: 95vh;
     max-height: 60rem;
 }
+
+.assignsubmission-onlyoffice-display {
+    max-width: unset !important;
+}

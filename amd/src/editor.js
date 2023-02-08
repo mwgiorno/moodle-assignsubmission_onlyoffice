@@ -44,6 +44,10 @@ define(['jquery'], function($) {
 
             // eslint-disable-next-line no-undef
             docEditor = new DocsAPI.DocEditor('onlyoffice-editor', config);
+
+            if ($('div#topofscroll').length > 0) {
+                $('div#topofscroll').addClass('assignsubmission-onlyoffice-display');
+            }
         });
     };
 
