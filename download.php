@@ -55,7 +55,6 @@ if ($hash->action !== 'download') {
 
 $contextid = $hash->contextid;
 $itemid = $hash->itemid;
-$groupmode = $hash->groupmode;
 $tmplkey = $hash->tmplkey;
 
 if (empty($tmplkey)) {

@@ -50,7 +50,6 @@ if ($hash->action !== 'track') {
 
 $contextid = $hash->contextid;
 $itemid = $hash->itemid;
-$groupmode = $hash->groupmode;
 $tmplkey = $hash->tmplkey;
 
 $bodyStream = file_get_contents('php://input');
@@ -120,7 +119,7 @@ switch ($status) {
             $assing = new assign($context, $cm, $course);
             $submission = $DB->get_record('assign_submission', array('id' => $itemid));
             if ($submission) {
-                $canwrite = !$groupmode ? $assing->can_edit_submission($submission->userid) : $assing->can_edit_group_submission($submission->groupid);
+                $canwrite = !!$submission->groupid ? $assing->can_edit_submission($submission->userid) : $assing->can_edit_group_submission($submission->groupid);
             }
         }
 
@@ -129,7 +128,7 @@ switch ($status) {
             die();
         }
 
-        $file = !isset($tmplkey) ? filemanager::get($contextid, $itemid, $groupmode) : filemanager::get_template($contextid);
+        $file = !isset($tmplkey) ? filemanager::get($contextid, $itemid) : filemanager::get_template($contextid);
         if (empty($file) && isset($tmplkey)) {
             $file = filemanager::create_template($contextid, 'docxf', $itemid);
         }

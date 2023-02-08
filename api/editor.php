@@ -84,7 +84,6 @@ $downloadhash = $crypt->get_hash([
     'action' => 'download',
     'contextid' => $contextid,
     'itemid' => $itemid,
-    'groupmode' => $groupmode,
     'tmplkey' => $tmplkey
 ]);
 
@@ -119,7 +118,6 @@ if ($editable && $canedit && !$readonly) {
         'action' => 'track',
         'contextid' => $contextid,
         'itemid' => $itemid,
-        'groupmode' => $groupmode,
         'tmplkey' => $tmplkey
     ]);
     $config['editorConfig']['callbackUrl'] = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/callback.php?doc=' . $callbackhash;
