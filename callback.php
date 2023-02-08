@@ -70,7 +70,8 @@ if (!empty($modconfig->documentserversecret)) {
             die(json_encode($response));
         }
     } else {
-        $token = substr(getallheaders()['Authorization'], strlen('Bearer '));
+        $jwtheader = !empty($modconfig->jwtheader) ? $modconfig->jwtheader : 'Authorization';
+        $token = substr(getallheaders()[$jwtheader], strlen('Bearer '));
         try {
             $decodedheader = \Firebase\JWT\JWT::decode($token, $modconfig->documentserversecret, array('HS256'));
 

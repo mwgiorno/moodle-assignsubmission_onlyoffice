@@ -33,7 +33,8 @@ global $DB;
 
 $modconfig = get_config('onlyofficeeditor');
 if (!empty($modconfig->documentserversecret)) {
-    $token = substr(getallheaders()['Authorization'], strlen('Bearer '));
+    $jwtheader = !empty($modconfig->jwtheader) ? $modconfig->jwtheader : 'Authorization';
+    $token = substr(getallheaders()[$jwtheader], strlen('Bearer '));
     try {
         $decodedheader = \Firebase\JWT\JWT::decode($token, $modconfig->documentserversecret, array('HS256'));
     } catch (\UnexpectedValueException $e) {
