@@ -186,9 +186,17 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
      * @return string view text.
      */
     public function view_summary(stdClass $submission, & $showviewlink) {
-        $showviewlink = true;
+        $showviewlink = false;
+        $linkname = null;
 
-        return get_string('expanddocument', 'assignsubmission_onlyoffice');
+        $contextid = $this->assignment->get_context()->id;
+        $submissionfile = filemanager::get($contextid, $submission->id);
+        if ($submissionfile !== null) {
+            $showviewlink = true;
+            $linkname = get_string('expanddocument', 'assignsubmission_onlyoffice');
+        }
+
+        return $linkname;
     }
 
     /**
