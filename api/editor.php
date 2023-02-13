@@ -46,14 +46,12 @@ $submission = null;
 $file = null;
 $groupmode = false;
 
-$tmpleditmode = isset($tmplkey);
-
 if ($contextid !== 0) {
     list($context, $course, $cm) = get_context_info_array($contextid);
     $assing = new assign($context, $cm, $course);
 }
 
-if (!$tmpleditmode) {
+if (!isset($tmplkey)) {
     $submission = $DB->get_record('assign_submission', array('id' => $itemid));
     if (!$submission) {
         http_response_code(400);
@@ -68,8 +66,7 @@ if (!$tmpleditmode) {
 }
 
 if ($file === null
-    && !$tmpleditmode
-    && !empty($context)) {
+    && !isset($tmplkey)) {
     http_response_code(404);
     die();
 }
@@ -110,7 +107,7 @@ $editable = false;
 if (!empty($assing) && !empty($submission)) {
     $editable = !$groupmode ? $assing->can_edit_submission($submission->userid)
                             : $assing->can_edit_group_submission($submission->groupid);
-} else if ($tmpleditmode) {
+} else if (isset($tmplkey)) {
     $editable = !empty($context) ? has_capability('moodle/course:manageactivities', $context) : true;
 }
 
