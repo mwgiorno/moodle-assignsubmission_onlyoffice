@@ -137,16 +137,26 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
         $contextid = $this->assignment->get_context()->id;
 
+        $initialfile = null;
+        if ($cfg->format === 'docxf') {
+            $initialfile = filemanager::get_initial($contextid);
+        }
+
         $submissionfile = filemanager::get($contextid, $submission->id);
         if ($submissionfile === null) {
             if ($cfg->format === 'docxf') {
-                $initialfile = filemanager::get_initial($contextid);
                 if ($initialfile !== null) {
                     $submissionfile = filemanager::create_by_initial($initialfile, $submission->id, 'oform', $submission->userid);
                 }
             } else {
                 $submissionfile = filemanager::create($contextid, $submission->id, $cfg->format, $submission->userid);
             }
+        }
+
+        if ($initialfile !== null
+            && $initialfile->get_timemodified() > $submissionfile->get_timemodified()) {
+            $submissionfile->replace_file_with($initialfile);
+            $submissionfile->set_timemodified(time());
         }
 
         $mform->addElement('html', $OUTPUT->render(
