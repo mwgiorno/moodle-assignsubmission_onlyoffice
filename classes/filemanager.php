@@ -54,6 +54,8 @@ class filemanager {
         ];
 
         $newfile = $fs->create_file_from_storedfile($fr, $initial);
+
+        return $newfile;
     }
 
     public static function get_template(int $contextid) {
