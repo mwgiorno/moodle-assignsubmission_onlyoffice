@@ -46,6 +46,7 @@ class content implements \renderable, \templatable {
         global $PAGE;
 
         $jsparams = [
+            $this->data->documentserverurl,
             $this->data->contextid,
             $this->data->itemid,
             $this->data->readonly,
