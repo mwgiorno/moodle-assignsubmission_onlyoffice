@@ -101,17 +101,7 @@ class filemanager {
     }
 
     public static function get_template_path($ext) {
-        global $USER;
-        global $CFG;
-
-        $pathlocale = \mod_onlyofficeeditor\util::PATH_LOCALE[$USER->lang];
-        if ($pathlocale === null) {
-            $pathlocale = 'en-US';
-        }
-
-        $pathname = $CFG->dirroot . '/mod/onlyofficeeditor/newdocs/' . $pathlocale . '/new.' . $ext;
-
-        return $pathname;
+        return \mod_onlyofficeeditor\util::get_template_path($ext);
     }
 
     public static function generate_key(stored_file $file) {
