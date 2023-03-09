@@ -101,6 +101,21 @@ class filemanager {
     }
 
     public static function get_template_path($ext) {
+        global $USER;
+        global $CFG;
+
+        if ($ext === 'docxf') {
+            $pathlocale = \mod_onlyofficeeditor\util::PATH_LOCALE[$user->lang];
+            if ($pathlocale === null) {
+                $pathlocale = "en-US";
+            }
+
+            $templatepath = $CFG->dirroot . '/mod/assign/submission/onlyoffice/newdocs/' . $pathlocale . '/new.' . $ext;
+            if(file_exists($templatepath)) {
+                return $templatepath;
+            }
+        }
+
         return \mod_onlyofficeeditor\util::get_template_path($ext);
     }
 
