@@ -209,7 +209,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         $submissionfile = filemanager::get($contextid, $submission->id);
         if ($submissionfile !== null) {
             $showviewlink = true;
-            $linkname = get_string('expanddocument', 'assignsubmission_onlyoffice');
+            $linkname = get_string('viewdocument', 'assignsubmission_onlyoffice');
         }
 
         return $linkname;

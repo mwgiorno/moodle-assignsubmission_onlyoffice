@@ -31,4 +31,4 @@ $string['pptxformname'] = 'Presentation';
 $string['xlsxformname'] = 'Spreadsheet';
 $string['docxfformname'] = 'Form';
 $string['filenotfound'] = 'File not found';
-$string['expanddocument'] = 'Expand ONLYOFFICE document';
+$string['viewdocument'] = 'View ONLYOFFICE document';
