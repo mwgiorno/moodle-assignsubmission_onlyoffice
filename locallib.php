@@ -55,9 +55,9 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
 
         $assignconfig = new stdClass();
         $assignformat = [
-            'docx' => get_string('docxformname', 'assignsubmission_onlyoffice'),
-            'xlsx' => get_string('xlsxformname', 'assignsubmission_onlyoffice'),
-            'pptx' => get_string('pptxformname', 'assignsubmission_onlyoffice'),
+            'docx' => get_string('docxformname', 'onlyofficeeditor'),
+            'xlsx' => get_string('xlsxformname', 'onlyofficeeditor'),
+            'pptx' => get_string('pptxformname', 'onlyofficeeditor'),
             'docxf' => get_string('docxfformname', 'assignsubmission_onlyoffice'),
         ];
 
