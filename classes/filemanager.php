@@ -111,7 +111,7 @@ class filemanager {
             }
 
             $templatepath = $CFG->dirroot . '/mod/assign/submission/onlyoffice/newdocs/' . $pathlocale . '/new.' . $ext;
-            if(file_exists($templatepath)) {
+            if (file_exists($templatepath)) {
                 return $templatepath;
             }
         }
