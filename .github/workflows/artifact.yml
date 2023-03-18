@@ -1,0 +1,35 @@
+name: Artifact
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, reopened]
+    branches: [main, master]
+
+jobs:
+  artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Get Info
+        run: |
+          echo "version=$(grep -Eo '[0-9]+(\.[0-9]+)+' CHANGELOG.md | head -n 1)" >> $GITHUB_OUTPUT
+        id: info
+      - name: Build Artifact
+        run: |
+          cd ${{ github.workspace }}
+          git submodule update --init --recursive
+          mkdir -p ./deploy/moodle-assignsubmission_onlyoffice-v${{ steps.info.outputs.version }}
+          rsync -av --exclude='deploy' ./ ./deploy/moodle-assignsubmission_onlyoffice-v${{ steps.info.outputs.version }}
+          cd ./deploy/moodle-assignsubmission_onlyoffice-v${{ steps.info.outputs.version }}
+          rm -rf ./.github/
+          rm -rf ./.git/
+          rm -rf .gitmodules
+          cd ./newdocs
+          rm -rf .git
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: moodle-assignsubmission_onlyoffice-v${{ steps.info.outputs.version }}
+          path: deploy
