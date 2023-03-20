@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * This file contains the class for filling content template
+ *
  * @package    assignsubmission_onlyoffice
  * @subpackage
  * @copyright   2023 Ascensio System SIA <integration@onlyoffice.com>
@@ -23,15 +25,27 @@
 
 namespace assignsubmission_onlyoffice\output;
 
+/**
+ * Content class for editor page template
+ */
 class content implements \renderable, \templatable {
     /** @var \stdClass $data */
     private $data;
 
-    public function __construct(string $documentserverurl,
-                                int $contextid,
-                                string $itemid,
-                                bool $readonly = false,
-                                string $tmplkey = null) {
+    /**
+     * Construct
+     *
+     * @param string $documentserverurl document server address.
+     * @param int $contextid context identifier.
+     * @param string $itemid property of the file that is submissionid.
+     * @param bool $readonly readonly editor mode.
+     * @param string $tmplkey temporary template key.
+     */
+    public function __construct($documentserverurl,
+                                $contextid,
+                                $itemid,
+                                $readonly = false,
+                                $tmplkey = null) {
 
         $this->data = new \stdClass();
 
@@ -42,7 +56,14 @@ class content implements \renderable, \templatable {
         $this->data->tmplkey = $tmplkey;
     }
 
-    public function export_for_template(\renderer_base $output) {
+    /**
+     * Provider data to template
+     *
+     * @param \renderer_base $output output parameters.
+     *
+     * @return stdClass
+     */
+    public function export_for_template($output) {
         global $PAGE;
 
         $jsparams = [

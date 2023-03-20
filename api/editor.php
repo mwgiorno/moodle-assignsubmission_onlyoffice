@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * The assign_submission_onlyoffice editor api actions
+ *
  * @package    assignsubmission_onlyoffice
  * @subpackage
  * @copyright   2023 Ascensio System SIA <integration@onlyoffice.com>

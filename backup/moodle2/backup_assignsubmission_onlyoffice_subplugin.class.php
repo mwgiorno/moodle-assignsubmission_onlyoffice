@@ -24,6 +24,9 @@
 
 use assignsubmission_onlyoffice\filemanager;
 
+/**
+ * Backup class for onlyoffice submission plugin extending backup subplugin base class
+ */
 class backup_assignsubmission_onlyoffice_subplugin extends backup_subplugin {
 
     /**

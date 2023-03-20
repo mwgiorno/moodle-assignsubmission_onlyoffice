@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * This file contains the class for management temporary template key
+ *
  * @package    assignsubmission_onlyoffice
  * @subpackage
  * @copyright   2023 Ascensio System SIA <integration@onlyoffice.com>
@@ -23,8 +25,18 @@
 
 namespace assignsubmission_onlyoffice;
 
+/**
+ * Class wrapper for management temporary template key
+ */
 class templatekey {
 
+    /**
+     * Get contextid by tmplkey
+     *
+     * @param string $tmplkey temporary template key.
+     *
+     * @return int
+     */
     public static function get_contextid($tmplkey) {
         $record = self::get_record($tmplkey);
         if (!$record) {
@@ -40,6 +52,13 @@ class templatekey {
         return $contextid;
     }
 
+    /**
+     * Get contextid by tmplkey
+     *
+     * @param string $fulltmplkey full temporary template key that contains contextid.
+     *
+     * @return array
+     */
     public static function parse_contextid($fulltmplkey) {
         $valuestmplkey = explode('_', $fulltmplkey);
         if (count($valuestmplkey) !== 2) {
@@ -52,6 +71,13 @@ class templatekey {
         return [$origintmplkey, $contextid];
     }
 
+    /**
+     * Get record from plugin config
+     *
+     * @param string $tmplkey temporary template key.
+     *
+     * @return mixed
+     */
     private static function get_record($tmplkey) {
         global $DB;
 

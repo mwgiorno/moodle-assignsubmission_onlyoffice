@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * This file contains the class for file management
+ *
  * @package    assignsubmission_onlyoffice
  * @subpackage
  * @copyright   2023 Ascensio System SIA <integration@onlyoffice.com>
@@ -25,24 +27,73 @@ namespace assignsubmission_onlyoffice;
 
 use stored_file;
 
+/**
+ * Class wrapper for management of onlyoffice plugin files
+ */
 class filemanager {
 
+    /**
+     * Submission file area
+     */
     const FILEAREA_ONLYOFFICE_SUBMISSION_FILE = 'assignsubmission_onlyoffice_file';
+
+    /**
+     * Template file area
+     */
     const FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE = 'assignsubmission_onlyoffice_template';
+
+    /**
+     * Initial file area
+     */
     const FILEAREA_ONLYOFFICE_ASSIGN_INITIAL = 'assignsubmission_onlyoffice_initial';
+
+    /**
+     * Draft file area
+     */
     const FILEAREA_ONLYOFFICE_SUBMISSION_DRAFT = 'assignsubmission_onlyoffice_draft';
 
+    /**
+     * Plugin component name
+     */
     const COMPONENT_NAME = 'assignsubmission_onlyoffice';
 
-    public static function get(int $contextid, string $itemid) {
+    /**
+     * Get file from onlyoffice file area
+     *
+     * @param int $contextid context identifier.
+     * @param string $itemid property of the file that is submissionid.
+     *
+     * @return stored_file
+     */
+    public static function get($contextid, $itemid) {
         return self::get_base($contextid, self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE, $itemid);
     }
 
-    public static function create(int $contextid, string $itemid, string $ext, string $userid) {
+    /**
+     * Create file to onlyoffice file area
+     *
+     * @param int $contextid context identifier.
+     * @param string $itemid property of the file that is submissionid.
+     * @param string $ext file extension.
+     * @param string $userid user identifier.
+     *
+     * @return stored_file
+     */
+    public static function create($contextid, $itemid, $ext, $userid) {
         return self::create_base($contextid, $itemid, $ext, self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE, $userid);
     }
 
-    public static function create_by_initial(stored_file $initial, string $itemid, string $ext, string $userid) {
+    /**
+     * Create file to onlyoffice file area by initial file
+     *
+     * @param stored_file $initial initial file.
+     * @param string $itemid property of the file that is submissionid.
+     * @param string $ext file extension.
+     * @param string $userid user identifier.
+     *
+     * @return stored_file
+     */
+    public static function create_by_initial($initial, $itemid, $ext, $userid) {
         $fs = get_file_storage();
 
         $fr = (object)[
@@ -58,23 +109,64 @@ class filemanager {
         return $newfile;
     }
 
-    public static function get_template(int $contextid) {
+    /**
+     * Get template file from onlyoffice file area
+     *
+     * @param int $contextid context identifier.
+     *
+     * @return stored_file
+     */
+    public static function get_template($contextid) {
         return self::get_base($contextid, self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE, 0);
     }
 
-    public static function create_template(int $contextid, string $ext, string $userid) {
+    /**
+     * Create template file to onlyoffice file area
+     *
+     * @param int $contextid context identifier.
+     * @param string $ext file extension.
+     * @param string $userid user identifier.
+     *
+     * @return stored_file
+     */
+    public static function create_template($contextid, $ext, $userid) {
         return self::create_base($contextid, 0, $ext, self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE, $userid);
     }
 
-    public static function get_initial(int $contextid) {
+    /**
+     * Get initial file from onlyoffice file area
+     *
+     * @param int $contextid context identifier.
+     *
+     * @return stored_file
+     */
+    public static function get_initial($contextid) {
         return self::get_base($contextid, self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL, 0);
     }
 
-    public static function create_initial(int $contextid, string $ext, string $userid, string $url) {
+    /**
+     * Create initial file to onlyoffice file area
+     *
+     * @param int $contextid context identifier.
+     * @param string $ext file extension.
+     * @param string $userid user identifier.
+     * @param string $url file url resource.
+     *
+     * @return stored_file
+     */
+    public static function create_initial($contextid, $ext, $userid, $url) {
         return self::create_by_url_base($contextid, 0, $ext, self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL, $userid, $url);
     }
 
-    public static function write(stored_file $file, string $url) {
+    /**
+     * Write stored file
+     *
+     * @param stored_file $file updateble file.
+     * @param string $url file url resource.
+     *
+     * @return void
+     */
+    public static function write($file, $url) {
         $fs = get_file_storage();
 
         $fr = array(
@@ -94,12 +186,27 @@ class filemanager {
         $tmpfile->delete();
     }
 
-    public static function delete(int $contextid, string $itemid) {
+    /**
+     * Delete file from onlyoffice file area
+     *
+     * @param int $contextid context identifier.
+     * @param string $itemid property of the file that is submissionid.
+     *
+     * @return void
+     */
+    public static function delete($contextid, $itemid) {
         $fs = get_file_storage();
 
         $fs->delete_area_files($contextid, self::COMPONENT_NAME, self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE, $itemid);
     }
 
+    /**
+     * Get base template path
+     *
+     * @param string $ext file extension.
+     *
+     * @return string
+     */
     public static function get_template_path($ext) {
         global $USER;
         global $CFG;
@@ -119,7 +226,14 @@ class filemanager {
         return \mod_onlyofficeeditor\util::get_template_path($ext);
     }
 
-    public static function generate_key(stored_file $file) {
+    /**
+     * Build unique document identifier
+     *
+     * @param stored_file $file updateble file.
+     *
+     * @return string
+     */
+    public static function generate_key($file) {
         $contextid = $file->get_contextid();
         $itemid = $file->get_itemid();
         $timemodified = $file->get_timemodified();
@@ -127,9 +241,16 @@ class filemanager {
         return $contextid . $itemid . $timemodified;
     }
 
-    private static function get_base(int $contextid,
-                                     string $filearea,
-                                     string $itemid) {
+    /**
+     * Base method for getting file
+     *
+     * @param int $contextid context identifier.
+     * @param string $filearea file area.
+     * @param string $itemid property of the file that is submissionid.
+     *
+     * @return stored_file
+     */
+    private static function get_base($contextid, $filearea, $itemid) {
         $fs = get_file_storage();
 
         $files = $fs->get_area_files(
@@ -146,11 +267,18 @@ class filemanager {
         return $file;
     }
 
-    private static function create_base(int $contextid,
-                                        string $itemid,
-                                        string $ext,
-                                        string $filearea,
-                                        string $userid) {
+    /**
+     * Base method for creating file by template
+     *
+     * @param int $contextid context identifier.
+     * @param string $itemid property of the file that is submissionid.
+     * @param string $ext file extension.
+     * @param string $filearea file area.
+     * @param string $userid user identifier.
+     *
+     * @return stored_file
+     */
+    private static function create_base($contextid, $itemid, $ext, $filearea, $userid) {
         $pathname = self::get_template_path($ext);
 
         $fs = get_file_storage();
@@ -168,12 +296,19 @@ class filemanager {
         return $newfile;
     }
 
-    private static function create_by_url_base(int $contextid,
-                                                string $itemid,
-                                                string $ext,
-                                                string $filearea,
-                                                string $userid,
-                                                string $url) {
+    /**
+     * Base method for creating file by url
+     *
+     * @param int $contextid context identifier.
+     * @param string $itemid property of the file that is submissionid.
+     * @param string $ext file extension.
+     * @param string $filearea file area.
+     * @param string $userid user identifier.
+     * @param string $url file url resource.
+     *
+     * @return stored_file
+     */
+    private static function create_by_url_base($contextid, $itemid, $ext, $filearea, $userid, $url) {
         $fs = get_file_storage();
 
         $file = null;

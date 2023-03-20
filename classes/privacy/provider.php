@@ -37,6 +37,9 @@ use \mod_assign\privacy\assign_plugin_request_data;
 
 use assignsubmission_onlyoffice\filemanager;
 
+/**
+ * Privacy class for requesting user data.
+ */
 class provider implements
         \core_privacy\local\metadata\provider,
         \mod_assign\privacy\assignsubmission_provider,
