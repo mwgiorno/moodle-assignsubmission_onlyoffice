@@ -24,8 +24,8 @@
  */
 $string['pluginname'] = 'ONLYOFFICE 文档';
 $string['enabled'] = 'ONLYOFFICE 文档';
-$string['enabled_help'] = '';
-$string['assignformat'] = '';
-$string['docxfformname'] = '';
+$string['enabled_help'] = '如果该选项启用，学生能够使用 ONLYOFFICE 提交作业。';
+$string['assignformat'] = '格式（ONLYOFFICE）';
+$string['docxfformname'] = '表单';
 $string['filenotfound'] = '文件未找到';
-$string['viewdocument'] = '';
+$string['viewdocument'] = '查看 ONLYOFFICE 文档';

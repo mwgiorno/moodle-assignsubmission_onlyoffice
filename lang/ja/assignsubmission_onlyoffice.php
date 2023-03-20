@@ -24,8 +24,8 @@
  */
 $string['pluginname'] = 'ONLYOFFICEの文書';
 $string['enabled'] = 'ONLYOFFICEの文書';
-$string['enabled_help'] = '';
-$string['assignformat'] = '';
-$string['docxfformname'] = '';
+$string['enabled_help'] = '有効にすると、学生はONLYOFFICEを使用して課題を提出することができるようになります。';
+$string['assignformat'] = '形式 (ONLYOFFICE)';
+$string['docxfformname'] = 'フォーム';
 $string['filenotfound'] = 'ファイルが見つかりません';
-$string['viewdocument'] = '';
+$string['viewdocument'] = 'ONLYOFFICE文書を見る';

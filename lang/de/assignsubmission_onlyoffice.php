@@ -24,8 +24,8 @@
  */
 $string['pluginname'] = 'ONLYOFFICE-Dokument';
 $string['enabled'] = 'ONLYOFFICE-Dokument';
-$string['enabled_help'] = '';
-$string['assignformat'] = '';
-$string['docxfformname'] = '';
+$string['enabled_help'] = 'Wenn diese Option aktiviert ist, können die Studierenden ONLYOFFICE für ihre Einreichung verwenden.';
+$string['assignformat'] = 'Format (ONLYOFFICE)';
+$string['docxfformname'] = 'Formular';
 $string['filenotfound'] = 'Datei nicht gefunden';
-$string['viewdocument'] = '';
+$string['viewdocument'] = 'ONLYOFFICE-Dokument anzeigen';
