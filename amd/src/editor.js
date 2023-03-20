@@ -27,7 +27,6 @@ define(['jquery'], function($) {
         }
 
         var params = {
-            action: 'config',
             contextid: contextid,
             itemid: itemid
         };
@@ -39,7 +38,7 @@ define(['jquery'], function($) {
             params.tmplkey = tmplkey;
         }
 
-        var ajaxUrl = M.cfg.wwwroot + '/mod/assign/submission/onlyoffice/api/editor.php';
+        var ajaxUrl = M.cfg.wwwroot + '/mod/assign/submission/onlyoffice/api/editorconfig.php';
         $.getJSON(ajaxUrl, params).done(function(config) {
 
             // eslint-disable-next-line no-undef

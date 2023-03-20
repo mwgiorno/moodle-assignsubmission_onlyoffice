@@ -34,7 +34,6 @@ use Firebase\JWT\JWT;
 global $USER;
 global $DB;
 
-$action = required_param('action', PARAM_STRINGID);
 $contextid = required_param('contextid', PARAM_INT);
 $itemid = required_param('itemid', PARAM_INT);
 $readonly = !!optional_param('readonly', 0, PARAM_BOOL);
