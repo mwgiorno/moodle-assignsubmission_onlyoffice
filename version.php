@@ -29,4 +29,4 @@ $plugin->version = 2023031800;
 $plugin->release = 'v1.0.0';
 $plugin->requires = 2022041900;
 $plugin->maturity = MATURITY_STABLE;
-$plugin->dependencies = array('mod_onlyofficeeditor' => 2022021400);
+$plugin->dependencies = array('mod_onlyofficeeditor' => 2023032100);
