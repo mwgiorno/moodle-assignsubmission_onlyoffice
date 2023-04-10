@@ -63,7 +63,7 @@ $modconfig = get_config('onlyofficeeditor');
 if (!empty($modconfig->documentserversecret)) {
     if (!empty($data->token)) {
         try {
-            $payload = \Firebase\JWT\JWT::decode($data->token, $modconfig->documentserversecret, array('HS256'));
+            $payload = \mod_onlyofficeeditor\jwt_wrapper::decode($data->token, $modconfig->documentserversecret);
         } catch (\UnexpectedValueException $e) {
             $response['status'] = 'error';
             $response['error'] = '403 Access denied';
@@ -73,7 +73,7 @@ if (!empty($modconfig->documentserversecret)) {
         $jwtheader = !empty($modconfig->jwtheader) ? $modconfig->jwtheader : 'Authorization';
         $token = substr(getallheaders()[$jwtheader], strlen('Bearer '));
         try {
-            $decodedheader = \Firebase\JWT\JWT::decode($token, $modconfig->documentserversecret, array('HS256'));
+            $decodedheader = \mod_onlyofficeeditor\jwt_wrapper::decode($token, $modconfig->documentserversecret);
 
             $payload = $decodedheader->payload;
         } catch (\UnexpectedValueException $e) {

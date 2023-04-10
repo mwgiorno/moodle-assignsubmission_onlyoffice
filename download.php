@@ -36,7 +36,7 @@ if (!empty($modconfig->documentserversecret)) {
     $jwtheader = !empty($modconfig->jwtheader) ? $modconfig->jwtheader : 'Authorization';
     $token = substr(getallheaders()[$jwtheader], strlen('Bearer '));
     try {
-        $decodedheader = \Firebase\JWT\JWT::decode($token, $modconfig->documentserversecret, array('HS256'));
+        $decodedheader = \mod_onlyofficeeditor\jwt_wrapper::decode($token, $modconfig->documentserversecret);
     } catch (\UnexpectedValueException $e) {
         http_response_code(403);
         die();

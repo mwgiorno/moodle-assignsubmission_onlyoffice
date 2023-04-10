@@ -27,9 +27,8 @@ require_once(__DIR__.'/../../../../../config.php');
 require_once(__DIR__.'/../../../locallib.php');
 
 use mod_onlyofficeeditor\onlyoffice_file_utility;
+use mod_onlyofficeeditor\jwt_wrapper;
 use assignsubmission_onlyoffice\filemanager;
-
-use Firebase\JWT\JWT;
 
 global $USER;
 global $DB;
@@ -133,7 +132,7 @@ if ($editable && $canedit && !$readonly) {
 }
 
 if (!empty($modconfig->documentserversecret)) {
-    $token = JWT::encode($config, $modconfig->documentserversecret);
+    $token = jwt_wrapper::encode($config, $modconfig->documentserversecret);
     $config['token'] = $token;
 }
 
