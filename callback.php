@@ -32,6 +32,7 @@ use assignsubmission_onlyoffice\templatekey;
 
 global $USER;
 global $DB;
+global $CFG;
 
 $doc = required_param('doc', PARAM_RAW);
 
