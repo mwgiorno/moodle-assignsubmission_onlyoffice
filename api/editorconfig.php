@@ -117,7 +117,8 @@ if ($editable && $canedit && !$readonly) {
         'action' => 'track',
         'contextid' => $contextid,
         'itemid' => $itemid,
-        'tmplkey' => $tmplkey
+        'tmplkey' => $tmplkey,
+        'userid' => $USER->id
     ]);
     $config['editorConfig']['callbackUrl'] = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/callback.php?doc=' . $callbackhash;
 } else {

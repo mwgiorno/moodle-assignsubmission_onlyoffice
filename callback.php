@@ -51,6 +51,7 @@ if ($hash->action !== 'track') {
 $contextid = $hash->contextid;
 $itemid = $hash->itemid;
 $tmplkey = $hash->tmplkey;
+$callbackuserid = $hash->userid;
 
 $bodystream = file_get_contents('php://input');
 $data = json_decode($bodystream);
@@ -96,10 +97,12 @@ $result = 1;
 switch ($status) {
     case util::STATUS_MUSTSAVE:
     case util::STATUS_ERRORSAVING:
+    case util::STATUS_CLOSEDNOCHANGES:
         $file = null;
         $canwrite = false;
+        $mustsaveinitial = false;
 
-        $userid = $users[0];
+        $userid = isset($users) ? $users[0] : $callbackuserid;
         $user = \core_user::get_user($userid);
         if ($user) {
             $USER = $user;
@@ -133,6 +136,7 @@ switch ($status) {
         $file = !isset($tmplkey) ? filemanager::get($contextid, $itemid) : filemanager::get_template($contextid);
         if (empty($file) && isset($tmplkey)) {
             $file = filemanager::create_template($contextid, 'docxf', $itemid);
+            $mustsaveinitial = true;
         }
 
         if (empty($file)) {
@@ -140,11 +144,17 @@ switch ($status) {
             die();
         }
 
-        filemanager::write($file, $url);
+        if (isset($url)) {
+            filemanager::write($file, $url);
+
+            if (isset($tmplkey)) {
+                $mustsaveinitial = true;
+            }
+        }
 
         $filename = $file->get_filename();
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        if ($ext === 'docxf') {
+        if ($ext === 'docxf' && $mustsaveinitial) {
             $crypt = new \mod_onlyofficeeditor\hasher();
             $downloadhash = $crypt->get_hash([
                 'action' => 'download',
@@ -175,7 +185,6 @@ switch ($status) {
         break;
 
     case util::STATUS_EDITING:
-    case util::STATUS_CLOSEDNOCHANGES:
         $result = 0;
         break;
 }
