@@ -133,6 +133,8 @@ if ($editable && $canedit && !$readonly) {
     $config['editorConfig']['mode'] = 'view';
 }
 
+$config['document']['permissions']['protect'] = false;
+
 if (!empty($modconfig->documentserversecret)) {
     $token = jwt_wrapper::encode($config, $modconfig->documentserversecret);
     $config['token'] = $token;
