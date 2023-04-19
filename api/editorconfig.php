@@ -94,6 +94,7 @@ $config = [
     ],
     'documentType' => onlyoffice_file_utility::get_document_type('.' . $ext),
     'editorConfig' => [
+        'lang' => $USER->lang,
         'user' => [
             'id' => $USER->id,
             'name' => \fullname($USER)
