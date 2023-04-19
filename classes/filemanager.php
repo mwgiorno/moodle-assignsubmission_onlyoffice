@@ -74,13 +74,14 @@ class filemanager {
      *
      * @param int $contextid context identifier.
      * @param string $itemid property of the file that is submissionid.
+     * @param string $name file name.
      * @param string $ext file extension.
      * @param string $userid user identifier.
      *
      * @return stored_file
      */
-    public static function create($contextid, $itemid, $ext, $userid) {
-        return self::create_base($contextid, $itemid, $ext, self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE, $userid);
+    public static function create($contextid, $itemid, $name, $ext, $userid) {
+        return self::create_base($contextid, $itemid, $name, $ext, self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE, $userid);
     }
 
     /**
@@ -88,18 +89,19 @@ class filemanager {
      *
      * @param stored_file $initial initial file.
      * @param string $itemid property of the file that is submissionid.
+     * @param string $name file name.
      * @param string $ext file extension.
      * @param string $userid user identifier.
      *
      * @return stored_file
      */
-    public static function create_by_initial($initial, $itemid, $ext, $userid) {
+    public static function create_by_initial($initial, $itemid, $name, $ext, $userid) {
         $fs = get_file_storage();
 
         $fr = (object)[
             'filearea' => self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
             'itemid' => $itemid,
-            'filename' => $itemid . '.' . $ext,
+            'filename' => $name . $itemid . '.' . $ext,
             'userid' => $userid,
             'timecreated' => time()
         ];
@@ -130,7 +132,7 @@ class filemanager {
      * @return stored_file
      */
     public static function create_template($contextid, $ext, $userid) {
-        return self::create_base($contextid, 0, $ext, self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE, $userid);
+        return self::create_base($contextid, 0, '', $ext, self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE, $userid);
     }
 
     /**
@@ -155,7 +157,7 @@ class filemanager {
      * @return stored_file
      */
     public static function create_initial($contextid, $ext, $userid, $url) {
-        return self::create_by_url_base($contextid, 0, $ext, self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL, $userid, $url);
+        return self::create_by_url_base($contextid, 0, '', $ext, self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL, $userid, $url);
     }
 
     /**
@@ -272,13 +274,14 @@ class filemanager {
      *
      * @param int $contextid context identifier.
      * @param string $itemid property of the file that is submissionid.
+     * @param string $name file name.
      * @param string $ext file extension.
      * @param string $filearea file area.
      * @param string $userid user identifier.
      *
      * @return stored_file
      */
-    private static function create_base($contextid, $itemid, $ext, $filearea, $userid) {
+    private static function create_base($contextid, $itemid, $name, $ext, $filearea, $userid) {
         $pathname = self::get_template_path($ext);
 
         $fs = get_file_storage();
@@ -290,7 +293,7 @@ class filemanager {
             'itemid' => $itemid,
             'userid' => $userid,
             'filepath' => '/',
-            'filename' => $itemid . '.' . $ext
+            'filename' => $name . $itemid . '.' . $ext
         ], $pathname);
 
         return $newfile;
@@ -301,6 +304,7 @@ class filemanager {
      *
      * @param int $contextid context identifier.
      * @param string $itemid property of the file that is submissionid.
+     * @param string $name file name.
      * @param string $ext file extension.
      * @param string $filearea file area.
      * @param string $userid user identifier.
@@ -308,7 +312,7 @@ class filemanager {
      *
      * @return stored_file
      */
-    private static function create_by_url_base($contextid, $itemid, $ext, $filearea, $userid, $url) {
+    private static function create_by_url_base($contextid, $itemid, $name, $ext, $filearea, $userid, $url) {
         $fs = get_file_storage();
 
         $file = null;
@@ -320,7 +324,7 @@ class filemanager {
                 'itemid' => $itemid,
                 'userid' => $userid,
                 'filepath' => '/',
-                'filename' => $itemid . '.' . $ext
+                'filename' => $name . $itemid . '.' . $ext
             ], $url);
         } catch (\file_exception $e) {
             return null;
