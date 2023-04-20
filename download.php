@@ -91,8 +91,8 @@ if (!isset($tmplkey)) {
     }
 
     if (!empty($assing)) {
-        $canread = !!$submission->groupid ? $assing->can_view_submission($submission->userid)
-                                          : $assing->can_view_group_submission($submission->groupid);
+        $canread = !!$submission->groupid ? $assing->can_view_group_submission($submission->groupid)
+                                          : $assing->can_view_submission($submission->userid);
     }
 
     $file = filemanager::get($contextid, $itemid);

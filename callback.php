@@ -124,8 +124,8 @@ switch ($status) {
             $assing = new assign($context, $cm, $course);
             $submission = $DB->get_record('assign_submission', array('id' => $itemid));
             if ($submission) {
-                $canwrite = !!$submission->groupid ? $assing->can_edit_submission($submission->userid)
-                                                   : $assing->can_edit_group_submission($submission->groupid);
+                $canwrite = !!$submission->groupid ? $assing->can_edit_group_submission($submission->groupid)
+                                                   : $assing->can_edit_submission($submission->userid);
             }
         }
 
