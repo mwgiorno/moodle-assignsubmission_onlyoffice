@@ -1,0 +1,14 @@
+/* @module assignsubmission_onlyoffice/editor
+ * @copyright  2023 Ascensio System SIA <integration@onlyoffice.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+#app > iframe {
+    height: 95vh;
+    max-height: 60rem;
+}
+
+.assignsubmission-onlyoffice-display {
+    /* stylelint-disable-next-line declaration-no-important */
+    max-width: unset !important;
+}

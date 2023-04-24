@@ -1,0 +1,9 @@
+Moodle ONLYOFFICE integration plugin uses code from the following 3rd party projects:
+
+composer      - Composer helps you declare, manage, and install dependencies of PHP projects. (https://github.com/composer/composer/blob/main/LICENSE)
+License:        MIT
+License File:   composer.license
+
+jQuery        - jQuery is a new kind of JavaScript Library. jQuery is a fast and concise JavaScript Library that simplifies HTML document traversing, event handling, animating, and Ajax interactions for rapid web development. jQuery is designed to change the way that you write JavaScript (https://jquery.org/license/)
+License:        MIT
+License File:   jQuery.license
