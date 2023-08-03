@@ -55,7 +55,7 @@ define(['jquery'], function($) {
             var docsapijs = document.createElement('script');
             docsapijs.type = 'text/javascript';
 
-            $(docsapijs).appendTo('#app');
+            $(docsapijs).appendTo('#app-onlyoffice');
             $(docsapijs).on('load', function() {
                 if (!tmplkey) {
                     openEditor(contextid, itemid, readonly);
@@ -82,19 +82,19 @@ define(['jquery'], function($) {
                                 openEditor(contextid, itemid, readonly, tmplkey);
                             }
 
-                            $("#app").show();
+                            $("#app-onlyoffice").show();
 
                             return;
                         }
 
-                        $("#app").hide();
+                        $("#app-onlyoffice").hide();
                     });
 
                     if (selectformat.length > 0) {
                         selectformat.change(function(e) {
                             if (e.target.value != 'docxf') {
-                                if ($("#app").is(":visible")) {
-                                    $("#app").hide();
+                                if ($("#app-onlyoffice").is(":visible")) {
+                                    $("#app-onlyoffice").hide();
                                 }
                                 return;
                             }
@@ -103,7 +103,7 @@ define(['jquery'], function($) {
                                 openEditor(contextid, itemid, readonly, tmplkey);
                             }
 
-                            $("#app").show();
+                            $("#app-onlyoffice").show();
                         });
                     }
                 }
