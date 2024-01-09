@@ -135,6 +135,18 @@ if ($editable && $canedit && !$readonly) {
 
 $config['document']['permissions']['protect'] = false;
 
+$customization = [];
+if (isset($modconfig->editor_security_plugin)) {
+    $customization['plugins'] = $modconfig->editor_security_plugin == 1;
+}
+if (isset($modconfig->editor_security_macros)) {
+    $customization['macros'] = $modconfig->editor_security_macros == 1;
+}
+
+if (!empty($customization)) {
+    $config['editorConfig']['customization'] = $customization;
+}
+
 if (!empty($modconfig->documentserversecret)) {
     $token = jwt_wrapper::encode($config, $modconfig->documentserversecret);
     $config['token'] = $token;
