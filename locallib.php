@@ -96,6 +96,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         if ($initeditor) {
             $tmplkey = isset($tmplkey) ? $tmplkey : uniqid();
             $mform->addElement('hidden', 'assignsubmission_onlyoffice_tmplkey', $tmplkey);
+            $mform->setType('assignsubmission_onlyoffice_tmplkey', PARAM_ALPHANUM);
 
             $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
             $mform->addElement('html', $OUTPUT->render(
