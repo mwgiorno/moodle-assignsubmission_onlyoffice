@@ -24,6 +24,7 @@
 
 use stored_file;
 use mod_onlyofficeeditor\document_service;
+use assignsubmission_onlyoffice\utility;
 use assignsubmission_onlyoffice\filemanager;
 use assignsubmission_onlyoffice\templatekey;
 use assignsubmission_onlyoffice\output\content;
@@ -152,11 +153,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             $initialfile = filemanager::get_initial($contextid);
         }
 
-        $version = document_service::get_version();
-        $majorversion = stristr($version, '.', true);
-        $majorversion = intval($majorversion);
-
-        $submissionformat = $majorversion < 8 ? 'oform' : 'pdf';
+        $submissionformat = utility::get_form_format();
 
         $submissionfile = filemanager::get($contextid, $submission->id);
         if ($submissionfile === null) {

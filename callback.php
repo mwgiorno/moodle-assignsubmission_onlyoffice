@@ -27,6 +27,7 @@ require_once(__DIR__.'/../../locallib.php');
 
 use mod_onlyofficeeditor\util;
 use mod_onlyofficeeditor\document_service;
+use assignsubmission_onlyoffice\utility;
 use assignsubmission_onlyoffice\filemanager;
 use assignsubmission_onlyoffice\templatekey;
 
@@ -156,11 +157,7 @@ switch ($status) {
         $filename = $file->get_filename();
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
         if ($ext === 'docxf' && $mustsaveinitial) {
-            $version = document_service::get_version();
-            $majorversion = stristr($version, '.', true);
-            $majorversion = intval($majorversion);
-
-            $submissionformat = $majorversion < 8 ? 'oform' : 'pdf';
+            $submissionformat = utility::get_form_format();
 
             $crypt = new \mod_onlyofficeeditor\hasher();
             $downloadhash = $crypt->get_hash([
