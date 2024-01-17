@@ -155,9 +155,10 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
 
         $submissionformat = utility::get_form_format();
 
+        $isform = $cfg->format === 'docxf' ? true : false;
         $submissionfile = filemanager::get($contextid, $submission->id);
         if ($submissionfile === null) {
-            if ($cfg->format === 'docxf') {
+            if ($isform) {
                 if ($initialfile !== null) {
                     $initialfilename = $initialfile->get_filename();
                     $initialextension = strtolower(pathinfo($initialfilename, PATHINFO_EXTENSION));
@@ -185,7 +186,8 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
 
         $submissionfilename = $submissionfile->get_filename();
         $submissionextension = strtolower(pathinfo($submissionfilename, PATHINFO_EXTENSION));
-        if ($submissionextension !== $submissionformat) {
+        if ($isform
+            && $submissionextension !== $submissionformat) {
             $crypt = new \mod_onlyofficeeditor\hasher();
             $downloadhash = $crypt->get_hash([
                 'action' => 'download',
