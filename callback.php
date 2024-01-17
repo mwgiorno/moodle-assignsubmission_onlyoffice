@@ -156,6 +156,12 @@ switch ($status) {
         $filename = $file->get_filename();
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
         if ($ext === 'docxf' && $mustsaveinitial) {
+            $version = document_service::get_version();
+            $majorversion = stristr($version, '.', true);
+            $majorversion = intval($majorversion);
+
+            $submissionformat = $majorversion < 8 ? 'oform' : 'pdf';
+
             $crypt = new \mod_onlyofficeeditor\hasher();
             $downloadhash = $crypt->get_hash([
                 'action' => 'download',
@@ -168,7 +174,7 @@ switch ($status) {
             $documenturi = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
             $conversionkey = filemanager::generate_key($file);
 
-            $conversionurl = document_service::get_conversion_url($documenturi, $ext, 'oform', $conversionkey);
+            $conversionurl = document_service::get_conversion_url($documenturi, $ext, $submissionformat, $conversionkey);
 
             if (empty($conversionurl)) {
                 break;
@@ -176,7 +182,7 @@ switch ($status) {
 
             $initialfile = filemanager::get_initial($contextid);
             if ($initialfile === null) {
-                filemanager::create_initial($contextid, 'oform', $itemid, $conversionurl);
+                filemanager::create_initial($contextid, $submissionformat, $itemid, $conversionurl);
             } else {
                 filemanager::write($initialfile, $conversionurl);
             }

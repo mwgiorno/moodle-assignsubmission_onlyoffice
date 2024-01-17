@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use stored_file;
+use mod_onlyofficeeditor\document_service;
 use assignsubmission_onlyoffice\filemanager;
 use assignsubmission_onlyoffice\templatekey;
 use assignsubmission_onlyoffice\output\content;
@@ -138,6 +140,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
      */
     public function get_form_elements($submission, MoodleQuickForm $mform, stdClass $data, $userid = null) {
         global $OUTPUT;
+        global $CFG;
 
         $cfg = $this->get_config();
 
@@ -149,14 +152,23 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             $initialfile = filemanager::get_initial($contextid);
         }
 
+        $version = document_service::get_version();
+        $majorversion = stristr($version, '.', true);
+        $majorversion = intval($majorversion);
+
+        $submissionformat = $majorversion < 8 ? 'oform' : 'pdf';
+
         $submissionfile = filemanager::get($contextid, $submission->id);
         if ($submissionfile === null) {
             if ($cfg->format === 'docxf') {
                 if ($initialfile !== null) {
+                    $initialfilename = $initialfile->get_filename();
+                    $initialextension = strtolower(pathinfo($initialfilename, PATHINFO_EXTENSION));
+
                     $submissionfile = filemanager::create_by_initial($initialfile,
                                                                         $submission->id,
                                                                         $this->assignment->get_instance()->name,
-                                                                        'oform',
+                                                                        $initialextension,
                                                                         $submission->userid);
                 }
             } else {
@@ -172,6 +184,31 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             && $initialfile->get_timemodified() > $submissionfile->get_timemodified()) {
             $submissionfile->replace_file_with($initialfile);
             $submissionfile->set_timemodified(time());
+        }
+
+        $submissionfilename = $submissionfile->get_filename();
+        $submissionextension = strtolower(pathinfo($submissionfilename, PATHINFO_EXTENSION));
+        if ($submissionextension !== $submissionformat) {
+            $crypt = new \mod_onlyofficeeditor\hasher();
+            $downloadhash = $crypt->get_hash([
+                'action' => 'download',
+                'contextid' => $contextid,
+                'itemid' => $submissionfile->get_itemid(),
+                'tmplkey' => null,
+                'userid' => $submissionfile->get_userid()
+            ]);
+
+            $documenturi = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
+            $conversionkey = filemanager::generate_key($submissionfile);
+
+            $conversionurl = document_service::get_conversion_url($documenturi,
+                                                                    $submissionextension,
+                                                                    $submissionformat,
+                                                                    $conversionkey);
+
+            filemanager::write($submissionfile, $conversionurl);
+            $submissionfile->rename($submissionfile->get_filepath(),
+                                    $this->assignment->get_instance()->name . $submission->id . '.' . $submissionformat);
         }
 
         $mform->addElement('html', $OUTPUT->render(
