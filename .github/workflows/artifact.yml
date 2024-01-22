@@ -23,9 +23,9 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           git submodule update --init --recursive
-          mkdir -p ./moodle-mod_onlyofficeeditor-${{ steps.info.outputs.version }}
-          rsync -av --exclude='moodle-mod_onlyofficeeditor-${{ steps.info.outputs.version }}' ./ ./moodle-mod_onlyofficeeditor-${{ steps.info.outputs.version }}
-          cd ./moodle-mod_onlyofficeeditor-${{ steps.info.outputs.version }}
+          mkdir -p ./onlyoffice
+          rsync -av --exclude='onlyoffice' ./ ./onlyoffice
+          cd ./onlyoffice
           rm -rf ./.github/
           rm -rf ./.git/
           rm -rf .gitmodules
@@ -38,7 +38,7 @@ jobs:
           path: ./moodle
       - name: Copy Plugin
         run: |
-          cp -r moodle-mod_onlyofficeeditor-${{ steps.info.outputs.version }} ./moodle/mod/moodle-mod_onlyofficeeditor-${{ steps.info.outputs.version }}
+          cp -r onlyoffice ./moodle/mod/assign/submission/onlyoffice
       - name: Build Plugin
         run: |
           cd ./moodle
@@ -47,10 +47,11 @@ jobs:
       - name: Build Artifact
         run: |
           cd ${{ github.workspace }}
+          mv ./moodle/mod/assign/submission/onlyoffice ./moodle/mod/assign/submission/moodle-assignsubmission_onlyoffice-${{ steps.info.outputs.version }}
           mkdir -p ./deploy
-          cp -r ./moodle/mod/moodle-mod_onlyofficeeditor-${{ steps.info.outputs.version }} ./deploy
+          cp -r ./moodle/mod/assign/submission/moodle-assignsubmission_onlyoffice-${{ steps.info.outputs.version }} ./deploy
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: moodle-mod_onlyofficeeditor-${{ steps.info.outputs.version }}
+          name: moodle-assignsubmission_onlyoffice-${{ steps.info.outputs.version }}
           path: deploy
