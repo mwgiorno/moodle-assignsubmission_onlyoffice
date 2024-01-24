@@ -27,9 +27,9 @@ require_once(__DIR__.'/../../locallib.php');
 
 use mod_onlyofficeeditor\util;
 use mod_onlyofficeeditor\document_service;
-use assignsubmission_onlyoffice\utility;
 use assignsubmission_onlyoffice\filemanager;
 use assignsubmission_onlyoffice\templatekey;
+use assignsubmission_onlyoffice\utility;
 
 global $USER;
 global $DB;

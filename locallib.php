@@ -24,10 +24,10 @@
 
 use stored_file;
 use mod_onlyofficeeditor\document_service;
-use assignsubmission_onlyoffice\utility;
 use assignsubmission_onlyoffice\filemanager;
 use assignsubmission_onlyoffice\templatekey;
 use assignsubmission_onlyoffice\output\content;
+use assignsubmission_onlyoffice\utility;
 
 /**
  * Library class for onlyoffice submission plugin extending submission plugin base class

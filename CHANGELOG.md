@@ -1,7 +1,7 @@
 # Change Log
 
 ## Changed
-- form format from oform to pdf (since document server v8.0)
+- converting oform to pdf (since document server v8.0)
 
 ## Added
 - disable plugins
