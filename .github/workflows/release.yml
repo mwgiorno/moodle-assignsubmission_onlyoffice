@@ -25,9 +25,9 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           git submodule update --init --recursive
-          mkdir -p ./moodle-mod_onlyofficeeditor-${{ steps.info.outputs.version }}
-          rsync -av --exclude='moodle-mod_onlyofficeeditor-${{ steps.info.outputs.version }}' ./ ./moodle-mod_onlyofficeeditor-${{ steps.info.outputs.version }}
-          cd ./moodle-mod_onlyofficeeditor-${{ steps.info.outputs.version }}
+          mkdir -p ./onlyoffice
+          rsync -av --exclude='onlyoffice' ./ ./onlyoffice
+          cd ./onlyoffice
           rm -rf ./.github/
           rm -rf ./.git/
           rm -rf .gitmodules
@@ -40,7 +40,7 @@ jobs:
           path: ./moodle
       - name: Copy Plugin
         run: |
-          cp -r moodle-mod_onlyofficeeditor-${{ steps.info.outputs.version }} ./moodle/mod/moodle-mod_onlyofficeeditor-${{ steps.info.outputs.version }}
+          cp -r onlyoffice ./moodle/mod/assign/submission/onlyoffice
       - name: Build Plugin
         run: |
           cd ./moodle
@@ -48,12 +48,13 @@ jobs:
           grunt
       - name: Zip Artifact
         run: |
-          cd moodle/mod/
-          zip -r moodle-mod_onlyofficeeditor-${{ steps.info.outputs.version }}.zip moodle-mod_onlyofficeeditor-${{ steps.info.outputs.version }}/
+          cd moodle/mod/assign/submission
+          mv ./onlyoffice ./moodle-assignsubmission_onlyoffice-${{ steps.info.outputs.version }}
+          zip -r moodle-assignsubmission_onlyoffice-${{ steps.info.outputs.version }}.zip moodle-assignsubmission_onlyoffice-${{ steps.info.outputs.version }}/
       - name: Create Release
         uses: ncipollo/release-action@v1
         id: create_release
         with:
-          artifacts: "moodle/mod/moodle-mod_onlyofficeeditor-${{ steps.info.outputs.version }}.zip"
+          artifacts: "moodle/mod/assign/submission/moodle-assignsubmission_onlyoffice-${{ steps.info.outputs.version }}.zip"
           bodyFile: RELEASE.md
           tag: v${{ steps.info.outputs.version }}

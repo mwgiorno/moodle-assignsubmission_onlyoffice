@@ -15,17 +15,35 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'assignsubmission_onlyoffice', language 'en'.
+ * This file contains the class for utils
  *
- * @package     assignsubmission_onlyoffice
+ * @package    assignsubmission_onlyoffice
  * @subpackage
  * @copyright   2024 Ascensio System SIA <integration@onlyoffice.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-$string['pluginname'] = 'ONLYOFFICE 文档';
-$string['enabled'] = 'ONLYOFFICE 文档';
-$string['enabled_help'] = '如果该选项启用，学生能够使用 ONLYOFFICE 提交作业。';
-$string['assignformat'] = '格式（ONLYOFFICE）';
-$string['docxfformname'] = '表单';
-$string['filenotfound'] = '文件未找到';
-$string['viewdocument'] = '查看 ONLYOFFICE 文档';
+
+namespace assignsubmission_onlyoffice;
+
+use mod_onlyofficeeditor\document_service;
+
+/**
+ * Class for plugin utils
+ */
+class utility {
+
+    /**
+     * Get actuall form format.
+     *
+     * @return string format
+     */
+    public static function get_form_format() {
+        $dsversion = document_service::get_version();
+        $majorversion = stristr($dsversion, '.', true);
+        $majorversion = intval($majorversion);
+
+        $submissionformat = $majorversion < 8 ? 'oform' : 'pdf';
+
+        return $submissionformat;
+    }
+}

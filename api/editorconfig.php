@@ -19,7 +19,7 @@
  *
  * @package    assignsubmission_onlyoffice
  * @subpackage
- * @copyright   2023 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright   2024 Ascensio System SIA <integration@onlyoffice.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -134,6 +134,18 @@ if ($editable && $canedit && !$readonly) {
 }
 
 $config['document']['permissions']['protect'] = false;
+
+$customization = [];
+if (isset($modconfig->editor_security_plugin)) {
+    $customization['plugins'] = $modconfig->editor_security_plugin == 1;
+}
+if (isset($modconfig->editor_security_macros)) {
+    $customization['macros'] = $modconfig->editor_security_macros == 1;
+}
+
+if (!empty($customization)) {
+    $config['editorConfig']['customization'] = $customization;
+}
 
 if (!empty($modconfig->documentserversecret)) {
     $token = jwt_wrapper::encode($config, $modconfig->documentserversecret);

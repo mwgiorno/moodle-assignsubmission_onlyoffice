@@ -15,7 +15,7 @@
 
 /**
  * @module assignsubmission_onlyoffice/editor
- * @copyright  2023 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright  2024 Ascensio System SIA <integration@onlyoffice.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 define(['jquery'], function($) {
@@ -55,7 +55,7 @@ define(['jquery'], function($) {
             var docsapijs = document.createElement('script');
             docsapijs.type = 'text/javascript';
 
-            $(docsapijs).appendTo('#app');
+            $(docsapijs).appendTo('#app-onlyoffice');
             $(docsapijs).on('load', function() {
                 if (!tmplkey) {
                     openEditor(contextid, itemid, readonly);
@@ -82,19 +82,19 @@ define(['jquery'], function($) {
                                 openEditor(contextid, itemid, readonly, tmplkey);
                             }
 
-                            $("#app").show();
+                            $("#app-onlyoffice").show();
 
                             return;
                         }
 
-                        $("#app").hide();
+                        $("#app-onlyoffice").hide();
                     });
 
                     if (selectformat.length > 0) {
                         selectformat.change(function(e) {
                             if (e.target.value != 'docxf') {
-                                if ($("#app").is(":visible")) {
-                                    $("#app").hide();
+                                if ($("#app-onlyoffice").is(":visible")) {
+                                    $("#app-onlyoffice").hide();
                                 }
                                 return;
                             }
@@ -103,7 +103,7 @@ define(['jquery'], function($) {
                                 openEditor(contextid, itemid, readonly, tmplkey);
                             }
 
-                            $("#app").show();
+                            $("#app-onlyoffice").show();
                         });
                     }
                 }

@@ -18,7 +18,7 @@
  * The assign_submission_onlyoffice download handler
  *
  * @package    assignsubmission_onlyoffice
- * @copyright  2023 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright  2024 Ascensio System SIA <integration@onlyoffice.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,6 +29,7 @@ use mod_onlyofficeeditor\util;
 use mod_onlyofficeeditor\document_service;
 use assignsubmission_onlyoffice\filemanager;
 use assignsubmission_onlyoffice\templatekey;
+use assignsubmission_onlyoffice\utility;
 
 global $USER;
 global $DB;
@@ -156,6 +157,8 @@ switch ($status) {
         $filename = $file->get_filename();
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
         if ($ext === 'docxf' && $mustsaveinitial) {
+            $submissionformat = utility::get_form_format();
+
             $crypt = new \mod_onlyofficeeditor\hasher();
             $downloadhash = $crypt->get_hash([
                 'action' => 'download',
@@ -168,7 +171,7 @@ switch ($status) {
             $documenturi = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
             $conversionkey = filemanager::generate_key($file);
 
-            $conversionurl = document_service::get_conversion_url($documenturi, $ext, 'oform', $conversionkey);
+            $conversionurl = document_service::get_conversion_url($documenturi, $ext, $submissionformat, $conversionkey);
 
             if (empty($conversionurl)) {
                 break;
@@ -176,7 +179,7 @@ switch ($status) {
 
             $initialfile = filemanager::get_initial($contextid);
             if ($initialfile === null) {
-                filemanager::create_initial($contextid, 'oform', $itemid, $conversionurl);
+                filemanager::create_initial($contextid, $submissionformat, $itemid, $conversionurl);
             } else {
                 filemanager::write($initialfile, $conversionurl);
             }
