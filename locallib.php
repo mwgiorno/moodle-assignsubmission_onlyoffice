@@ -91,9 +91,6 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             }
 
             $contextid = $this->assignment->get_context()->id;
-        } else {
-            // Use forms only.
-            $mform->getElement('assignsubmission_onlyoffice_format')->setSelected('docxf');
         }
 
         if ($initeditor) {
@@ -108,9 +105,6 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         }
 
         $mform->hideif('assignsubmission_onlyoffice_format', 'assignsubmission_onlyoffice_enabled', 'notchecked');
-
-        // Use forms only.
-        $mform->hideif('assignsubmission_onlyoffice_format', 'assignsubmission_onlyoffice_enabled', 'checked');
     }
 
     /**
