@@ -3,6 +3,7 @@
 ##
 ## Changed
 - disable scrolling page to editor
+- remove document format select restriction
 
 ## 2.0.0
 ## Changed
