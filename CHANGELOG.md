@@ -1,5 +1,9 @@
 # Change Log
 
+##
+## Changed
+- disable scrolling page to editor
+
 ## 2.0.0
 ## Changed
 - converting oform to pdf (since document server v8.0)
