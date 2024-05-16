@@ -30,6 +30,7 @@ use mod_onlyofficeeditor\document_service;
 use assignsubmission_onlyoffice\filemanager;
 use assignsubmission_onlyoffice\templatekey;
 use assignsubmission_onlyoffice\utility;
+use mod_onlyofficeeditor\configuration_manager;
 
 global $USER;
 global $DB;
@@ -168,7 +169,8 @@ switch ($status) {
                 'userid' => $USER->id
             ]);
 
-            $documenturi = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
+            $storageurl = configuration_manager::get_storage_url();
+            $documenturi = $storageurl . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
             $conversionkey = filemanager::generate_key($file);
 
             $conversionurl = document_service::get_conversion_url($documenturi, $ext, $submissionformat, $conversionkey);

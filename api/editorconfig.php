@@ -28,6 +28,7 @@ require_once(__DIR__.'/../../../locallib.php');
 
 use mod_onlyofficeeditor\onlyoffice_file_utility;
 use mod_onlyofficeeditor\jwt_wrapper;
+use mod_onlyofficeeditor\configuration_manager;
 use assignsubmission_onlyoffice\filemanager;
 
 global $USER;
@@ -39,6 +40,7 @@ $readonly = !!optional_param('readonly', 0, PARAM_BOOL);
 $tmplkey = optional_param('tmplkey', null, PARAM_ALPHANUMEXT);
 
 $modconfig = get_config('onlyofficeeditor');
+$storageurl = configuration_manager::get_storage_url();
 
 $context = null;
 $assing = null;
@@ -90,7 +92,7 @@ $config = [
         'fileType' => $ext,
         'key' => $key,
         'title' => $filename,
-        'url' => $CFG->wwwroot . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash
+        'url' => $storageurl . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash
     ],
     'documentType' => onlyoffice_file_utility::get_document_type('.' . $ext),
     'editorConfig' => [
@@ -121,7 +123,7 @@ if ($editable && $canedit && !$readonly) {
         'tmplkey' => $tmplkey,
         'userid' => $USER->id
     ]);
-    $config['editorConfig']['callbackUrl'] = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/callback.php?doc=' . $callbackhash;
+    $config['editorConfig']['callbackUrl'] = $storageurl . '/mod/assign/submission/onlyoffice/callback.php?doc=' . $callbackhash;
 } else {
     $viewable = $assing->can_grade() || $editable;
 
