@@ -91,6 +91,9 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             }
 
             $contextid = $this->assignment->get_context()->id;
+        } else {
+            // set docxf as default
+            $mform->getElement('assignsubmission_onlyoffice_format')->setSelected('docxf');
         }
 
         if ($initeditor) {
