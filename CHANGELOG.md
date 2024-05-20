@@ -1,6 +1,6 @@
 # Change Log
 
-##
+## 2.1.0
 ## Changed
 - disable scrolling page to editor
 - document, spreadsheet and presentation in the assignment
