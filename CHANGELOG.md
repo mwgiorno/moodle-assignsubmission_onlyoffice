@@ -3,6 +3,7 @@
 ##
 ## Changed
 - disable scrolling page to editor
+- document, spreadsheet and presentation in the assignment
 - replace the public url passed to the docs server with the internal address.
 
 ## 2.0.0
