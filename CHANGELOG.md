@@ -3,6 +3,7 @@
 ##
 ## Changed
 - disable scrolling page to editor
+- document, spreadsheet and presentation in the assignment
 
 ## 2.0.0
 ## Changed
