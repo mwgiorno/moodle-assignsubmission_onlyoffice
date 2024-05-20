@@ -40,7 +40,10 @@ $readonly = !!optional_param('readonly', 0, PARAM_BOOL);
 $tmplkey = optional_param('tmplkey', null, PARAM_ALPHANUMEXT);
 
 $modconfig = get_config('onlyofficeeditor');
-$storageurl = configuration_manager::get_storage_url();
+$storageurl = $CFG->wwwroot;
+if (class_exists('mod_onlyofficeeditor\configuration_manager')) {
+    $storageurl = configuration_manager::get_storage_url();
+}
 
 $context = null;
 $assing = null;

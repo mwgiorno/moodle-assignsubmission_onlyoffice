@@ -195,7 +195,10 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                 'userid' => $submissionfile->get_userid()
             ]);
 
-            $storageurl = configuration_manager::get_storage_url();
+            $storageurl = $CFG->wwwroot;
+            if (class_exists('mod_onlyofficeeditor\configuration_manager')) {
+                $storageurl = configuration_manager::get_storage_url();
+            }
             $documenturi = $storageurl . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
             $conversionkey = filemanager::generate_key($submissionfile);
 
