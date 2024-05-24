@@ -127,6 +127,11 @@ if ($editable && $canedit && !$readonly) {
         'userid' => $USER->id
     ]);
     $config['editorConfig']['callbackUrl'] = $storageurl . '/mod/assign/submission/onlyoffice/callback.php?doc=' . $callbackhash;
+    // disable editing for users who has a student role assigned
+    if (user_has_role_assignment($USER->id, 5) && $ext === 'pdf') {
+        $config['document']['permissions']['edit'] = false;
+    }
+    $config['document']['permissions']['fillForms'] = true;
 } else {
     $viewable = $assing->can_grade() || $editable;
 
