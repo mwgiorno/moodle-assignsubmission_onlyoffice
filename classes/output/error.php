@@ -15,18 +15,45 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'assignsubmission_onlyoffice', language 'en'.
+ * This file contains the class for filling error template
  *
- * @package     assignsubmission_onlyoffice
+ * @package    assignsubmission_onlyoffice
  * @subpackage
  * @copyright   2024 Ascensio System SIA <integration@onlyoffice.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-$string['pluginname'] = 'ONLYOFFICEの文書';
-$string['enabled'] = 'ONLYOFFICEの文書';
-$string['enabled_help'] = '有効にすると、学生はONLYOFFICEを使用して課題を提出することができるようになります。';
-$string['assignformat'] = '形式 (ONLYOFFICE)';
-$string['docxfformname'] = 'フォーム';
-$string['filenotfound'] = 'ファイルが見つかりません';
-$string['viewdocument'] = 'ONLYOFFICE文書を見る';
-$string['formnotready'] = 'フォームの準備がまだできていません。 しばらくお待ちいただき、ページを再読み込みしてください。';
+
+namespace assignsubmission_onlyoffice\output;
+
+/**
+ * Error class template
+ */
+class error implements \renderable, \templatable {
+    /** @var \stdClass $data */
+    private $data;
+
+    /**
+     * Construct
+     *
+     * @param string $error error message.
+     */
+    public function __construct($error) {
+
+        $this->data = new \stdClass();
+
+        $this->data->error = $error;
+    }
+
+    /**
+     * Provider data to template
+     *
+     * @param \renderer_base $output output parameters.
+     *
+     * @return stdClass
+     */
+    public function export_for_template($output) {
+        global $PAGE;
+
+        return $this->data;
+    }
+}

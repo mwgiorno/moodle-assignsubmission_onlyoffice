@@ -29,3 +29,4 @@ $string['assignformat'] = 'Формат (ONLYOFFICE)';
 $string['docxfformname'] = 'Форма';
 $string['filenotfound'] = 'Файл не найден';
 $string['viewdocument'] = 'Просмотреть ONLYOFFICE документ';
+$string['formnotready'] = 'Форма еще не готова. Пожалуйста, немного подождите и перезагрузите страницу.';

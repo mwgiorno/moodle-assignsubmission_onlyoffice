@@ -24,9 +24,11 @@
 
 use stored_file;
 use mod_onlyofficeeditor\document_service;
+use mod_onlyofficeeditor\configuration_manager;
 use assignsubmission_onlyoffice\filemanager;
 use assignsubmission_onlyoffice\templatekey;
 use assignsubmission_onlyoffice\output\content;
+use assignsubmission_onlyoffice\output\error;
 use assignsubmission_onlyoffice\utility;
 
 /**
@@ -92,7 +94,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
 
             $contextid = $this->assignment->get_context()->id;
         } else {
-            // Use forms only.
+            // set docxf as default
             $mform->getElement('assignsubmission_onlyoffice_format')->setSelected('docxf');
         }
 
@@ -108,9 +110,6 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         }
 
         $mform->hideif('assignsubmission_onlyoffice_format', 'assignsubmission_onlyoffice_enabled', 'notchecked');
-
-        // Use forms only.
-        $mform->hideif('assignsubmission_onlyoffice_format', 'assignsubmission_onlyoffice_enabled', 'checked');
     }
 
     /**
@@ -178,6 +177,14 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             }
         }
 
+        if ($submissionfile === null) {
+            $mform->addElement('html', $OUTPUT->render(
+                new error(get_string('formnotready', 'assignsubmission_onlyoffice'))
+            ));
+
+            return true;
+        }
+
         if ($initialfile !== null
             && $initialfile->get_timemodified() > $submissionfile->get_timemodified()) {
             $submissionfile->replace_file_with($initialfile);
@@ -197,7 +204,11 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                 'userid' => $submissionfile->get_userid()
             ]);
 
-            $documenturi = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
+            $storageurl = $CFG->wwwroot;
+            if (class_exists('mod_onlyofficeeditor\configuration_manager')) {
+                $storageurl = configuration_manager::get_storage_url();
+            }
+            $documenturi = $storageurl . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
             $conversionkey = filemanager::generate_key($submissionfile);
 
             $conversionurl = document_service::get_conversion_url($documenturi,

@@ -1,12 +1,17 @@
 # Change Log
 
-## 2.0.0
+## 2.1.0
 ## Changed
-- converting oform to pdf (since document server v8.0)
+- disable scrolling page to editor
+- document, spreadsheet and presentation in the assignment
 
+## 2.0.0
 ## Added
 - disable plugins
 - macro launch
+
+## Changed
+- converting oform to pdf (since document server v8.0)
 
 ## 1.0.0
 ## Added

@@ -28,6 +28,7 @@ require_once(__DIR__.'/../../../locallib.php');
 
 use mod_onlyofficeeditor\onlyoffice_file_utility;
 use mod_onlyofficeeditor\jwt_wrapper;
+use mod_onlyofficeeditor\configuration_manager;
 use assignsubmission_onlyoffice\filemanager;
 
 global $USER;
@@ -39,6 +40,10 @@ $readonly = !!optional_param('readonly', 0, PARAM_BOOL);
 $tmplkey = optional_param('tmplkey', null, PARAM_ALPHANUMEXT);
 
 $modconfig = get_config('onlyofficeeditor');
+$storageurl = $CFG->wwwroot;
+if (class_exists('mod_onlyofficeeditor\configuration_manager')) {
+    $storageurl = configuration_manager::get_storage_url();
+}
 
 $context = null;
 $assing = null;
@@ -90,7 +95,7 @@ $config = [
         'fileType' => $ext,
         'key' => $key,
         'title' => $filename,
-        'url' => $CFG->wwwroot . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash
+        'url' => $storageurl . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash
     ],
     'documentType' => onlyoffice_file_utility::get_document_type('.' . $ext),
     'editorConfig' => [
@@ -121,7 +126,12 @@ if ($editable && $canedit && !$readonly) {
         'tmplkey' => $tmplkey,
         'userid' => $USER->id
     ]);
-    $config['editorConfig']['callbackUrl'] = $CFG->wwwroot . '/mod/assign/submission/onlyoffice/callback.php?doc=' . $callbackhash;
+    $config['editorConfig']['callbackUrl'] = $storageurl . '/mod/assign/submission/onlyoffice/callback.php?doc=' . $callbackhash;
+    // disable editing for users who has a student role assigned
+    if (user_has_role_assignment($USER->id, 5) && $ext === 'pdf') {
+        $config['document']['permissions']['edit'] = false;
+    }
+    $config['document']['permissions']['fillForms'] = true;
 } else {
     $viewable = $assing->can_grade() || $editable;
 
@@ -136,6 +146,8 @@ if ($editable && $canedit && !$readonly) {
 $config['document']['permissions']['protect'] = false;
 
 $customization = [];
+$customization['integrationMode'] = 'embed';
+
 if (isset($modconfig->editor_security_plugin)) {
     $customization['plugins'] = $modconfig->editor_security_plugin == 1;
 }
@@ -143,9 +155,7 @@ if (isset($modconfig->editor_security_macros)) {
     $customization['macros'] = $modconfig->editor_security_macros == 1;
 }
 
-if (!empty($customization)) {
-    $config['editorConfig']['customization'] = $customization;
-}
+$config['editorConfig']['customization'] = $customization;
 
 if (!empty($modconfig->documentserversecret)) {
     $token = jwt_wrapper::encode($config, $modconfig->documentserversecret);
