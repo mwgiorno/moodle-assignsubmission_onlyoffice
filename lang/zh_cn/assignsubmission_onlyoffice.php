@@ -29,3 +29,4 @@ $string['assignformat'] = '格式（ONLYOFFICE）';
 $string['docxfformname'] = '表单';
 $string['filenotfound'] = '文件未找到';
 $string['viewdocument'] = '查看 ONLYOFFICE 文档';
+$string['formnotready'] = '表单未准备完毕。请稍候并刷新页面。';

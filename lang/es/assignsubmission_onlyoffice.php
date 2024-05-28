@@ -29,3 +29,4 @@ $string['assignformat'] = 'Formato (ONLYOFFICE)';
 $string['docxfformname'] = 'Formulario';
 $string['filenotfound'] = 'Archivo no encontrado';
 $string['viewdocument'] = 'Ver documento de ONLYOFFICE';
+$string['formnotready'] = 'El formulario no está listo todavía. Por favor, espere un poco y vuelva a cargar la página.';
