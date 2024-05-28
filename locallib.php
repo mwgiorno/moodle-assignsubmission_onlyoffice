@@ -28,6 +28,7 @@ use mod_onlyofficeeditor\configuration_manager;
 use assignsubmission_onlyoffice\filemanager;
 use assignsubmission_onlyoffice\templatekey;
 use assignsubmission_onlyoffice\output\content;
+use assignsubmission_onlyoffice\output\error;
 use assignsubmission_onlyoffice\utility;
 
 /**
@@ -174,6 +175,14 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                                                         $cfg->format,
                                                         $submission->userid);
             }
+        }
+
+        if ($submissionfile === null) {
+            $mform->addElement('html', $OUTPUT->render(
+                new error(get_string('formnotready', 'assignsubmission_onlyoffice'))
+            ));
+
+            return true;
         }
 
         if ($initialfile !== null
