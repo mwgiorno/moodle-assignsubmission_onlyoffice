@@ -103,7 +103,7 @@ class filemanager {
             'itemid' => $itemid,
             'filename' => $name . $itemid . '.' . $ext,
             'userid' => $userid,
-            'timecreated' => time()
+            'timecreated' => time(),
         ];
 
         $newfile = $fs->create_file_from_storedfile($fr, $initial);
@@ -171,7 +171,7 @@ class filemanager {
     public static function write($file, $url) {
         $fs = get_file_storage();
 
-        $fr = array(
+        $fr = [
             'contextid' => $file->get_contextid(),
             'component' => $file->get_component(),
             'filearea' => self::FILEAREA_ONLYOFFICE_SUBMISSION_DRAFT,
@@ -179,8 +179,8 @@ class filemanager {
             'filename' => $file->get_filename() . '_temp',
             'filepath' => '/',
             'userid' => $file->get_userid(),
-            'timecreated' => $file->get_timecreated()
-        );
+            'timecreated' => $file->get_timecreated(),
+        ];
 
         $tmpfile = $fs->create_file_from_url($fr, $url);
         $file->replace_file_with($tmpfile);
@@ -293,7 +293,7 @@ class filemanager {
             'itemid' => $itemid,
             'userid' => $userid,
             'filepath' => '/',
-            'filename' => $name . $itemid . '.' . $ext
+            'filename' => $name . $itemid . '.' . $ext,
         ], $pathname);
 
         return $newfile;
@@ -324,7 +324,7 @@ class filemanager {
                 'itemid' => $itemid,
                 'userid' => $userid,
                 'filepath' => '/',
-                'filename' => $name . $itemid . '.' . $ext
+                'filename' => $name . $itemid . '.' . $ext,
             ], $url);
         } catch (\file_exception $e) {
             return null;

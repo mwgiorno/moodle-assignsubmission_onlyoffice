@@ -57,7 +57,7 @@ if ($contextid !== 0) {
 }
 
 if (!isset($tmplkey)) {
-    $submission = $DB->get_record('assign_submission', array('id' => $itemid));
+    $submission = $DB->get_record('assign_submission', ['id' => $itemid]);
     if (!$submission) {
         http_response_code(400);
         die();
@@ -87,7 +87,7 @@ $downloadhash = $crypt->get_hash([
     'contextid' => $contextid,
     'itemid' => $itemid,
     'tmplkey' => $tmplkey,
-    'userid' => $USER->id
+    'userid' => $USER->id,
 ]);
 
 $config = [
@@ -95,16 +95,16 @@ $config = [
         'fileType' => $ext,
         'key' => $key,
         'title' => $filename,
-        'url' => $storageurl . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash
+        'url' => $storageurl . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash,
     ],
     'documentType' => onlyoffice_file_utility::get_document_type('.' . $ext),
     'editorConfig' => [
         'lang' => $USER->lang,
         'user' => [
             'id' => $USER->id,
-            'name' => \fullname($USER)
-        ]
-    ]
+            'name' => \fullname($USER),
+        ],
+    ],
 ];
 
 $canedit = in_array('.' . $ext, onlyoffice_file_utility::get_editable_extensions());
@@ -124,10 +124,10 @@ if ($editable && $canedit && !$readonly) {
         'contextid' => $contextid,
         'itemid' => $itemid,
         'tmplkey' => $tmplkey,
-        'userid' => $USER->id
+        'userid' => $USER->id,
     ]);
     $config['editorConfig']['callbackUrl'] = $storageurl . '/mod/assign/submission/onlyoffice/callback.php?doc=' . $callbackhash;
-    // disable editing for users who has a student role assigned
+    // Disable editing for users who has a student role assigned.
     if (user_has_role_assignment($USER->id, 5) && $ext === 'pdf') {
         $config['document']['permissions']['edit'] = false;
     }

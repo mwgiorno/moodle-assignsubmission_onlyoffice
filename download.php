@@ -84,7 +84,7 @@ if ($contextid !== 0) {
 }
 
 if (!isset($tmplkey)) {
-    $submission = $DB->get_record('assign_submission', array('id' => $itemid));
+    $submission = $DB->get_record('assign_submission', ['id' => $itemid]);
     if (!$submission) {
         http_response_code(400);
         die();

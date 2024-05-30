@@ -71,7 +71,7 @@ class content implements \renderable, \templatable {
             $this->data->contextid,
             $this->data->itemid,
             $this->data->readonly,
-            $this->data->tmplkey
+            $this->data->tmplkey,
         ];
 
         $PAGE->requires->js_call_amd('assignsubmission_onlyoffice/editor', 'init', $jsparams);

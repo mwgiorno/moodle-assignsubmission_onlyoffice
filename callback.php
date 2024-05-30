@@ -124,7 +124,7 @@ switch ($status) {
             $canwrite = has_capability('moodle/course:manageactivities', $context);
         } else {
             $assing = new assign($context, $cm, $course);
-            $submission = $DB->get_record('assign_submission', array('id' => $itemid));
+            $submission = $DB->get_record('assign_submission', ['id' => $itemid]);
             if ($submission) {
                 $canwrite = !!$submission->groupid ? $assing->can_edit_group_submission($submission->groupid)
                                                    : $assing->can_edit_submission($submission->userid);
@@ -166,7 +166,7 @@ switch ($status) {
                 'contextid' => $contextid,
                 'itemid' => 0,
                 'tmplkey' => $tmplkey,
-                'userid' => $USER->id
+                'userid' => $USER->id,
             ]);
 
             $storageurl = $CFG->wwwroot;
