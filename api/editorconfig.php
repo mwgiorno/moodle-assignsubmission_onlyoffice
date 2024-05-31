@@ -23,8 +23,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// phpcs:ignore moodle.Files.RequireLogin.Missing
 require_once(__DIR__.'/../../../../../config.php');
 require_once(__DIR__.'/../../../locallib.php');
+// phpcs:enable
 
 use mod_onlyofficeeditor\onlyoffice_file_utility;
 use mod_onlyofficeeditor\jwt_wrapper;
