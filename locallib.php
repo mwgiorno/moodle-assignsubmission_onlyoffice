@@ -94,7 +94,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
 
             $contextid = $this->assignment->get_context()->id;
         } else {
-            // set docxf as default
+            // Set docxf as default.
             $mform->getElement('assignsubmission_onlyoffice_format')->setSelected('docxf');
         }
 
@@ -201,7 +201,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                 'contextid' => $contextid,
                 'itemid' => $submissionfile->get_itemid(),
                 'tmplkey' => null,
-                'userid' => $submissionfile->get_userid()
+                'userid' => $submissionfile->get_userid(),
             ]);
 
             $storageurl = $CFG->wwwroot;
@@ -294,11 +294,11 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
      * @return array - An array of fileareas(keys) and descriptions(values)
      */
     public function get_file_areas() {
-        return array(
+        return [
             filemanager::FILEAREA_ONLYOFFICE_SUBMISSION_FILE => $this->get_name(),
             filemanager::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE => $this->get_name(),
-            filemanager::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL => $this->get_name()
-        );
+            filemanager::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL => $this->get_name(),
+        ];
     }
 
     /**

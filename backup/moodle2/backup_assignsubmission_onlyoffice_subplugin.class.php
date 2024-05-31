@@ -39,14 +39,14 @@ class backup_assignsubmission_onlyoffice_subplugin extends backup_subplugin {
         $subpluginwrapper = new backup_nested_element($this->get_recommended_name());
         $subpluginelement = new backup_nested_element('submission_onlyoffice',
                                                       null,
-                                                      array('itemid', 'contextid'));
+                                                      ['itemid', 'contextid']);
 
         // Connect XML elements into the tree.
         $subplugin->add_child($subpluginwrapper);
         $subpluginwrapper->add_child($subpluginelement);
 
         $subpluginelement->set_source_table('files',
-                                            array('itemid' => backup::VAR_PARENTID));
+                                            ['itemid' => backup::VAR_PARENTID]);
 
         // The parent is the submission.
         $subpluginelement->annotate_files('assignsubmission_onlyoffice',
@@ -54,7 +54,7 @@ class backup_assignsubmission_onlyoffice_subplugin extends backup_subplugin {
                                           'itemid');
 
         $subpluginelement->set_source_table('files',
-                                            array('contextid' => backup::VAR_CONTEXTID));
+                                            ['contextid' => backup::VAR_CONTEXTID]);
 
         $subpluginelement->annotate_files('assignsubmission_onlyoffice',
                                           filemanager::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
