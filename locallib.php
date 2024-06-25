@@ -80,7 +80,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                 $mform->freeze('assignsubmission_onlyoffice_format');
 
                 if (isset($assignconfig->format)
-                    && $assignconfig->format === 'pdf') {
+                    && ($assignconfig->format === 'docxf' || $assignconfig->format === 'pdf')) {
                     $fulltmplkey = $assignconfig->tmplkey;
                     list($origintmplkey, $contextid) = templatekey::parse_contextid($fulltmplkey);
                     if ($this->assignment->get_context()->id === $contextid) {
