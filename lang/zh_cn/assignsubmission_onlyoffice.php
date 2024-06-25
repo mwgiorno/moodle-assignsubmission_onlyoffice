@@ -23,7 +23,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['assignformat'] = '格式（ONLYOFFICE）';
-$string['docxfformname'] = '表单';
+$string['pdfformname'] = '表单';
 $string['enabled'] = 'ONLYOFFICE 文档';
 $string['enabled_help'] = '如果该选项启用，学生能够使用 ONLYOFFICE 提交作业。';
 $string['filenotfound'] = '文件未找到';

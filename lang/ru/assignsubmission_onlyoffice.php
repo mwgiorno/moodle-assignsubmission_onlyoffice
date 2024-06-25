@@ -23,7 +23,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['assignformat'] = 'Формат (ONLYOFFICE)';
-$string['docxfformname'] = 'Форма';
+$string['pdfformname'] = 'Форма';
 $string['enabled'] = 'ONLYOFFICE документ';
 $string['enabled_help'] = 'Если активно, студенты могут использовать ONLYOFFFICE для отправки.';
 $string['filenotfound'] = 'Файл не найден';
