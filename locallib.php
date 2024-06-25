@@ -63,7 +63,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             'docx' => get_string('docxformname', 'onlyofficeeditor'),
             'xlsx' => get_string('xlsxformname', 'onlyofficeeditor'),
             'pptx' => get_string('pptxformname', 'onlyofficeeditor'),
-            'docxf' => get_string('docxfformname', 'assignsubmission_onlyoffice'),
+            'pdf' => get_string('pdfformname', 'assignsubmission_onlyoffice'),
         ];
 
         $mform->addElement('select', 'assignsubmission_onlyoffice_format',
@@ -78,7 +78,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                 $mform->freeze('assignsubmission_onlyoffice_format');
 
                 if (isset($assignconfig->format)
-                    && $assignconfig->format === 'docxf') {
+                    && $assignconfig->format === 'pdf') {
                     $fulltmplkey = $assignconfig->tmplkey;
                     list($origintmplkey, $contextid) = templatekey::parse_contextid($fulltmplkey);
                     if ($this->assignment->get_context()->id === $contextid) {
@@ -94,8 +94,8 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
 
             $contextid = $this->assignment->get_context()->id;
         } else {
-            // Set docxf as default.
-            $mform->getElement('assignsubmission_onlyoffice_format')->setSelected('docxf');
+            // Set pdf as default.
+            $mform->getElement('assignsubmission_onlyoffice_format')->setSelected('pdf');
         }
 
         if ($initeditor) {
@@ -122,7 +122,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         $this->set_config('format', $data->assignsubmission_onlyoffice_format);
 
         if (isset($data->assignsubmission_onlyoffice_tmplkey)
-            && $data->assignsubmission_onlyoffice_format === 'docxf') {
+            && $data->assignsubmission_onlyoffice_format === 'pdf') {
             $this->set_config('tmplkey', $data->assignsubmission_onlyoffice_tmplkey . '_' . $this->assignment->get_context()->id);
         }
 
@@ -148,13 +148,13 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         $contextid = $this->assignment->get_context()->id;
 
         $initialfile = null;
-        if ($cfg->format === 'docxf') {
+        if ($cfg->format === 'pdf') {
             $initialfile = filemanager::get_initial($contextid);
         }
 
         $submissionformat = utility::get_form_format();
 
-        $isform = $cfg->format === 'docxf' ? true : false;
+        $isform = $cfg->format === 'pdf' ? true : false;
         $submissionfile = filemanager::get($contextid, $submission->id);
         if ($submissionfile === null) {
             if ($isform) {
