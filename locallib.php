@@ -73,8 +73,10 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             $assignconfig = $this->get_config();
 
             if (isset($assignconfig->format)
-                && array_key_exists($assignconfig->format, $assignformat)) {
-                $mform->getElement('assignsubmission_onlyoffice_format')->setSelected($assignconfig->format);
+                && (array_key_exists($assignconfig->format, $assignformat)
+                    || $assignconfig->format === 'docxf')) {
+                $mform->getElement('assignsubmission_onlyoffice_format')
+                    ->setSelected($assignconfig->format === 'docxf' ? 'pdf' : $assignconfig->format);
                 $mform->freeze('assignsubmission_onlyoffice_format');
 
                 if (isset($assignconfig->format)
