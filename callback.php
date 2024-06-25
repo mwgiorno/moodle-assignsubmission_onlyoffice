@@ -159,7 +159,14 @@ switch ($status) {
 
         $filename = $file->get_filename();
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        if ($ext === 'docxf' && $mustsaveinitial) {
+        if ($ext === 'pdf' && $mustsaveinitial) {
+            $initialfile = filemanager::get_initial($contextid);
+            if ($initialfile === null) {
+                filemanager::create_initial_from_file($file);
+            } else {
+                filemanager::write_to_initial_from_file($initialfile, $file);
+            }
+        } else if (($ext === 'docxf') && $mustsaveinitial) {
             $submissionformat = utility::get_form_format();
 
             $crypt = new \mod_onlyofficeeditor\hasher();
