@@ -140,7 +140,7 @@ switch ($status) {
 
         $file = !isset($tmplkey) ? filemanager::get($contextid, $itemid) : filemanager::get_template($contextid);
         if (empty($file) && isset($tmplkey)) {
-            $file = filemanager::create_template($contextid, 'docxf', $itemid);
+            $file = filemanager::create_template($contextid, 'pdf', $itemid);
             $mustsaveinitial = true;
         }
 
