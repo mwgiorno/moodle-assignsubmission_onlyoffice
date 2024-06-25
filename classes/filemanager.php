@@ -213,7 +213,7 @@ class filemanager {
         global $USER;
         global $CFG;
 
-        if ($ext === 'docxf') {
+        if ($ext === 'pdf') {
             $pathlocale = \mod_onlyofficeeditor\util::PATH_LOCALE[$USER->lang];
             if ($pathlocale === null) {
                 $pathlocale = "en-US";
