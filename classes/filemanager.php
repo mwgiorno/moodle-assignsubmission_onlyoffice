@@ -211,6 +211,21 @@ class filemanager {
         return $fs->create_file_from_storedfile($fr, $file);
     }
 
+
+
+    /**
+     * Write to initial file from stored file
+     *
+     * @param stored_file $initial initial file.
+     * @param stored_file $file file from which to copy.
+     *
+     * @return void
+     */
+    public static function write_to_initial_from_file($initial, $file) {
+        $initial->replace_file_with($file);
+        $initial->set_timemodified(time());
+    }
+
     /**
      * Delete file from onlyoffice file area
      *
