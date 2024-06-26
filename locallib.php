@@ -79,6 +79,11 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                     ->setSelected($assignconfig->format === 'docxf' ? 'pdf' : $assignconfig->format);
                 $mform->freeze('assignsubmission_onlyoffice_format');
 
+                if ($assignconfig->format === 'docxf') {
+                    $mform->addElement('hidden', 'assignsubmission_onlyoffice_hidden_format', $assignconfig->format);
+                    $mform->setType('assignsubmission_onlyoffice_hidden_format', PARAM_ALPHA);
+                }
+
                 if (isset($assignconfig->format)
                     && ($assignconfig->format === 'docxf' || $assignconfig->format === 'pdf')) {
                     $fulltmplkey = $assignconfig->tmplkey;
@@ -121,10 +126,13 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
      * @return bool - on error the subtype should call set_error and return false.
      */
     public function save_settings(stdClass $data) {
-        $this->set_config('format', $data->assignsubmission_onlyoffice_format);
+        $format = isset($data->assignsubmission_onlyoffice_hidden_format)
+            ? $data->assignsubmission_onlyoffice_hidden_format
+            : $data->assignsubmission_onlyoffice_format;
+        $this->set_config('format', $format);
 
         if (isset($data->assignsubmission_onlyoffice_tmplkey)
-            && $data->assignsubmission_onlyoffice_format === 'pdf') {
+            && ($format === 'pdf' || $format === 'docxf')) {
             $this->set_config('tmplkey', $data->assignsubmission_onlyoffice_tmplkey . '_' . $this->assignment->get_context()->id);
         }
 
