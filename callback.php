@@ -105,7 +105,6 @@ switch ($status) {
     case util::STATUS_CLOSEDNOCHANGES:
         $file = null;
         $canwrite = false;
-        $mustsaveinitial = false;
 
         $userid = isset($users) ? $users[0] : $callbackuserid;
         $user = \core_user::get_user($userid);
@@ -141,7 +140,6 @@ switch ($status) {
         $file = !isset($tmplkey) ? filemanager::get($contextid, $itemid) : filemanager::get_template($contextid);
         if (empty($file) && isset($tmplkey)) {
             $file = filemanager::create_template($contextid, 'pdf', $itemid);
-            $mustsaveinitial = true;
         }
 
         if (empty($file)) {
@@ -159,14 +157,7 @@ switch ($status) {
 
         $filename = $file->get_filename();
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        if ($ext === 'pdf' && $mustsaveinitial) {
-            $initialfile = filemanager::get_initial($contextid);
-            if ($initialfile === null) {
-                filemanager::create_initial_from_file($file);
-            } else {
-                filemanager::write_to_initial_from_file($initialfile, $file);
-            }
-        } else if (($ext === 'docxf') && $mustsaveinitial) {
+        if (($ext === 'docxf') && $mustsaveinitial) {
             $submissionformat = utility::get_form_format();
 
             $crypt = new \mod_onlyofficeeditor\hasher();
