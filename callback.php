@@ -150,43 +150,40 @@ switch ($status) {
         if (isset($url)) {
             filemanager::write($file, $url);
 
-            if (isset($tmplkey)) {
-                $mustsaveinitial = true;
-            }
-        }
+            $filename = $file->get_filename();
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
 
-        $filename = $file->get_filename();
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        if (($ext === 'docxf') && $mustsaveinitial) {
-            $submissionformat = utility::get_form_format();
-
-            $crypt = new \mod_onlyofficeeditor\hasher();
-            $downloadhash = $crypt->get_hash([
-                'action' => 'download',
-                'contextid' => $contextid,
-                'itemid' => 0,
-                'tmplkey' => $tmplkey,
-                'userid' => $USER->id,
-            ]);
-
-            $storageurl = $CFG->wwwroot;
-            if (class_exists('mod_onlyofficeeditor\configuration_manager')) {
-                $storageurl = configuration_manager::get_storage_url();
-            }
-            $documenturi = $storageurl . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
-            $conversionkey = filemanager::generate_key($file);
-
-            $conversionurl = document_service::get_conversion_url($documenturi, $ext, $submissionformat, $conversionkey);
-
-            if (empty($conversionurl)) {
-                break;
-            }
-
-            $initialfile = filemanager::get_initial($contextid);
-            if ($initialfile === null) {
-                filemanager::create_initial($contextid, $submissionformat, $itemid, $conversionurl);
-            } else {
-                filemanager::write($initialfile, $conversionurl);
+            if ($ext === 'docxf') {
+                $submissionformat = utility::get_form_format();
+    
+                $crypt = new \mod_onlyofficeeditor\hasher();
+                $downloadhash = $crypt->get_hash([
+                    'action' => 'download',
+                    'contextid' => $contextid,
+                    'itemid' => 0,
+                    'tmplkey' => $tmplkey,
+                    'userid' => $USER->id,
+                ]);
+    
+                $storageurl = $CFG->wwwroot;
+                if (class_exists('mod_onlyofficeeditor\configuration_manager')) {
+                    $storageurl = configuration_manager::get_storage_url();
+                }
+                $documenturi = $storageurl . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
+                $conversionkey = filemanager::generate_key($file);
+    
+                $conversionurl = document_service::get_conversion_url($documenturi, $ext, $submissionformat, $conversionkey);
+    
+                if (empty($conversionurl)) {
+                    break;
+                }
+    
+                $initialfile = filemanager::get_initial($contextid);
+                if ($initialfile === null) {
+                    filemanager::create_initial($contextid, $submissionformat, $itemid, $conversionurl);
+                } else {
+                    filemanager::write($initialfile, $conversionurl);
+                }
             }
         }
 
