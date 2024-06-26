@@ -70,16 +70,16 @@ define(['jquery'], function($) {
 
                     if (enableapptoggle[0].checked
                         && formatelement.length > 0
-                        && (formatelement[0].value == 'docxf' || formatelement[0].value == 'pdf')) {
+                        && formatelement[0].value == 'pdf') {
                         openEditor(contextid, itemid, readonly, tmplkey);
                     }
 
                     enableapptoggle.change(function(e) {
                         if (e.currentTarget.checked
                             && (formatelement.length > 0
-                                && (formatelement[0].value == 'docxf' || formatelement[0].value == 'pdf')
+                                && formatelement[0].value == 'pdf'
                                 || selectformat.length > 0
-                                && (selectformat[0].value == 'docxf' || selectformat[0].value == 'pdf'))) {
+                                && selectformat[0].value == 'pdf')) {
 
                             if (docEditor === null) {
                                 openEditor(contextid, itemid, readonly, tmplkey);
@@ -95,7 +95,7 @@ define(['jquery'], function($) {
 
                     if (selectformat.length > 0) {
                         selectformat.change(function(e) {
-                            if (e.target.value != 'docxf' && e.target.value != 'pdf') {
+                            if (e.target.value != 'pdf') {
                                 if ($("#app-onlyoffice").is(":visible")) {
                                     $("#app-onlyoffice").hide();
                                 }
