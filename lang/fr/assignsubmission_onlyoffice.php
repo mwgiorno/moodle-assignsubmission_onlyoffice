@@ -23,10 +23,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['assignformat'] = 'Format (ONLYOFFICE)';
-$string['pdfformname'] = 'Formulaire';
 $string['enabled'] = 'Document ONLYOFFICE';
 $string['enabled_help'] = 'Si cette option est activée, les étudiants peuvent utiliser ONLYOFFICE pour leur soumission.';
 $string['filenotfound'] = 'Fichier introuvable';
 $string['formnotready'] = 'Le formulaire n\'est pas encore prêt. Veuillez patienter un instant et recharger la page.';
+$string['pdfformname'] = 'Formulaire';
 $string['pluginname'] = 'Document ONLYOFFICE';
 $string['viewdocument'] = 'Voir le document ONLYOFFICE';
