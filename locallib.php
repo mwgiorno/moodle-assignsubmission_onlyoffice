@@ -159,8 +159,6 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
 
         $initialfile = null;
         if ($cfg->format === 'pdf') {
-            $initialfile = filemanager::get_template($contextid);
-        } else if ($cfg->format === 'docxf') {
             $initialfile = filemanager::get_initial($contextid);
         }
 
