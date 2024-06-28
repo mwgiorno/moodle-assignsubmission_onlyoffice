@@ -158,13 +158,13 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         $contextid = $this->assignment->get_context()->id;
 
         $initialfile = null;
-        if ($cfg->format === 'pdf') {
+        if ($cfg->format === 'pdf' || $cfg->format === 'docxf') {
             $initialfile = filemanager::get_initial($contextid);
         }
 
         $submissionformat = utility::get_form_format();
 
-        $isform = $cfg->format === 'pdf' ? true : false;
+        $isform = $cfg->format === 'pdf' || $cfg->format === 'docxf';
         $submissionfile = filemanager::get($contextid, $submission->id);
         if ($submissionfile === null) {
             if ($isform) {
