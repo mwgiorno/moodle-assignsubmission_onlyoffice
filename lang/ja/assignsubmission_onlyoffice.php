@@ -23,10 +23,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['assignformat'] = '形式 (ONLYOFFICE)';
-$string['docxfformname'] = 'フォーム';
 $string['enabled'] = 'ONLYOFFICEの文書';
 $string['enabled_help'] = '有効にすると、学生はONLYOFFICEを使用して課題を提出することができるようになります。';
 $string['filenotfound'] = 'ファイルが見つかりません';
 $string['formnotready'] = 'フォームの準備がまだできていません。 しばらくお待ちいただき、ページを再読み込みしてください。';
+$string['pdfformname'] = 'フォーム';
 $string['pluginname'] = 'ONLYOFFICEの文書';
 $string['viewdocument'] = 'ONLYOFFICE文書を見る';

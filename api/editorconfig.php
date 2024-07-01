@@ -78,7 +78,7 @@ if ($file === null
     die();
 }
 
-$filename = !empty($file) ? $file->get_filename() : 'form_template.docxf';
+$filename = !empty($file) ? $file->get_filename() : 'form_template.pdf';
 $key = !empty($file) ? filemanager::generate_key($file) : $tmplkey;
 
 $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));

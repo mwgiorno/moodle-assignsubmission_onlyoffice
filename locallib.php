@@ -63,7 +63,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             'docx' => get_string('docxformname', 'onlyofficeeditor'),
             'xlsx' => get_string('xlsxformname', 'onlyofficeeditor'),
             'pptx' => get_string('pptxformname', 'onlyofficeeditor'),
-            'docxf' => get_string('docxfformname', 'assignsubmission_onlyoffice'),
+            'pdf' => get_string('pdfformname', 'assignsubmission_onlyoffice'),
         ];
 
         $mform->addElement('select', 'assignsubmission_onlyoffice_format',
@@ -73,12 +73,19 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             $assignconfig = $this->get_config();
 
             if (isset($assignconfig->format)
-                && array_key_exists($assignconfig->format, $assignformat)) {
-                $mform->getElement('assignsubmission_onlyoffice_format')->setSelected($assignconfig->format);
+                && (array_key_exists($assignconfig->format, $assignformat)
+                    || $assignconfig->format === 'docxf')) {
+                $mform->getElement('assignsubmission_onlyoffice_format')
+                    ->setSelected($assignconfig->format === 'docxf' ? 'pdf' : $assignconfig->format);
                 $mform->freeze('assignsubmission_onlyoffice_format');
 
+                if ($assignconfig->format === 'docxf') {
+                    $mform->addElement('hidden', 'assignsubmission_onlyoffice_hidden_format', $assignconfig->format);
+                    $mform->setType('assignsubmission_onlyoffice_hidden_format', PARAM_ALPHA);
+                }
+
                 if (isset($assignconfig->format)
-                    && $assignconfig->format === 'docxf') {
+                    && ($assignconfig->format === 'docxf' || $assignconfig->format === 'pdf')) {
                     $fulltmplkey = $assignconfig->tmplkey;
                     list($origintmplkey, $contextid) = templatekey::parse_contextid($fulltmplkey);
                     if ($this->assignment->get_context()->id === $contextid) {
@@ -94,8 +101,8 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
 
             $contextid = $this->assignment->get_context()->id;
         } else {
-            // Set docxf as default.
-            $mform->getElement('assignsubmission_onlyoffice_format')->setSelected('docxf');
+            // Set pdf as default.
+            $mform->getElement('assignsubmission_onlyoffice_format')->setSelected('pdf');
         }
 
         if ($initeditor) {
@@ -119,10 +126,13 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
      * @return bool - on error the subtype should call set_error and return false.
      */
     public function save_settings(stdClass $data) {
-        $this->set_config('format', $data->assignsubmission_onlyoffice_format);
+        $format = isset($data->assignsubmission_onlyoffice_hidden_format)
+            ? $data->assignsubmission_onlyoffice_hidden_format
+            : $data->assignsubmission_onlyoffice_format;
+        $this->set_config('format', $format);
 
         if (isset($data->assignsubmission_onlyoffice_tmplkey)
-            && $data->assignsubmission_onlyoffice_format === 'docxf') {
+            && ($format === 'pdf' || $format === 'docxf')) {
             $this->set_config('tmplkey', $data->assignsubmission_onlyoffice_tmplkey . '_' . $this->assignment->get_context()->id);
         }
 
@@ -148,13 +158,13 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         $contextid = $this->assignment->get_context()->id;
 
         $initialfile = null;
-        if ($cfg->format === 'docxf') {
+        if ($cfg->format === 'pdf' || $cfg->format === 'docxf') {
             $initialfile = filemanager::get_initial($contextid);
         }
 
         $submissionformat = utility::get_form_format();
 
-        $isform = $cfg->format === 'docxf' ? true : false;
+        $isform = $cfg->format === 'pdf' || $cfg->format === 'docxf';
         $submissionfile = filemanager::get($contextid, $submission->id);
         if ($submissionfile === null) {
             if ($isform) {

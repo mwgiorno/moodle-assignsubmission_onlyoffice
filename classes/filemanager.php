@@ -189,6 +189,44 @@ class filemanager {
     }
 
     /**
+     * Create initial file to onlyoffice file area from stored file
+     *
+     * @param stored_file $file file from which to create.
+     *
+     * @return stored_file
+     */
+    public static function create_initial_from_file($file) {
+        $fs = get_file_storage();
+
+        $fr = [
+            'contextid' => $file->get_contextid(),
+            'component' => $file->get_component(),
+            'filearea' => self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL,
+            'itemid' => $file->get_itemid(),
+            'filename' => $file->get_filename(),
+            'filepath' => '/',
+            'userid' => $file->get_userid(),
+        ];
+
+        return $fs->create_file_from_storedfile($fr, $file);
+    }
+
+
+
+    /**
+     * Write to initial file from stored file
+     *
+     * @param stored_file $initial initial file.
+     * @param stored_file $file file from which to copy.
+     *
+     * @return void
+     */
+    public static function write_to_initial_from_file($initial, $file) {
+        $initial->replace_file_with($file);
+        $initial->set_timemodified(time());
+    }
+
+    /**
      * Delete file from onlyoffice file area
      *
      * @param int $contextid context identifier.
@@ -213,7 +251,7 @@ class filemanager {
         global $USER;
         global $CFG;
 
-        if ($ext === 'docxf') {
+        if ($ext === 'pdf') {
             $pathlocale = \mod_onlyofficeeditor\util::PATH_LOCALE[$USER->lang];
             if ($pathlocale === null) {
                 $pathlocale = "en-US";

@@ -111,7 +111,7 @@ if (!$canread) {
 
 if ($file === null) {
     if (isset($tmplkey)) {
-        $templatepath = filemanager::get_template_path('docxf');
+        $templatepath = filemanager::get_template_path('pdf');
         $templatename = pathinfo($templatepath, PATHINFO_BASENAME);
 
         send_file($templatepath, $templatename, 0, 0, false, false, '', false, []);
