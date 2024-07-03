@@ -1,4 +1,6 @@
 # Change Log
+
+## 2.2.0
 ## Changed
 - replace docxf with pdf as a form template
 
