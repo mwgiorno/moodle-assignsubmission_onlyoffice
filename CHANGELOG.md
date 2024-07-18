@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.2.0
+## Changed
+- replace docxf with pdf as a form template
+
 ## 2.1.0
 ## Changed
 - disable scrolling page to editor

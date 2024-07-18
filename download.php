@@ -22,8 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// phpcs:ignore moodle.Files.RequireLogin.Missing
 require_once(__DIR__.'/../../../../config.php');
 require_once(__DIR__.'/../../locallib.php');
+// phpcs:enable
 
 use mod_onlyofficeeditor\onlyoffice_file_utility;
 use assignsubmission_onlyoffice\filemanager;
@@ -84,7 +86,7 @@ if ($contextid !== 0) {
 }
 
 if (!isset($tmplkey)) {
-    $submission = $DB->get_record('assign_submission', array('id' => $itemid));
+    $submission = $DB->get_record('assign_submission', ['id' => $itemid]);
     if (!$submission) {
         http_response_code(400);
         die();
@@ -109,7 +111,7 @@ if (!$canread) {
 
 if ($file === null) {
     if (isset($tmplkey)) {
-        $templatepath = filemanager::get_template_path('docxf');
+        $templatepath = filemanager::get_template_path('pdf');
         $templatename = pathinfo($templatepath, PATHINFO_BASENAME);
 
         send_file($templatepath, $templatename, 0, 0, false, false, '', false, []);

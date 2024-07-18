@@ -35,7 +35,7 @@ class restore_assignsubmission_onlyoffice_subplugin extends restore_subplugin {
      */
     protected function define_submission_subplugin_structure() {
 
-        $paths = array();
+        $paths = [];
 
         $elename = $this->get_namefor('submission');
         $elepath = $this->get_pathfor('/submission_onlyoffice');

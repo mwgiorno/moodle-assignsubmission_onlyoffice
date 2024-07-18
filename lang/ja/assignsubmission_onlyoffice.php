@@ -22,11 +22,11 @@
  * @copyright   2024 Ascensio System SIA <integration@onlyoffice.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-$string['pluginname'] = 'ONLYOFFICEの文書';
+$string['assignformat'] = '形式 (ONLYOFFICE)';
 $string['enabled'] = 'ONLYOFFICEの文書';
 $string['enabled_help'] = '有効にすると、学生はONLYOFFICEを使用して課題を提出することができるようになります。';
-$string['assignformat'] = '形式 (ONLYOFFICE)';
-$string['docxfformname'] = 'フォーム';
 $string['filenotfound'] = 'ファイルが見つかりません';
-$string['viewdocument'] = 'ONLYOFFICE文書を見る';
 $string['formnotready'] = 'フォームの準備がまだできていません。 しばらくお待ちいただき、ページを再読み込みしてください。';
+$string['pdfformname'] = 'フォーム';
+$string['pluginname'] = 'ONLYOFFICEの文書';
+$string['viewdocument'] = 'ONLYOFFICE文書を見る';

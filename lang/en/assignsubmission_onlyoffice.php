@@ -22,11 +22,11 @@
  * @copyright   2024 Ascensio System SIA <integration@onlyoffice.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-$string['pluginname'] = 'ONLYOFFICE document';
+$string['assignformat'] = 'Format (ONLYOFFICE)';
 $string['enabled'] = 'ONLYOFFICE document';
 $string['enabled_help'] = 'If enabled, students are able to use ONLYOFFICE for their submission.';
-$string['assignformat'] = 'Format (ONLYOFFICE)';
-$string['docxfformname'] = 'Form';
 $string['filenotfound'] = 'File not found';
-$string['viewdocument'] = 'View ONLYOFFICE document';
 $string['formnotready'] = 'Form is not ready yet. Please wait a bit and reload the page.';
+$string['pdfformname'] = 'Form';
+$string['pluginname'] = 'ONLYOFFICE document';
+$string['viewdocument'] = 'View ONLYOFFICE document';

@@ -30,10 +30,10 @@ global $CFG;
 
 require_once($CFG->dirroot . '/mod/assign/locallib.php');
 
-use \core_privacy\local\metadata\collection;
-use \core_privacy\local\request\writer;
-use \core_privacy\local\request\contextlist;
-use \mod_assign\privacy\assign_plugin_request_data;
+use core_privacy\local\metadata\collection;
+use core_privacy\local\request\writer;
+use core_privacy\local\request\contextlist;
+use mod_assign\privacy\assign_plugin_request_data;
 
 use assignsubmission_onlyoffice\filemanager;
 
@@ -51,7 +51,7 @@ class provider implements
      * @param  collection $collection A list of information to add to.
      * @return collection Return the collection after adding to it.
      */
-    public static function get_metadata(collection $collection) : collection {
+    public static function get_metadata(collection $collection): collection {
         $collection->link_subsystem('core_files', 'privacy:metadata:filepurpose');
         return $collection;
     }
@@ -102,7 +102,7 @@ class provider implements
         $plugin = $assign->get_plugin_by_type('assignsubmission', 'onlyoffice');
         $submission = $exportdata->get_pluginobject();
         if (!$submission->userid) {
-            $files = array();
+            $files = [];
         } else {
             $files = $plugin->get_files($submission, $user);
         }
@@ -116,7 +116,7 @@ class provider implements
                 'cmid' => $context->instanceid,
                 'course' => $coursecontext->instanceid,
                 'userid' => $userid,
-                'file' => $file
+                'file' => $file,
             ]);
         }
     }
