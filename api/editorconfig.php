@@ -130,7 +130,11 @@ if ($editable && $canedit && !$readonly) {
     ]);
     $config['editorConfig']['callbackUrl'] = $storageurl . '/mod/assign/submission/onlyoffice/callback.php?doc=' . $callbackhash;
     // Disable editing for users who has a student role assigned.
-    if (user_has_role_assignment($USER->id, 5) && $ext === 'pdf') {
+    if (
+        $ext === 'pdf'
+        && (user_has_role_assignment($USER->id, 5)
+        || ($context && !has_capability('moodle/course:manageactivities', $context)))
+    ) {
         $config['document']['permissions']['edit'] = false;
     }
     $config['document']['permissions']['fillForms'] = true;
