@@ -1,4 +1,5 @@
 # Change Log
+- forbid pdf files editing by users lacking required capabilities
 
 ## 2.2.0
 ## Changed
