@@ -33,6 +33,11 @@ use stored_file;
 class filemanager {
 
     /**
+     * File name maximum length
+     */
+    const FILENAME_MAXIMUM_LENGTH = 255;
+
+    /**
      * Submission file area
      */
     const FILEAREA_ONLYOFFICE_SUBMISSION_FILE = 'assignsubmission_onlyoffice_file';
@@ -101,7 +106,7 @@ class filemanager {
         $fr = (object)[
             'filearea' => self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
             'itemid' => $itemid,
-            'filename' => $name . $itemid . '.' . $ext,
+            'filename' => static::generate_filename($name, $itemid, $ext),
             'userid' => $userid,
             'timecreated' => time(),
         ];
@@ -331,7 +336,7 @@ class filemanager {
             'itemid' => $itemid,
             'userid' => $userid,
             'filepath' => '/',
-            'filename' => $name . $itemid . '.' . $ext,
+            'filename' => static::generate_filename($name, $itemid, $ext),
         ], $pathname);
 
         return $newfile;
@@ -362,12 +367,30 @@ class filemanager {
                 'itemid' => $itemid,
                 'userid' => $userid,
                 'filepath' => '/',
-                'filename' => $name . $itemid . '.' . $ext,
+                'filename' => static::generate_filename($name, $itemid, $ext),
             ], $url);
         } catch (\file_exception $e) {
             return null;
         }
 
         return $file;
+    }
+
+    /**
+     * Generate valid file name
+     *
+     * @param string $name
+     * @param int|string $itemid
+     * @param string $ext
+     * @return string
+     */
+    private static function generate_filename($name, $itemid, $ext) {
+        $filename = "$name$itemid.$ext";
+
+        if (strlen($filename) > static::FILENAME_MAXIMUM_LENGTH) {
+            $filename = substr($name, 0, static::FILENAME_MAXIMUM_LENGTH - strlen("$itemid.$ext")) . "$itemid.$ext";
+        }
+
+        return $filename;
     }
 }

@@ -1,5 +1,6 @@
 # Change Log
 - forbid pdf files editing by users lacking required capabilities
+- trim overlong file names
 
 ## 2.2.0
 ## Changed
