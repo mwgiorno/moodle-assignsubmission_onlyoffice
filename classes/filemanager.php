@@ -380,15 +380,16 @@ class filemanager {
      * Generate valid file name
      *
      * @param string $name
-     * @param int|string $itemid
+     * @param int|string $suffix
      * @param string $ext
      * @return string
      */
-    private static function generate_filename($name, $itemid, $ext) {
-        $filename = "$name$itemid.$ext";
+    private static function generate_filename($name, $suffix, $ext) {
+        $postfix = "_$suffix.$ext";
+        $filename = "$name$postfix";
 
         if (strlen($filename) > static::FILENAME_MAXIMUM_LENGTH) {
-            $filename = substr($name, 0, static::FILENAME_MAXIMUM_LENGTH - strlen("$itemid.$ext")) . "$itemid.$ext";
+            $filename = substr($name, 0, static::FILENAME_MAXIMUM_LENGTH - strlen($postfix)) . $postfix;
         }
 
         return $filename;
