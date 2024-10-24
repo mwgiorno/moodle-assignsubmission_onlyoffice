@@ -97,16 +97,17 @@ class filemanager {
      * @param string $name file name.
      * @param string $ext file extension.
      * @param string $userid user identifier.
+     * @param string $filenamesuffix file name suffix
      *
      * @return stored_file
      */
-    public static function create_by_initial($initial, $itemid, $name, $ext, $userid) {
+    public static function create_by_initial($initial, $itemid, $name, $ext, $userid, $filenamesuffix) {
         $fs = get_file_storage();
 
         $fr = (object)[
             'filearea' => self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
             'itemid' => $itemid,
-            'filename' => static::generate_filename($name, $itemid, $ext),
+            'filename' => static::generate_filename($name, $filenamesuffix, $ext),
             'userid' => $userid,
             'timecreated' => time(),
         ];
