@@ -151,6 +151,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
     public function get_form_elements($submission, MoodleQuickForm $mform, stdClass $data, $userid = null) {
         global $OUTPUT;
         global $CFG;
+        global $USER;
 
         $cfg = $this->get_config();
 
@@ -166,6 +167,13 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
 
         $isform = $cfg->format === 'pdf' || $cfg->format === 'docxf';
         $submissionfile = filemanager::get($contextid, $submission->id);
+
+        if (!!$this->assignment->get_instance()->teamsubmission) {
+            $filenamesuffix = $submission->groupid == "0" ? 'default' : groups_get_group_name($submission->groupid);
+        } else {
+            $filenamesuffix = $USER->username;
+        }
+
         if ($submissionfile === null) {
             if ($isform) {
                 if ($initialfile !== null) {
@@ -176,7 +184,8 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                                                                         $submission->id,
                                                                         $this->assignment->get_instance()->name,
                                                                         $initialextension,
-                                                                        $submission->userid);
+                                                                        $submission->userid,
+                                                                        $filenamesuffix);
                 }
             } else {
                 $submissionfile = filemanager::create($contextid,
