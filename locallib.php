@@ -201,7 +201,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         $contextid = $this->assignment->get_context()->id;
 
         $initialfile = null;
-        if ($cfg->format === 'pdf' || $cfg->format === 'docxf') {
+        if ($cfg->templatetype === 'custom') {
             $initialfile = filemanager::get_initial($contextid);
         }
 
@@ -210,17 +210,15 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         $isform = $cfg->format === 'pdf' || $cfg->format === 'docxf';
         $submissionfile = filemanager::get($contextid, $submission->id);
         if ($submissionfile === null) {
-            if ($isform) {
-                if ($initialfile !== null) {
-                    $initialfilename = $initialfile->get_filename();
-                    $initialextension = strtolower(pathinfo($initialfilename, PATHINFO_EXTENSION));
+            if ($initialfile) {
+                $initialfilename = $initialfile->get_filename();
+                $initialextension = strtolower(pathinfo($initialfilename, PATHINFO_EXTENSION));
 
-                    $submissionfile = filemanager::create_by_initial($initialfile,
-                                                                        $submission->id,
-                                                                        $this->assignment->get_instance()->name,
-                                                                        $initialextension,
-                                                                        $submission->userid);
-                }
+                $submissionfile = filemanager::create_by_initial($initialfile,
+                                                                    $submission->id,
+                                                                    $this->assignment->get_instance()->name,
+                                                                    $initialextension,
+                                                                    $submission->userid);
             } else {
                 $submissionfile = filemanager::create($contextid,
                                                         $submission->id,
@@ -275,7 +273,13 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         }
 
         $mform->addElement('html', $OUTPUT->render(
-            new content($documentserverurl, $contextid, $submission->id)
+            new content(
+                $documentserverurl,
+                $contextid,
+                $submission->id,
+                false,
+                null,
+                $isform ? $cfg->templatetype : null)
         ));
 
         return true;
