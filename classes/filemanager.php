@@ -141,6 +141,29 @@ class filemanager {
     }
 
     /**
+     * Create template file to onlyoffice file area from uploaded file
+     *
+     * @param int $contextid context identifier.
+     * @param stored_file $file uploaded file.
+     *
+     * @return stored_file
+     */
+    public static function create_template_from_uploaded_file($contextid, $file) {
+        $fs = get_file_storage();
+
+        $fr = [
+            'contextid' => $contextid,
+            'component' => self::COMPONENT_NAME,
+            'filearea' => self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
+            'itemid' => 0,
+            'filename' => static::generate_filename('', 0, pathinfo($file->get_filename(), PATHINFO_EXTENSION)),
+            'filepath' => '/',
+            'userid' => $file->get_userid(),
+        ];
+        return $fs->create_file_from_storedfile($fr, $file);
+    }
+
+    /**
      * Get initial file from onlyoffice file area
      *
      * @param int $contextid context identifier.
@@ -216,7 +239,28 @@ class filemanager {
         return $fs->create_file_from_storedfile($fr, $file);
     }
 
+    /**
+     * Create initial file to onlyoffice file area from uploaded file
+     *
+     * @param int $contextid context id.
+     * @param stored_file $file file from which to create.
+     *
+     * @return stored_file
+     */
+    public static function create_initial_from_uploaded_file($contextid, $file) {
+        $fs = get_file_storage();
 
+        $fr = [
+            'contextid' => $contextid,
+            'component' => self::COMPONENT_NAME,
+            'filearea' => self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL,
+            'itemid' => 0,
+            'filename' => $file->get_filename(),
+            'filepath' => '/',
+            'userid' => $file->get_userid(),
+        ];
+        return $fs->create_file_from_storedfile($fr, $file);
+    }
 
     /**
      * Write to initial file from stored file
