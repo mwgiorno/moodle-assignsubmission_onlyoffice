@@ -18,10 +18,11 @@
  * @copyright  2024 Ascensio System SIA <integration@onlyoffice.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
+/* eslint-disable no-alert, no-console */
 define(['jquery'], function($) {
     var docEditor = null;
 
-    var openEditor = function(contextid, itemid, readonly, tmplkey = null) {
+    var openEditor = function(contextid, itemid, readonly, tmplkey = null, format = null, templatetype = null) {
         if (typeof DocsAPI === 'undefined') {
             return;
         }
@@ -37,6 +38,12 @@ define(['jquery'], function($) {
         if (tmplkey) {
             params.tmplkey = tmplkey;
         }
+        if (format) {
+            params.format = format;
+        }
+        if (templatetype) {
+            params.templatetype = templatetype;
+        }
 
         var ajaxUrl = M.cfg.wwwroot + '/mod/assign/submission/onlyoffice/api/editorconfig.php';
         $.getJSON(ajaxUrl, params).done(function(config) {
@@ -50,39 +57,60 @@ define(['jquery'], function($) {
         });
     };
 
+    const reopenEditor = function(contextid, itemid, readonly, format) {
+        if (docEditor) {
+            docEditor.destroyEditor();
+        }
+
+        const generatekeyurl = M.cfg.wwwroot + '/mod/assign/submission/onlyoffice/api/generatekey.php';
+        $.getJSON(generatekeyurl).done(function(key) {
+            const tmplkeyelement = document.querySelector("input[name='assignsubmission_onlyoffice_tmplkey']");
+            tmplkeyelement.value = key;
+
+            openEditor(contextid, itemid, readonly, key, format);
+
+            $("#app-onlyoffice").show();
+        });
+    };
+
     return {
-        init: function(documentserverurl, contextid, itemid, readonly, tmplkey) {
+        init: function(documentserverurl, contextid, itemid, readonly, tmplkey, templatetype) {
             var docsapijs = document.createElement('script');
             docsapijs.type = 'text/javascript';
 
             $(docsapijs).appendTo('#app-onlyoffice');
             $(docsapijs).on('load', function() {
                 if (!tmplkey) {
-                    openEditor(contextid, itemid, readonly);
+                    openEditor(contextid, itemid, readonly, null, null, templatetype);
                 } else {
                     let formatelement = $('input#id_assignsubmission_onlyoffice_format');
                     let selectformat = $('select#id_assignsubmission_onlyoffice_format');
+                    let selecttemplatetype = $('select#id_assignsubmission_onlyoffice_template_type');
+                    let templatetypeelement = $('input#id_assignsubmission_onlyoffice_template_type');
                     let enableapptoggle = $('input#id_assignsubmission_onlyoffice_enabled');
+                    let tmplkeyelement = document.querySelector("input[name='assignsubmission_onlyoffice_tmplkey']");
 
                     if (enableapptoggle.length == 0) {
                         return;
                     }
 
-                    if (enableapptoggle[0].checked
-                        && formatelement.length > 0
-                        && formatelement[0].value == 'pdf') {
+                    if (
+                        enableapptoggle[0].checked
+                        && templatetypeelement.length > 0
+                        && templatetypeelement.val() === 'custom'
+                    ) {
                         openEditor(contextid, itemid, readonly, tmplkey);
                     }
 
                     enableapptoggle.change(function(e) {
-                        if (e.currentTarget.checked
-                            && (formatelement.length > 0
-                                && formatelement[0].value == 'pdf'
-                                || selectformat.length > 0
-                                && selectformat[0].value == 'pdf')) {
-
+                        if (
+                            e.currentTarget.checked
+                            && (formatelement.length > 0 && formatelement.val() !== 'upload'
+                                || selectformat.length > 0 && selectformat.val() !== 'upload')
+                            && selecttemplatetype === 'custom'
+                        ) {
                             if (docEditor === null) {
-                                openEditor(contextid, itemid, readonly, tmplkey);
+                                openEditor(contextid, itemid, readonly, tmplkeyelement.val(), selectformat.val());
                             }
 
                             $("#app-onlyoffice").show();
@@ -95,20 +123,25 @@ define(['jquery'], function($) {
 
                     if (selectformat.length > 0) {
                         selectformat.change(function(e) {
-                            if (e.target.value != 'pdf') {
-                                if ($("#app-onlyoffice").is(":visible")) {
-                                    $("#app-onlyoffice").hide();
+                            if (e.currentTarget.value === 'upload') {
+                                selecttemplatetype.val('custom').change();
+                            } else {
+                                if (selecttemplatetype.val() === 'custom') {
+                                    reopenEditor(contextid, itemid, readonly, selectformat.val());
                                 }
-                                return;
                             }
-
-                            if (docEditor === null) {
-                                openEditor(contextid, itemid, readonly, tmplkey);
-                            }
-
-                            $("#app-onlyoffice").show();
                         });
                     }
+
+                    selecttemplatetype.change(function(e) {
+                        if (e.currentTarget.value === 'custom' && selectformat.val() !== 'upload') {
+                            reopenEditor(contextid, itemid, readonly, selectformat.val());
+                        } else if (e.currentTarget.value === 'empty') {
+                            if (docEditor) {
+                                docEditor.destroyEditor();
+                            }
+                        }
+                    });
                 }
             });
 
@@ -116,3 +149,4 @@ define(['jquery'], function($) {
         }
     };
 });
+/* eslint-enable no-alert, no-console */
