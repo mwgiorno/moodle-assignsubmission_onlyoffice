@@ -41,6 +41,7 @@ $itemid = required_param('itemid', PARAM_INT);
 $readonly = !!optional_param('readonly', 0, PARAM_BOOL);
 $tmplkey = optional_param('tmplkey', null, PARAM_ALPHANUMEXT);
 $format = optional_param('format', null, PARAM_ALPHA);
+$templatetype = optional_param('templatetype', null, PARAM_ALPHA);
 
 $modconfig = get_config('onlyofficeeditor');
 $storageurl = $CFG->wwwroot;
@@ -135,8 +136,8 @@ if ($editable && $canedit && !$readonly) {
     // Disable editing for users who has a student role assigned.
     if (
         $ext === 'pdf'
-        && (user_has_role_assignment($USER->id, 5)
-        || ($context && !has_capability('moodle/course:manageactivities', $context)))
+        && ((user_has_role_assignment($USER->id, 5) && $templatetype === 'custom')
+        || (is_siteadmin($USER) && $context && !has_capability('moodle/course:manageactivities', $context)))
     ) {
         $config['document']['permissions']['edit'] = false;
     }
