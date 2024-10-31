@@ -45,7 +45,8 @@ class content implements \renderable, \templatable {
                                 $contextid,
                                 $itemid,
                                 $readonly = false,
-                                $tmplkey = null) {
+                                $tmplkey = null,
+                                $templatetype = null) {
 
         $this->data = new \stdClass();
 
@@ -54,6 +55,7 @@ class content implements \renderable, \templatable {
         $this->data->itemid = $itemid;
         $this->data->readonly = $readonly;
         $this->data->tmplkey = $tmplkey;
+        $this->data->templatetype = $templatetype;
     }
 
     /**
@@ -72,6 +74,7 @@ class content implements \renderable, \templatable {
             $this->data->itemid,
             $this->data->readonly,
             $this->data->tmplkey,
+            $this->data->templatetype,
         ];
 
         $PAGE->requires->js_call_amd('assignsubmission_onlyoffice/editor', 'init', $jsparams);
