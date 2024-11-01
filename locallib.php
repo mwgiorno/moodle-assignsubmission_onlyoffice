@@ -29,6 +29,7 @@ use assignsubmission_onlyoffice\templatekey;
 use assignsubmission_onlyoffice\output\content;
 use assignsubmission_onlyoffice\output\error;
 use assignsubmission_onlyoffice\utility;
+use mod_onlyofficeeditor\onlyoffice_file_utility;
 
 /**
  * Library class for onlyoffice submission plugin extending submission plugin base class
@@ -70,7 +71,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             get_string('assignformat', 'assignsubmission_onlyoffice'), $assignformat);
         
         $filemanageroptions = [
-            'accepted_types' => '*',
+            'accepted_types' => onlyoffice_file_utility::get_accepted_formats(),
             'maxbytes' => -1,
             'maxfiles' => 1,
             'subdirs' => 0,
