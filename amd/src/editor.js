@@ -136,7 +136,7 @@ define(['jquery'], function($) {
                     selecttemplatetype.change(function(e) {
                         if (e.currentTarget.value === 'custom' && selectformat.val() !== 'upload') {
                             reopenEditor(contextid, itemid, readonly, selectformat.val());
-                        } else if (e.currentTarget.value === 'empty') {
+                        } else {
                             if (docEditor) {
                                 docEditor.destroyEditor();
                             }
