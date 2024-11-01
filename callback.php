@@ -173,20 +173,20 @@ switch ($status) {
                     'tmplkey' => $tmplkey,
                     'userid' => $USER->id,
                 ]);
-    
+
                 $storageurl = $CFG->wwwroot;
                 if (class_exists('mod_onlyofficeeditor\configuration_manager')) {
                     $storageurl = configuration_manager::get_storage_url();
                 }
                 $documenturi = $storageurl . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
                 $conversionkey = filemanager::generate_key($file);
-    
+
                 $conversionurl = document_service::get_conversion_url($documenturi, $ext, $submissionformat, $conversionkey);
-    
+
                 if (empty($conversionurl)) {
                     break;
                 }
-    
+
                 $initialfile = filemanager::get_initial($contextid);
                 if ($initialfile === null) {
                     filemanager::create_initial($contextid, $submissionformat, $itemid, $conversionurl);

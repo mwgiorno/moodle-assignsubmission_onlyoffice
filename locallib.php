@@ -64,21 +64,21 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             'xlsx' => get_string('xlsxformname', 'onlyofficeeditor'),
             'pptx' => get_string('pptxformname', 'onlyofficeeditor'),
             'pdf' => get_string('pdfformname', 'assignsubmission_onlyoffice'),
-            'upload' => get_string('uploadfile', 'assignsubmission_onlyoffice')
+            'upload' => get_string('uploadfile', 'assignsubmission_onlyoffice'),
         ];
 
         $mform->addElement('select', 'assignsubmission_onlyoffice_format',
             get_string('assignformat', 'assignsubmission_onlyoffice'), $assignformat);
-        
+
         $filemanageroptions = [
             'accepted_types' => onlyoffice_file_utility::get_accepted_formats(),
             'maxbytes' => -1,
             'maxfiles' => 1,
             'subdirs' => 0,
         ];
-    
+
         $mform->addElement('filemanager', 'assignsubmission_onlyoffice_file', null, null, $filemanageroptions);
-        
+
         $templatetypes = [
             'empty' => get_string('templatetype:empty', 'assignsubmission_onlyoffice'),
             'custom' => get_string('templatetype:custom', 'assignsubmission_onlyoffice'),
@@ -96,7 +96,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             $mform->freeze('assignsubmission_onlyoffice_template_type');
 
             $mform->getElement('assignsubmission_onlyoffice_format')
-                    ->setSelected($assignconfig->format === 'docxf' ? 'pdf' : $assignconfig->format);
+                ->setSelected($assignconfig->format === 'docxf' ? 'pdf' : $assignconfig->format);
             $mform->freeze('assignsubmission_onlyoffice_format');
 
             if ($assignconfig->format === 'docxf') {
@@ -163,7 +163,14 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             global $USER;
             $usercontext = \context_user::instance($USER->id);
             $fs = get_file_storage();
-            $files = $fs->get_area_files($usercontext->id, 'user', 'draft', $data->assignsubmission_onlyoffice_file, 'sortorder, id', false);
+            $files = $fs->get_area_files(
+                $usercontext->id,
+                'user',
+                'draft',
+                $data->assignsubmission_onlyoffice_file,
+                'sortorder, id',
+                false
+            );
             $file = reset($files);
             filemanager::create_template_from_uploaded_file($this->assignment->get_context()->id, $file);
             filemanager::create_initial_from_uploaded_file($this->assignment->get_context()->id, $file);
@@ -174,9 +181,15 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             $this->set_config('format', $format);
         }
 
-        if ($data->assignsubmission_onlyoffice_template_type === 'custom' || $data->assignsubmission_onlyoffice_format === 'upload') {
+        if (
+            $data->assignsubmission_onlyoffice_template_type === 'custom'
+            || $data->assignsubmission_onlyoffice_format === 'upload'
+        ) {
             if (isset($data->assignsubmission_onlyoffice_tmplkey)) {
-                $this->set_config('tmplkey', $data->assignsubmission_onlyoffice_tmplkey . '_' . $this->assignment->get_context()->id);
+                $this->set_config(
+                    'tmplkey',
+                    $data->assignsubmission_onlyoffice_tmplkey . '_' . $this->assignment->get_context()->id
+                );
             }
         }
 
