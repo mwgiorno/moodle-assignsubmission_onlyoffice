@@ -18,7 +18,6 @@
  * @copyright  2024 Ascensio System SIA <integration@onlyoffice.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
-/* eslint-disable no-alert, no-console */
 define(['jquery'], function($) {
     var docEditor = null;
 
@@ -149,4 +148,3 @@ define(['jquery'], function($) {
         }
     };
 });
-/* eslint-enable no-alert, no-console */
