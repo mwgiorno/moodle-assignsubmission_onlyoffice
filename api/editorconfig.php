@@ -93,6 +93,7 @@ $downloadhash = $crypt->get_hash([
     'tmplkey' => $tmplkey,
     'userid' => $USER->id,
     'format' => $format,
+    'templatetype' => $templatetype,
 ]);
 
 $config = [
@@ -131,6 +132,7 @@ if ($editable && $canedit && !$readonly) {
         'tmplkey' => $tmplkey,
         'userid' => $USER->id,
         'format' => $format,
+        'templatetype' => $templatetype,
     ]);
     $config['editorConfig']['callbackUrl'] = $storageurl . '/mod/assign/submission/onlyoffice/callback.php?doc=' . $callbackhash;
     // Disable editing for users who has a student role assigned.

@@ -57,7 +57,7 @@ define(['jquery'], function($) {
         });
     };
 
-    const reopenEditor = function(contextid, itemid, readonly, format) {
+    const reopenEditor = function(contextid, itemid, readonly, format, templatetype) {
         if (docEditor) {
             docEditor.destroyEditor();
         }
@@ -67,7 +67,7 @@ define(['jquery'], function($) {
             const tmplkeyelement = document.querySelector("input[name='assignsubmission_onlyoffice_tmplkey']");
             tmplkeyelement.value = key;
 
-            openEditor(contextid, itemid, readonly, key, format);
+            openEditor(contextid, itemid, readonly, key, format, templatetype);
 
             $("#app-onlyoffice").show();
         });
@@ -127,7 +127,7 @@ define(['jquery'], function($) {
                                 selecttemplatetype.val('custom').change();
                             } else {
                                 if (selecttemplatetype.val() === 'custom') {
-                                    reopenEditor(contextid, itemid, readonly, selectformat.val());
+                                    reopenEditor(contextid, itemid, readonly, selectformat.val(), selecttemplatetype.val());
                                 }
                             }
                         });
@@ -135,7 +135,7 @@ define(['jquery'], function($) {
 
                     selecttemplatetype.change(function(e) {
                         if (e.currentTarget.value === 'custom' && selectformat.val() !== 'upload') {
-                            reopenEditor(contextid, itemid, readonly, selectformat.val());
+                            reopenEditor(contextid, itemid, readonly, selectformat.val(), e.currentTarget.value);
                         } else {
                             if (docEditor) {
                                 docEditor.destroyEditor();

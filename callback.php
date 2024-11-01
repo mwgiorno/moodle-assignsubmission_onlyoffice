@@ -58,6 +58,7 @@ $itemid = $hash->itemid;
 $tmplkey = $hash->tmplkey;
 $callbackuserid = $hash->userid;
 $format = $hash->format;
+$templatetype = $hash->templatetype;
 
 $bodystream = file_get_contents('php://input');
 $data = json_decode($bodystream);
@@ -141,7 +142,8 @@ switch ($status) {
 
         $file = !isset($tmplkey) ? filemanager::get($contextid, $itemid) : filemanager::get_template($contextid);
         if (empty($file) && isset($tmplkey) && isset($format) && $format !== 'upload') {
-            $file = filemanager::create_template($contextid, $format, $itemid);
+            $withsample = $templatetype === 'custom' && $format === 'pdf';
+            $file = filemanager::create_template($contextid, $format, $itemid, $withsample);
             $mustsaveinitial = true;
         }
 

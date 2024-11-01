@@ -136,8 +136,16 @@ class filemanager {
      *
      * @return stored_file
      */
-    public static function create_template($contextid, $ext, $userid) {
-        return self::create_base($contextid, 0, '', $ext, self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE, $userid);
+    public static function create_template($contextid, $ext, $userid, $withsample = false) {
+        return self::create_base(
+            $contextid,
+            0,
+            '',
+            $ext,
+            self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
+            $userid,
+            $withsample,
+        );
     }
 
     /**
@@ -296,11 +304,11 @@ class filemanager {
      *
      * @return string
      */
-    public static function get_template_path($ext) {
+    public static function get_template_path($ext, $withsample = false) {
         global $USER;
         global $CFG;
 
-        if ($ext === 'pdf') {
+        if ($ext === 'pdf' && $withsample) {
             $pathlocale = \mod_onlyofficeeditor\util::PATH_LOCALE[$USER->lang];
             if ($pathlocale === null) {
                 $pathlocale = "en-US";
@@ -368,8 +376,8 @@ class filemanager {
      *
      * @return stored_file
      */
-    private static function create_base($contextid, $itemid, $name, $ext, $filearea, $userid) {
-        $pathname = self::get_template_path($ext);
+    private static function create_base($contextid, $itemid, $name, $ext, $filearea, $userid, $withsample = false) {
+        $pathname = self::get_template_path($ext, $withsample);
 
         $fs = get_file_storage();
 
