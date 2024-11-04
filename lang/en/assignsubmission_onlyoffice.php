@@ -34,4 +34,4 @@ $string['uploadfile'] = 'Choose file';
 $string['templatetype'] = 'File template (ONLYOFFICE)';
 $string['templatetype:empty'] = 'Empty';
 $string['templatetype:custom'] = 'Custom';
-$string['templatetype_help'] = 'This setting determines whether the file will start empty or with predefined content. The available options are: <br/><ul><li>Empty: The file will be blank, and students can edit all file types (DOCX, XLSX, PPTX, PDF).</li><li>Custom: You can predefine the file content. Students can edit DOCX, XLSX, and PPTX files, but PDF files will only be available for filling out, not for editing.</li></ul>';
+$string['templatetype_help'] = 'This setting determines whether the file will start empty or with predefined content. The available options are: <br/><ul class="template-type-help"><li>Empty: The file will be blank, and students can edit all file types (DOCX, XLSX, PPTX, PDF).</li><li>Custom: You can predefine the file content. Students can edit DOCX, XLSX, and PPTX files, but PDF files will only be available for filling out, not for editing.</li></ul>';
