@@ -40,6 +40,7 @@ class content implements \renderable, \templatable {
      * @param string $itemid property of the file that is submissionid.
      * @param bool $readonly readonly editor mode.
      * @param string $tmplkey temporary template key.
+     * @param string $templatetype template type.
      */
     public function __construct($documentserverurl,
                                 $contextid,

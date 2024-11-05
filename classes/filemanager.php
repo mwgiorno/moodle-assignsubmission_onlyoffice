@@ -133,6 +133,7 @@ class filemanager {
      * @param int $contextid context identifier.
      * @param string $ext file extension.
      * @param string $userid user identifier.
+     * @param bool $withsample whether to create with sample.
      *
      * @return stored_file
      */
@@ -301,6 +302,7 @@ class filemanager {
      * Get base template path
      *
      * @param string $ext file extension.
+     * @param bool $withsample whether to return path to file with sample.
      *
      * @return string
      */
@@ -373,6 +375,7 @@ class filemanager {
      * @param string $ext file extension.
      * @param string $filearea file area.
      * @param string $userid user identifier.
+     * @param bool $withsample whether to create with sample.
      *
      * @return stored_file
      */
