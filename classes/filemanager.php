@@ -25,6 +25,8 @@
 
 namespace assignsubmission_onlyoffice;
 
+use Exception;
+use file_exception;
 use stored_file;
 
 /**
@@ -323,6 +325,33 @@ class filemanager {
         }
 
         return \mod_onlyofficeeditor\util::get_template_path($ext);
+    }
+
+    /**
+     * Get path to template with sample
+     *
+     * @param string $ext file extension.
+     *
+     * @return string
+     * @throws file_exception
+     */
+    public static function get_path_to_template_with_sample($ext) {
+        global $USER;
+        global $CFG;
+
+        $pathlocale = \mod_onlyofficeeditor\util::PATH_LOCALE[$USER->lang];
+
+        if ($pathlocale === null) {
+            $pathlocale = "en-US";
+        }
+
+        $templatepath = $CFG->dirroot . '/mod/assign/submission/onlyoffice/newdocs/' . $pathlocale . '/new.' . $ext;
+
+        if (!file_exists($templatepath)) {
+            throw new file_exception(404);
+        }
+
+        return $templatepath;
     }
 
     /**
