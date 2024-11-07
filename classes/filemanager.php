@@ -330,7 +330,7 @@ class filemanager {
 
         $pathlocale = \mod_onlyofficeeditor\util::PATH_LOCALE[$USER->lang];
 
-        if ($pathlocale === null) {
+        if ($USER->lang === 'en' || $pathlocale === null) {
             $pathlocale = "en-US";
         }
 
