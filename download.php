@@ -113,7 +113,7 @@ if (!$canread) {
 
 if ($file === null) {
     if (isset($tmplkey) && isset($format) && $format !== 'upload') {
-        $withsample = $templatetype === 'custom' && $format === 'pdf';
+        $withsample = $templatetype === 'custom';
         $templatepath = filemanager::get_template_path($format, $withsample);
         $templatename = pathinfo($templatepath, PATHINFO_BASENAME);
 

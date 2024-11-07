@@ -142,7 +142,7 @@ switch ($status) {
 
         $file = !isset($tmplkey) ? filemanager::get($contextid, $itemid) : filemanager::get_template($contextid);
         if (empty($file) && isset($tmplkey) && isset($format) && $format !== 'upload') {
-            $withsample = $templatetype === 'custom' && $format === 'pdf';
+            $withsample = $templatetype === 'custom';
             $file = filemanager::create_template($contextid, $format, $itemid, $withsample);
             $mustsaveinitial = true;
         }

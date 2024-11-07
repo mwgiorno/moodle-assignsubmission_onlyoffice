@@ -309,22 +309,11 @@ class filemanager {
      * @return string
      */
     public static function get_template_path($ext, $withsample = false) {
-        global $USER;
-        global $CFG;
-
-        if ($ext === 'pdf' && $withsample) {
-            $pathlocale = \mod_onlyofficeeditor\util::PATH_LOCALE[$USER->lang];
-            if ($pathlocale === null) {
-                $pathlocale = "en-US";
-            }
-
-            $templatepath = $CFG->dirroot . '/mod/assign/submission/onlyoffice/newdocs/' . $pathlocale . '/new.' . $ext;
-            if (file_exists($templatepath)) {
-                return $templatepath;
-            }
+        if ($withsample) {
+            return self::get_path_to_template_with_sample($ext);
+        } else {
+            return \mod_onlyofficeeditor\util::get_template_path($ext);
         }
-
-        return \mod_onlyofficeeditor\util::get_template_path($ext);
     }
 
     /**
