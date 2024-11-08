@@ -228,7 +228,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         if (!!$this->assignment->get_instance()->teamsubmission) {
             $filenamesuffix = $submission->groupid == "0" ? 'default' : groups_get_group_name($submission->groupid);
         } else {
-            $filenamesuffix = $USER->username;
+            $filenamesuffix = fullname($USER);
         }
 
         if ($submissionfile === null) {
