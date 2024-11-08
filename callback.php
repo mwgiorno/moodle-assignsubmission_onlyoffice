@@ -57,6 +57,8 @@ $contextid = $hash->contextid;
 $itemid = $hash->itemid;
 $tmplkey = $hash->tmplkey;
 $callbackuserid = $hash->userid;
+$format = $hash->format;
+$templatetype = $hash->templatetype;
 
 $bodystream = file_get_contents('php://input');
 $data = json_decode($bodystream);
@@ -139,8 +141,9 @@ switch ($status) {
         }
 
         $file = !isset($tmplkey) ? filemanager::get($contextid, $itemid) : filemanager::get_template($contextid);
-        if (empty($file) && isset($tmplkey)) {
-            $file = filemanager::create_template($contextid, 'pdf', $itemid);
+        if (empty($file) && isset($tmplkey) && isset($format) && $format !== 'upload') {
+            $withsample = $templatetype === 'custom';
+            $file = filemanager::create_template($contextid, $format, $itemid, $withsample);
             $mustsaveinitial = true;
         }
 
@@ -159,43 +162,46 @@ switch ($status) {
 
         $filename = $file->get_filename();
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        if ($ext === 'pdf' && $mustsaveinitial) {
-            $initialfile = filemanager::get_initial($contextid);
-            if ($initialfile === null) {
-                filemanager::create_initial_from_file($file);
+
+        if ($mustsaveinitial) {
+            if ($ext === 'docxf') {
+                $submissionformat = utility::get_form_format();
+
+                $crypt = new \mod_onlyofficeeditor\hasher();
+                $downloadhash = $crypt->get_hash([
+                    'action' => 'download',
+                    'contextid' => $contextid,
+                    'itemid' => 0,
+                    'tmplkey' => $tmplkey,
+                    'userid' => $USER->id,
+                ]);
+
+                $storageurl = $CFG->wwwroot;
+                if (class_exists('mod_onlyofficeeditor\configuration_manager')) {
+                    $storageurl = configuration_manager::get_storage_url();
+                }
+                $documenturi = $storageurl . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
+                $conversionkey = filemanager::generate_key($file);
+
+                $conversionurl = document_service::get_conversion_url($documenturi, $ext, $submissionformat, $conversionkey);
+
+                if (empty($conversionurl)) {
+                    break;
+                }
+
+                $initialfile = filemanager::get_initial($contextid);
+                if ($initialfile === null) {
+                    filemanager::create_initial($contextid, $submissionformat, $itemid, $conversionurl);
+                } else {
+                    filemanager::write($initialfile, $conversionurl);
+                }
             } else {
-                filemanager::write_to_initial_from_file($initialfile, $file);
-            }
-        } else if (($ext === 'docxf') && $mustsaveinitial) {
-            $submissionformat = utility::get_form_format();
-
-            $crypt = new \mod_onlyofficeeditor\hasher();
-            $downloadhash = $crypt->get_hash([
-                'action' => 'download',
-                'contextid' => $contextid,
-                'itemid' => 0,
-                'tmplkey' => $tmplkey,
-                'userid' => $USER->id,
-            ]);
-
-            $storageurl = $CFG->wwwroot;
-            if (class_exists('mod_onlyofficeeditor\configuration_manager')) {
-                $storageurl = configuration_manager::get_storage_url();
-            }
-            $documenturi = $storageurl . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
-            $conversionkey = filemanager::generate_key($file);
-
-            $conversionurl = document_service::get_conversion_url($documenturi, $ext, $submissionformat, $conversionkey);
-
-            if (empty($conversionurl)) {
-                break;
-            }
-
-            $initialfile = filemanager::get_initial($contextid);
-            if ($initialfile === null) {
-                filemanager::create_initial($contextid, $submissionformat, $itemid, $conversionurl);
-            } else {
-                filemanager::write($initialfile, $conversionurl);
+                $initialfile = filemanager::get_initial($contextid);
+                if ($initialfile === null) {
+                    filemanager::create_initial_from_file($file);
+                } else {
+                    filemanager::write_to_initial_from_file($initialfile, $file);
+                }
             }
         }
 
