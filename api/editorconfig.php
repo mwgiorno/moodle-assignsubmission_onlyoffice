@@ -67,7 +67,7 @@ if (!isset($tmplkey)) {
         die();
     }
 
-    $groupmode = !!$submission->groupid;
+    $groupmode = !!$assing->get_instance()->teamsubmission;
 
     $file = filemanager::get($contextid, $itemid);
 } else {
