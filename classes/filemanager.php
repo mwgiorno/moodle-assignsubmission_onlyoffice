@@ -87,8 +87,22 @@ class filemanager {
      *
      * @return stored_file
      */
-    public static function create($contextid, $itemid, $name, $ext, $userid) {
-        return self::create_base($contextid, $itemid, $name, $ext, self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE, $userid);
+    public static function create($contextid, $itemid, $name, $ext, $userid, $filenamesuffix = '') {
+        $pathname = self::get_template_path($ext);
+
+        $fs = get_file_storage();
+
+        $newfile = $fs->create_file_from_pathname((object)[
+            'contextid' => $contextid,
+            'component' => self::COMPONENT_NAME,
+            'filearea' => self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
+            'itemid' => $itemid,
+            'userid' => $userid,
+            'filepath' => '/',
+            'filename' => static::generate_filename($name, $filenamesuffix, $ext),
+        ], $pathname);
+
+        return $newfile;
     }
 
     /**
