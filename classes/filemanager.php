@@ -466,6 +466,24 @@ class filemanager {
             $filename = substr($name, 0, static::FILENAME_MAXIMUM_LENGTH - strlen($postfix)) . $postfix;
         }
 
+        $filename = self::sanitize_filename($filename);
+
         return $filename;
+    }
+
+    /**
+     * Sanitize filename
+     *
+     * @param string $filename
+     * @return string
+     */
+    private static function sanitize_filename($filename) {
+        $sanitizedfilename = trim($filename);
+        // Remove any non-alphanumeric, non-whitespace characters or any of the following caracters -_~,;[]().
+        $sanitizedfilename = mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '', $sanitizedfilename);
+        // Remove any period characters.
+        $sanitizedfilename = mb_ereg_replace("([\.]{2,})", '', $sanitizedfilename);
+
+        return $sanitizedfilename;
     }
 }
