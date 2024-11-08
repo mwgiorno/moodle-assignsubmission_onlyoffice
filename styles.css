@@ -12,3 +12,10 @@
     /* stylelint-disable-next-line declaration-no-important */
     max-width: unset !important;
 }
+
+.template-type-help {
+    list-style-position: inside;
+    padding: 0;
+    padding-left: 10px;
+    margin: 0;
+}

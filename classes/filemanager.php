@@ -25,6 +25,8 @@
 
 namespace assignsubmission_onlyoffice;
 
+use Exception;
+use file_exception;
 use stored_file;
 
 /**
@@ -134,11 +136,43 @@ class filemanager {
      * @param int $contextid context identifier.
      * @param string $ext file extension.
      * @param string $userid user identifier.
+     * @param bool $withsample whether to create with sample.
      *
      * @return stored_file
      */
-    public static function create_template($contextid, $ext, $userid) {
-        return self::create_base($contextid, 0, '', $ext, self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE, $userid);
+    public static function create_template($contextid, $ext, $userid, $withsample = false) {
+        return self::create_base(
+            $contextid,
+            0,
+            '',
+            $ext,
+            self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
+            $userid,
+            $withsample,
+        );
+    }
+
+    /**
+     * Create template file to onlyoffice file area from uploaded file
+     *
+     * @param int $contextid context identifier.
+     * @param stored_file $file uploaded file.
+     *
+     * @return stored_file
+     */
+    public static function create_template_from_uploaded_file($contextid, $file) {
+        $fs = get_file_storage();
+
+        $fr = [
+            'contextid' => $contextid,
+            'component' => self::COMPONENT_NAME,
+            'filearea' => self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
+            'itemid' => 0,
+            'filename' => static::generate_filename('', 0, pathinfo($file->get_filename(), PATHINFO_EXTENSION)),
+            'filepath' => '/',
+            'userid' => $file->get_userid(),
+        ];
+        return $fs->create_file_from_storedfile($fr, $file);
     }
 
     /**
@@ -217,7 +251,28 @@ class filemanager {
         return $fs->create_file_from_storedfile($fr, $file);
     }
 
+    /**
+     * Create initial file to onlyoffice file area from uploaded file
+     *
+     * @param int $contextid context id.
+     * @param stored_file $file file from which to create.
+     *
+     * @return stored_file
+     */
+    public static function create_initial_from_uploaded_file($contextid, $file) {
+        $fs = get_file_storage();
 
+        $fr = [
+            'contextid' => $contextid,
+            'component' => self::COMPONENT_NAME,
+            'filearea' => self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL,
+            'itemid' => 0,
+            'filename' => $file->get_filename(),
+            'filepath' => '/',
+            'userid' => $file->get_userid(),
+        ];
+        return $fs->create_file_from_storedfile($fr, $file);
+    }
 
     /**
      * Write to initial file from stored file
@@ -250,26 +305,43 @@ class filemanager {
      * Get base template path
      *
      * @param string $ext file extension.
+     * @param bool $withsample whether to return path to file with sample.
      *
      * @return string
      */
-    public static function get_template_path($ext) {
+    public static function get_template_path($ext, $withsample = false) {
+        if ($withsample) {
+            return self::get_path_to_template_with_sample($ext);
+        } else {
+            return \mod_onlyofficeeditor\util::get_template_path($ext);
+        }
+    }
+
+    /**
+     * Get path to template with sample
+     *
+     * @param string $ext file extension.
+     *
+     * @return string
+     * @throws file_exception
+     */
+    public static function get_path_to_template_with_sample($ext) {
         global $USER;
         global $CFG;
 
-        if ($ext === 'pdf') {
-            $pathlocale = \mod_onlyofficeeditor\util::PATH_LOCALE[$USER->lang];
-            if ($pathlocale === null) {
-                $pathlocale = "en-US";
-            }
+        $pathlocale = \mod_onlyofficeeditor\util::PATH_LOCALE[$USER->lang];
 
-            $templatepath = $CFG->dirroot . '/mod/assign/submission/onlyoffice/newdocs/' . $pathlocale . '/new.' . $ext;
-            if (file_exists($templatepath)) {
-                return $templatepath;
-            }
+        if ($USER->lang === 'en' || $pathlocale === null) {
+            $pathlocale = "en-US";
         }
 
-        return \mod_onlyofficeeditor\util::get_template_path($ext);
+        $templatepath = $CFG->dirroot . '/mod/assign/submission/onlyoffice/newdocs/' . $pathlocale . '/new.' . $ext;
+
+        if (!file_exists($templatepath)) {
+            throw new file_exception(404);
+        }
+
+        return $templatepath;
     }
 
     /**
@@ -322,11 +394,12 @@ class filemanager {
      * @param string $ext file extension.
      * @param string $filearea file area.
      * @param string $userid user identifier.
+     * @param bool $withsample whether to create with sample.
      *
      * @return stored_file
      */
-    private static function create_base($contextid, $itemid, $name, $ext, $filearea, $userid) {
-        $pathname = self::get_template_path($ext);
+    private static function create_base($contextid, $itemid, $name, $ext, $filearea, $userid, $withsample = false) {
+        $pathname = self::get_template_path($ext, $withsample);
 
         $fs = get_file_storage();
 

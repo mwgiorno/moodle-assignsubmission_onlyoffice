@@ -40,6 +40,8 @@ $contextid = required_param('contextid', PARAM_INT);
 $itemid = required_param('itemid', PARAM_INT);
 $readonly = !!optional_param('readonly', 0, PARAM_BOOL);
 $tmplkey = optional_param('tmplkey', null, PARAM_ALPHANUMEXT);
+$format = optional_param('format', null, PARAM_ALPHA);
+$templatetype = optional_param('templatetype', null, PARAM_ALPHA);
 
 $modconfig = get_config('onlyofficeeditor');
 $storageurl = $CFG->wwwroot;
@@ -73,12 +75,12 @@ if (!isset($tmplkey)) {
 }
 
 if ($file === null
-    && !isset($tmplkey)) {
+    && (!isset($tmplkey) || $format === null)) {
     http_response_code(404);
     die();
 }
 
-$filename = !empty($file) ? $file->get_filename() : 'form_template.pdf';
+$filename = !empty($file) ? $file->get_filename() : "form_template.$format";
 $key = !empty($file) ? filemanager::generate_key($file) : $tmplkey;
 
 $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
@@ -90,6 +92,8 @@ $downloadhash = $crypt->get_hash([
     'itemid' => $itemid,
     'tmplkey' => $tmplkey,
     'userid' => $USER->id,
+    'format' => $format,
+    'templatetype' => $templatetype,
 ]);
 
 $config = [
@@ -127,13 +131,15 @@ if ($editable && $canedit && !$readonly) {
         'itemid' => $itemid,
         'tmplkey' => $tmplkey,
         'userid' => $USER->id,
+        'format' => $format,
+        'templatetype' => $templatetype,
     ]);
     $config['editorConfig']['callbackUrl'] = $storageurl . '/mod/assign/submission/onlyoffice/callback.php?doc=' . $callbackhash;
     // Disable editing for users who has a student role assigned.
     if (
         $ext === 'pdf'
-        && (user_has_role_assignment($USER->id, 5)
-        || ($context && !has_capability('moodle/course:manageactivities', $context)))
+        && ((user_has_role_assignment($USER->id, 5) && $templatetype === 'custom')
+        || (is_siteadmin($USER) && $context && !has_capability('moodle/course:manageactivities', $context)))
     ) {
         $config['document']['permissions']['edit'] = false;
     }
