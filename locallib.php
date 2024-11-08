@@ -247,7 +247,9 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                                                         $submission->id,
                                                         $this->assignment->get_instance()->name,
                                                         $cfg->format,
-                                                        $submission->userid);
+                                                        $submission->userid,
+                                                        $filenamesuffix,
+                                                    );
             }
         }
 
