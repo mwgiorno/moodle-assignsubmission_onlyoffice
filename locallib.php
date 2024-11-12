@@ -71,7 +71,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             get_string('assignformat', 'assignsubmission_onlyoffice'), $assignformat);
 
         $filemanageroptions = [
-            'accepted_types' => onlyoffice_file_utility::get_accepted_formats(),
+            'accepted_types' => onlyoffice_file_utility::get_editable_extensions(),
             'maxbytes' => -1,
             'maxfiles' => 1,
             'subdirs' => 0,
