@@ -15,18 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the version and other meta-info about the plugin
+ * The assign_submission_onlyoffice generate key api actions
  *
  * @package    assignsubmission_onlyoffice
- * @copyright  2024 Ascensio System SIA <integration@onlyoffice.com>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @subpackage
+ * @copyright   2024 Ascensio System SIA <integration@onlyoffice.com>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+require_once(__DIR__.'/../../../../../config.php');
+require_once(__DIR__.'/../../../locallib.php');
 
-$plugin->component = 'assignsubmission_onlyoffice';
-$plugin->version = 2024111300;
-$plugin->release = 'v3.0.0';
-$plugin->requires = 2020061500;
-$plugin->maturity = MATURITY_STABLE;
-$plugin->dependencies = ['mod_onlyofficeeditor' => 2024111300];
+require_login();
+
+$key = uniqid();
+
+echo json_encode($key);

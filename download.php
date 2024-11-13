@@ -64,6 +64,8 @@ $contextid = $hash->contextid;
 $itemid = $hash->itemid;
 $tmplkey = $hash->tmplkey;
 $userid = $hash->userid;
+$format = $hash->format;
+$templatetype = $hash->templatetype;
 
 $user = null;
 $canread = false;
@@ -110,8 +112,9 @@ if (!$canread) {
 }
 
 if ($file === null) {
-    if (isset($tmplkey)) {
-        $templatepath = filemanager::get_template_path('pdf');
+    if (isset($tmplkey) && isset($format) && $format !== 'upload') {
+        $withsample = $templatetype === 'custom';
+        $templatepath = filemanager::get_template_path($format, $withsample);
         $templatename = pathinfo($templatepath, PATHINFO_BASENAME);
 
         send_file($templatepath, $templatename, 0, 0, false, false, '', false, []);
