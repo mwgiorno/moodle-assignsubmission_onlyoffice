@@ -1,11 +1,14 @@
 # Change Log
 
 ## 3.0.0
-- forbid pdf files editing by users lacking required capabilities
-- trim overlong file names
+## Added
 - allow users to upload files from their device
 - add the ability to edit templates for docx, pptx, and xlsx files
 - allow students to edit or fill out pdf forms depending on the template type
+
+## Changed
+- forbid pdf files editing by users lacking required capabilities
+- trim overlong file names
 
 ## 2.2.0
 ## Changed
