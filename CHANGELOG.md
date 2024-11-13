@@ -1,4 +1,6 @@
 # Change Log
+
+## 3.0.0
 - forbid pdf files editing by users lacking required capabilities
 - trim overlong file names
 - allow users to upload files from their device
