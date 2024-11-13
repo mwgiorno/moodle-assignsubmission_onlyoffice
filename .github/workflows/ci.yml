@@ -75,10 +75,10 @@ jobs:
 
       - name: Install moodle-plugin-ci
         run: |
-          if [ $GITHUB_ACTIONS == "true" ]; then
-            moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
+          if nc -z mariadb 3306; then
+            moodle-plugin-ci install --plugin ./plugin --db-host=mariadb
           else
-            moodle-plugin-ci install --plugin ./plugin --db-host=${{ matrix.database }}
+            moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
           fi
         env:
           DB: ${{ matrix.database }}
