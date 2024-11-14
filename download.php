@@ -95,7 +95,7 @@ if (!isset($tmplkey)) {
     }
 
     if (!empty($assing)) {
-        $canread = !!$submission->groupid ? $assing->can_view_group_submission($submission->groupid)
+        $canread = !!$assing->get_instance()->teamsubmission ? $assing->can_view_group_submission($submission->groupid)
                                           : $assing->can_view_submission($submission->userid);
     }
 

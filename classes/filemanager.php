@@ -87,8 +87,22 @@ class filemanager {
      *
      * @return stored_file
      */
-    public static function create($contextid, $itemid, $name, $ext, $userid) {
-        return self::create_base($contextid, $itemid, $name, $ext, self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE, $userid);
+    public static function create($contextid, $itemid, $name, $ext, $userid, $filenamesuffix = '') {
+        $pathname = self::get_template_path($ext);
+
+        $fs = get_file_storage();
+
+        $newfile = $fs->create_file_from_pathname((object)[
+            'contextid' => $contextid,
+            'component' => self::COMPONENT_NAME,
+            'filearea' => self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
+            'itemid' => $itemid,
+            'userid' => $userid,
+            'filepath' => '/',
+            'filename' => static::generate_filename($name, $filenamesuffix, $ext),
+        ], $pathname);
+
+        return $newfile;
     }
 
     /**
@@ -99,16 +113,17 @@ class filemanager {
      * @param string $name file name.
      * @param string $ext file extension.
      * @param string $userid user identifier.
+     * @param string $filenamesuffix file name suffix
      *
      * @return stored_file
      */
-    public static function create_by_initial($initial, $itemid, $name, $ext, $userid) {
+    public static function create_by_initial($initial, $itemid, $name, $ext, $userid, $filenamesuffix) {
         $fs = get_file_storage();
 
         $fr = (object)[
             'filearea' => self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
             'itemid' => $itemid,
-            'filename' => static::generate_filename($name, $itemid, $ext),
+            'filename' => static::generate_filename($name, $filenamesuffix, $ext),
             'userid' => $userid,
             'timecreated' => time(),
         ];
@@ -453,17 +468,36 @@ class filemanager {
      * Generate valid file name
      *
      * @param string $name
-     * @param int|string $itemid
+     * @param int|string $suffix
      * @param string $ext
      * @return string
      */
-    private static function generate_filename($name, $itemid, $ext) {
-        $filename = "$name$itemid.$ext";
+    private static function generate_filename($name, $suffix, $ext) {
+        $postfix = "_$suffix.$ext";
+        $filename = "$name$postfix";
 
         if (strlen($filename) > static::FILENAME_MAXIMUM_LENGTH) {
-            $filename = substr($name, 0, static::FILENAME_MAXIMUM_LENGTH - strlen("$itemid.$ext")) . "$itemid.$ext";
+            $filename = substr($name, 0, static::FILENAME_MAXIMUM_LENGTH - strlen($postfix)) . $postfix;
         }
 
+        $filename = self::sanitize_filename($filename);
+
         return $filename;
+    }
+
+    /**
+     * Sanitize filename
+     *
+     * @param string $filename
+     * @return string
+     */
+    private static function sanitize_filename($filename) {
+        $sanitizedfilename = trim($filename);
+        // Remove any non-alphanumeric, non-whitespace characters or any of the following caracters -_~,;[]().
+        $sanitizedfilename = mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '', $sanitizedfilename);
+        // Remove any period characters.
+        $sanitizedfilename = mb_ereg_replace("([\.]{2,})", '', $sanitizedfilename);
+
+        return $sanitizedfilename;
     }
 }
