@@ -1,16 +1,16 @@
 ﻿# Moodle AssignSubmission ONLYOFFICE Integration plugin
 
-This plugin is an extension of the [mod_assign](https://github.com/moodle/moodle/tree/master/mod/assign) Moodle plugin and allows users to add a custom submission of the "ONLYOFFICE document" type in the .oform format.
+This plugin is an extension of the [mod_assign](https://github.com/moodle/moodle/tree/master/mod/assign) Moodle plugin and allows users to add a custom submission of the "ONLYOFFICE document" type in various formats.
 
 ## Features
 
 The app allows to:
 
-* Build advanced digital forms for Moodle assignments.
+* Create, edit, and fill out templates for Moodle assignments.
 
 Supported formats:
 
-* For viewing and editing: DOCXF, OFORM.
+* For viewing and editing: PDF, DOCX, PPTX, XLSX.
 
 ## Installing Moodle assignsubmission_onlyoffice Integration plugin
 
@@ -32,7 +32,7 @@ When creating a new Assignment activity:
 2. Activate the **Edit Mode** using the switcher at the top right corner.
 3. Click **Add an activity or resource**.
 4. Select the **Assignment activity** in the pop-up window.
-5. In the **Submission types** tab, select the **ONLYOFFICE document** type. Once done, the form creator (.docxf) will become available on the Assignment creation/editing page – here you can prepare a form which will become available for students to fill out after saving.
+5. In the **Submission types** tab, select the **ONLYOFFICE document** type. Once done, the corresponding editor will become available on the Assignment creation/editing page – here you can prepare a template which will become available for students to fill out after saving.
 
 ## Feedback and support
 
