@@ -93,7 +93,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
 
             if (property_exists($assignconfig, 'format')) {
                 $mform->getElement('assignsubmission_onlyoffice_format')
-                ->setSelected($assignconfig->format === 'docxf' ? 'pdf' : $assignconfig->format);
+                    ->setSelected($assignconfig->format === 'docxf' ? 'pdf' : $assignconfig->format);
                 $mform->freeze('assignsubmission_onlyoffice_format');
 
                 if ($assignconfig->format === 'docxf') {
@@ -108,14 +108,14 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
 
             if (property_exists($assignconfig, 'templatetype')) {
                 $mform->getElement('assignsubmission_onlyoffice_template_type')
-                ->setSelected($assignconfig->templatetype);
+                    ->setSelected($assignconfig->templatetype);
                 $mform->freeze('assignsubmission_onlyoffice_template_type');
 
                 if ($assignconfig->templatetype === 'custom') {
                     $fulltmplkey = $assignconfig->tmplkey;
-    
+
                     list($origintmplkey, $contextid) = templatekey::parse_contextid($fulltmplkey);
-    
+
                     if ($this->assignment->get_context()->id === $contextid) {
                         $tmplkey = $origintmplkey;
                     } else {
