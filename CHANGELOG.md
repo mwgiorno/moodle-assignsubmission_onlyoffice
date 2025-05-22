@@ -1,4 +1,5 @@
 # Change Log
+- increase minimum moodle version to v4.2.0
 
 ## 3.1.0
 ## Added
